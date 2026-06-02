@@ -38,6 +38,16 @@ class ProfielBeheer extends Component
         ];
     }
 
+    public function fotoVerwijderen(): void
+    {
+        $kapper = auth()->user()->kapper;
+        if ($kapper->foto) {
+            \Storage::disk('public')->delete($kapper->foto);
+            $kapper->update(['foto' => null]);
+        }
+        $this->foto = null;
+    }
+
     public function opslaan(): void
     {
         $this->validate();
