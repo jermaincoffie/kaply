@@ -21,7 +21,8 @@
 
         {{-- Status filter --}}
         <x-select
-            wire:model.live="filterStatus"
+            wire-target="filterStatus"
+            :current="$filterStatus"
             :options="['' => 'Alle statussen', 'gepland' => 'Gepland', 'voltooid' => 'Voltooid', 'geannuleerd' => 'Geannuleerd', 'no_show' => 'No-show']"
             placeholder="Alle statussen"
         />
