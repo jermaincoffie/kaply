@@ -19,7 +19,7 @@
         @php
             $woorden = explode(' ', trim($kapper->salon_naam));
             $init    = mb_strtoupper(mb_substr($woorden[0], 0, 1) . (isset($woorden[1]) ? mb_substr($woorden[1], 0, 1) : ''));
-            $tekst   = ['text-blue-400','text-emerald-400','text-violet-400','text-rose-400','text-amber-400','text-cyan-400'];
+            $tekst   = ['text-white','text-white','text-white','text-white','text-white','text-white'];
             $idx     = abs(crc32($kapper->salon_naam)) % count($tekst);
         @endphp
         <div class="w-full h-32 bg-blue-900/30 flex items-center justify-center">
