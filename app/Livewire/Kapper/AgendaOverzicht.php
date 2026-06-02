@@ -3,30 +3,72 @@
 namespace App\Livewire\Kapper;
 
 use App\Models\Afspraak;
+use Carbon\Carbon;
 use Livewire\Component;
 
 class AgendaOverzicht extends Component
 {
-    public string $geselecteerdeDatum;
+    public string $weekStart;
+    public ?int $geselecteerdeAfspraakId = null;
 
     public function mount(): void
     {
-        $this->geselecteerdeDatum = today()->toDateString();
+        $this->weekStart = today()->startOfWeek(Carbon::MONDAY)->toDateString();
+    }
+
+    public function vorigeWeek(): void
+    {
+        $this->weekStart = Carbon::parse($this->weekStart)->subWeek()->toDateString();
+        $this->geselecteerdeAfspraakId = null;
+    }
+
+    public function volgendeWeek(): void
+    {
+        $this->weekStart = Carbon::parse($this->weekStart)->addWeek()->toDateString();
+        $this->geselecteerdeAfspraakId = null;
+    }
+
+    public function naarVandaag(): void
+    {
+        $this->weekStart = today()->startOfWeek(Carbon::MONDAY)->toDateString();
+        $this->geselecteerdeAfspraakId = null;
+    }
+
+    public function selecteerAfspraak(?int $id): void
+    {
+        $this->geselecteerdeAfspraakId = $this->geselecteerdeAfspraakId === $id ? null : $id;
     }
 
     public function noShow(int $id): void
     {
         Afspraak::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->update(['status' => 'no_show']);
+        $this->geselecteerdeAfspraakId = null;
     }
 
     public function voltooid(int $id): void
     {
         Afspraak::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->update(['status' => 'voltooid']);
+        $this->geselecteerdeAfspraakId = null;
     }
 
     public function render()
     {
         $kapper_id = auth()->user()->kapper->id;
+        $weekStartDate = Carbon::parse($this->weekStart);
+        $weekEndDate   = $weekStartDate->copy()->endOfWeek(Carbon::SUNDAY);
+
+        $days = collect();
+        for ($i = 0; $i < 7; $i++) {
+            $days->push($weekStartDate->copy()->addDays($i));
+        }
+
+        $afspraken = Afspraak::where('kapper_id', $kapper_id)
+            ->whereBetween('datum', [$weekStartDate->toDateString(), $weekEndDate->toDateString()])
+            ->with(['klant', 'dienst'])
+            ->orderBy('start_tijd')
+            ->get();
+
+        $afsprakenPerDag = $afspraken->groupBy(fn($a) => $a->datum->toDateString());
 
         $omzet_maand = Afspraak::where('afspraken.kapper_id', $kapper_id)
             ->where('afspraken.status', 'voltooid')
@@ -46,15 +88,13 @@ class AgendaOverzicht extends Component
             ->where('status', 'gepland')
             ->count();
 
-        return view('livewire.kapper.agenda-overzicht', [
-            'afspraken'        => Afspraak::where('kapper_id', $kapper_id)
-                ->whereDate('datum', $this->geselecteerdeDatum)
-                ->with(['klant', 'dienst'])
-                ->orderBy('start_tijd')
-                ->get(),
-            'omzet_maand'      => $omzet_maand,
-            'afspraken_maand'  => $afspraken_maand,
-            'komende_afspraken' => $komende_afspraken,
-        ])->layout('layouts.kapper');
+        $geselecteerdeAfspraak = $this->geselecteerdeAfspraakId
+            ? $afspraken->firstWhere('id', $this->geselecteerdeAfspraakId)
+            : null;
+
+        return view('livewire.kapper.agenda-overzicht', compact(
+            'days', 'afsprakenPerDag', 'omzet_maand', 'afspraken_maand',
+            'komende_afspraken', 'geselecteerdeAfspraak', 'weekStartDate'
+        ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }
