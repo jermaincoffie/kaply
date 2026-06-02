@@ -1,5 +1,10 @@
 <div>
-    <h2 class="text-xl font-bold mb-4">Kappers</h2>
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">Kappers</h2>
+        <a href="{{ route('kapper.registreer') }}" class="bg-indigo-600 text-white px-4 py-2 rounded text-sm hover:bg-indigo-700">
+            + Kapper registreren
+        </a>
+    </div>
     <div class="bg-white rounded shadow overflow-hidden">
         <table class="w-full text-sm">
             <thead class="bg-gray-50">

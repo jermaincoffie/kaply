@@ -14,6 +14,16 @@ use Illuminate\Support\Facades\Route;
 // Publiek
 Route::get('/', KapperZoeken::class)->name('home');
 Route::get('/kapper/registreer', KapperRegistratie::class)->name('kapper.registreer');
+
+// Kapper dashboard (MOET vóór /kapper/{slug} staan — anders vangt slug 'dashboard' af)
+Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->group(function () {
+    Route::get('/dashboard', AgendaOverzicht::class)->name('dashboard');
+    Route::get('/diensten', DienstenBeheer::class)->name('diensten');
+    Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
+    Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
+});
+
+// Publieke kapper profielpagina (wildcard — altijd als LAATSTE /kapper/* route)
 Route::get('/kapper/{slug}', function ($slug) {
     $kapper = \App\Models\Kapper::where('slug', $slug)
         ->where('actief', true)
@@ -34,13 +44,6 @@ Route::middleware(['auth'])->get('/dashboard', function () {
     return redirect()->route('klant.afspraken');
 })->name('dashboard');
 
-// Kapper dashboard
-Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->group(function () {
-    Route::get('/dashboard', AgendaOverzicht::class)->name('dashboard');
-    Route::get('/diensten', DienstenBeheer::class)->name('diensten');
-    Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
-    Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
-});
 
 // Klant
 Route::middleware(['auth'])->group(function () {
