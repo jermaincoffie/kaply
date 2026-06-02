@@ -85,7 +85,19 @@
             @php $dagKey = $day->toDateString(); @endphp
             <div class="flex-1 relative border-l border-gray-100 dark:border-neutral-700
                 {{ $day->isToday() ? 'bg-blue-50/30 dark:bg-blue-900/5' : '' }}"
-                 style="height: {{ $hoogte }}px">
+                 style="height: {{ $hoogte }}px"
+                 x-data
+                 @click.self="
+                    const rect = $el.getBoundingClientRect();
+                    const y = $event.clientY - rect.top + $el.closest('.overflow-y-auto').scrollTop;
+                    const minFromTop = Math.floor(y / {{ $pxPerUur }} * 60);
+                    const roundedMin = Math.round(minFromTop / 15) * 15;
+                    const hour = Math.floor(roundedMin / 60) + {{ $dagStart }};
+                    const min = roundedMin % 60;
+                    const tijd = String(hour).padStart(2,'0') + ':' + String(min).padStart(2,'0');
+                    $wire.openNieuwFormulier('{{ $dagKey }}', tijd);
+                 "
+            >
 
                 {{-- Uurlijnen --}}
                 @for ($u = 0; $u < $uren; $u++)
@@ -147,6 +159,108 @@
             @endforeach
         </div>
     </div>
+
+    {{-- Nieuw afspraak formulier --}}
+    @if($toonNieuwFormulier)
+    <div class="mt-4 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Afspraak inplannen</h3>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
+                    {{ \Carbon\Carbon::parse($nieuwDatum)->isoFormat('dddd D MMMM') }} · {{ $nieuwTijd }}
+                </p>
+            </div>
+            <button wire:click="sluitAlles" class="text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 p-1 rounded">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <form wire:submit="afspraakOpslaan" class="space-y-4">
+
+            {{-- Klant --}}
+            <div class="relative">
+                <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Klant</label>
+                <input wire:model.live="klantZoekterm"
+                       type="text"
+                       placeholder="Zoek bestaande klant of typ nieuwe naam..."
+                       autocomplete="off"
+                       class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                @error('klantZoekterm') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+
+                {{-- Autocomplete dropdown --}}
+                @if($toonKlantDropdown && $zoekKlanten->count())
+                <div class="absolute left-0 right-0 top-full mt-1 z-50 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-xl overflow-hidden">
+                    @foreach($zoekKlanten as $klant)
+                    <button type="button"
+                            wire:click="selecteerKlant({{ $klant->id }}, '{{ addslashes($klant->name) }}')"
+                            class="w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                        <div class="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                            <span class="text-blue-700 dark:text-blue-400 font-bold text-xs">{{ mb_strtoupper(mb_substr($klant->name, 0, 1)) }}</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">{{ str($klant->name)->title() }}</p>
+                            <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $klant->email }}</p>
+                        </div>
+                    </button>
+                    @endforeach
+                </div>
+                @endif
+
+                @if($geselecteerdeKlantId)
+                <p class="text-xs text-green-600 dark:text-green-400 mt-1 flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Bestaande klant geselecteerd
+                </p>
+                @else
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">Geen match? Naam wordt opgeslagen als walk-in.</p>
+                @endif
+            </div>
+
+            {{-- Dienst --}}
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Dienst</label>
+                <x-select
+                    wire-target="nieuwDienstId"
+                    :current="$nieuwDienstId"
+                    :options="$eigenDiensten->mapWithKeys(fn($d) => [$d->id => $d->naam . ' (' . $d->duur_minuten . ' min · €' . $d->prijs_in_euros . ')'])->toArray()"
+                    placeholder="Kies dienst"
+                />
+                @error('nieuwDienstId') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            {{-- Tijd + betaling --}}
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Begintijd</label>
+                    <input wire:model="nieuwTijd" type="time"
+                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Betaling</label>
+                    <x-select
+                        wire-target="nieuwBetaalmethode"
+                        :current="$nieuwBetaalmethode"
+                        :options="['in_zaak' => 'In de zaak', 'online' => 'Online']"
+                        placeholder="Betaalmethode"
+                    />
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-1">
+                <button type="button" wire:click="sluitAlles"
+                        class="flex-1 py-2 text-sm font-medium rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                    Annuleer
+                </button>
+                <button type="submit"
+                        class="flex-1 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                    Inplannen
+                </button>
+            </div>
+        </form>
+    </div>
+    @endif
 
     {{-- Detail panel --}}
     @if($geselecteerdeAfspraak)

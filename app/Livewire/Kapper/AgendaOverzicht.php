@@ -3,13 +3,27 @@
 namespace App\Livewire\Kapper;
 
 use App\Models\Afspraak;
+use App\Models\Dienst;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 
 class AgendaOverzicht extends Component
 {
     public string $weekStart;
     public ?int $geselecteerdeAfspraakId = null;
+
+    // Nieuw formulier
+    public bool $toonNieuwFormulier = false;
+    public string $nieuwDatum = '';
+    public string $nieuwTijd = '';
+    public ?int $nieuwDienstId = null;
+    public string $nieuwBetaalmethode = 'in_zaak';
+    public string $klantZoekterm = '';
+    public ?int $geselecteerdeKlantId = null;
+    public string $geselecteerdeKlantNaam = '';
+    public bool $toonKlantDropdown = false;
 
     public function mount(): void
     {
@@ -19,24 +33,107 @@ class AgendaOverzicht extends Component
     public function vorigeWeek(): void
     {
         $this->weekStart = Carbon::parse($this->weekStart)->subWeek()->toDateString();
-        $this->geselecteerdeAfspraakId = null;
+        $this->sluitAlles();
     }
 
     public function volgendeWeek(): void
     {
         $this->weekStart = Carbon::parse($this->weekStart)->addWeek()->toDateString();
-        $this->geselecteerdeAfspraakId = null;
+        $this->sluitAlles();
     }
 
     public function naarVandaag(): void
     {
         $this->weekStart = today()->startOfWeek(Carbon::MONDAY)->toDateString();
-        $this->geselecteerdeAfspraakId = null;
+        $this->sluitAlles();
     }
 
     public function selecteerAfspraak(?int $id): void
     {
         $this->geselecteerdeAfspraakId = $this->geselecteerdeAfspraakId === $id ? null : $id;
+        $this->toonNieuwFormulier = false;
+    }
+
+    public function openNieuwFormulier(string $datum, string $tijd): void
+    {
+        $this->geselecteerdeAfspraakId = null;
+        $this->toonNieuwFormulier = true;
+        $this->nieuwDatum = $datum;
+        $this->nieuwTijd = $tijd;
+        $this->nieuwDienstId = auth()->user()->kapper->diensten()->first()?->id;
+        $this->nieuwBetaalmethode = 'in_zaak';
+        $this->klantZoekterm = '';
+        $this->geselecteerdeKlantId = null;
+        $this->geselecteerdeKlantNaam = '';
+        $this->toonKlantDropdown = false;
+    }
+
+    public function selecteerKlant(int $id, string $naam): void
+    {
+        $this->geselecteerdeKlantId = $id;
+        $this->geselecteerdeKlantNaam = $naam;
+        $this->klantZoekterm = $naam;
+        $this->toonKlantDropdown = false;
+    }
+
+    public function updatedKlantZoekterm(): void
+    {
+        $this->toonKlantDropdown = strlen($this->klantZoekterm) >= 2;
+        if ($this->geselecteerdeKlantNaam !== $this->klantZoekterm) {
+            $this->geselecteerdeKlantId = null;
+            $this->geselecteerdeKlantNaam = '';
+        }
+    }
+
+    public function afspraakOpslaan(): void
+    {
+        $this->validate([
+            'nieuwDatum'       => 'required|date',
+            'nieuwTijd'        => 'required',
+            'nieuwDienstId'    => 'required|integer',
+            'nieuwBetaalmethode' => 'required|in:in_zaak,online',
+        ]);
+
+        // Klant ophalen of aanmaken als walk-in
+        if ($this->geselecteerdeKlantId) {
+            $klant = User::findOrFail($this->geselecteerdeKlantId);
+        } else {
+            $naam = trim($this->klantZoekterm);
+            $this->validate(['klantZoekterm' => 'required|string|min:2']);
+
+            $klant = User::firstOrCreate(
+                ['email' => 'walkin-' . now()->timestamp . '@kapperplatform.nl'],
+                [
+                    'name'     => $naam,
+                    'password' => Hash::make(str()->random(16)),
+                    'role'     => 'klant',
+                ]
+            );
+        }
+
+        $dienst = Dienst::findOrFail($this->nieuwDienstId);
+        $eind = Carbon::parse($this->nieuwDatum . ' ' . $this->nieuwTijd)
+            ->addMinutes($dienst->duur_minuten)
+            ->format('H:i');
+
+        Afspraak::create([
+            'klant_id'     => $klant->id,
+            'kapper_id'    => auth()->user()->kapper->id,
+            'dienst_id'    => $dienst->id,
+            'datum'        => $this->nieuwDatum,
+            'start_tijd'   => $this->nieuwTijd,
+            'eind_tijd'    => $eind,
+            'status'       => 'gepland',
+            'betaalmethode' => $this->nieuwBetaalmethode,
+        ]);
+
+        $this->toonNieuwFormulier = false;
+    }
+
+    public function sluitAlles(): void
+    {
+        $this->geselecteerdeAfspraakId = null;
+        $this->toonNieuwFormulier = false;
     }
 
     public function noShow(int $id): void
@@ -92,9 +189,18 @@ class AgendaOverzicht extends Component
             ? $afspraken->firstWhere('id', $this->geselecteerdeAfspraakId)
             : null;
 
+        $eigenDiensten = auth()->user()->kapper->diensten()->orderBy('naam')->get();
+
+        $zoekKlanten = $this->toonKlantDropdown && strlen($this->klantZoekterm) >= 2
+            ? User::where('role', 'klant')
+                ->where('name', 'like', "%{$this->klantZoekterm}%")
+                ->limit(6)->get()
+            : collect();
+
         return view('livewire.kapper.agenda-overzicht', compact(
             'days', 'afsprakenPerDag', 'omzet_maand', 'afspraken_maand',
-            'komende_afspraken', 'geselecteerdeAfspraak', 'weekStartDate'
+            'komende_afspraken', 'geselecteerdeAfspraak', 'weekStartDate',
+            'eigenDiensten', 'zoekKlanten'
         ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }
