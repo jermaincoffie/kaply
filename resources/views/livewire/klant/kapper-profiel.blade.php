@@ -16,7 +16,15 @@
              alt="{{ $kapper->salon_naam }}"
              class="w-full h-48 object-cover">
         @else
-        <div class="w-full h-32 bg-gray-100 dark:bg-neutral-700"></div>
+        @php
+            $woorden = explode(' ', trim($kapper->salon_naam));
+            $init    = mb_strtoupper(mb_substr($woorden[0], 0, 1) . (isset($woorden[1]) ? mb_substr($woorden[1], 0, 1) : ''));
+            $kleuren = ['bg-blue-500','bg-violet-500','bg-emerald-500','bg-rose-500','bg-amber-500','bg-cyan-500'];
+            $kleur   = $kleuren[abs(crc32($kapper->salon_naam)) % count($kleuren)];
+        @endphp
+        <div class="w-full h-32 {{ $kleur }} flex items-center justify-center">
+            <span class="text-5xl font-bold text-white/30">{{ $init }}</span>
+        </div>
         @endif
 
         <div class="px-6 py-5">
