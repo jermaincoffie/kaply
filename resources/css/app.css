@@ -2,6 +2,145 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
 
+/* Dark mode via class */
+@variant dark (&:where(.dark, .dark *));
+
 [x-cloak] {
     display: none;
+}
+
+/* ===== DARK MODE ===== */
+/* Preline neutral palette:
+   neutral-900 = #171717 (body)
+   neutral-800 = #262626 (cards, header, sidebar)
+   neutral-700 = #404040 (hover, borders)
+   neutral-200 = #e5e5e5 (primary text)
+   neutral-400 = #a3a3a3 (secondary text)
+   neutral-500 = #737373 (muted text) */
+
+/* Hoofd achtergrond */
+.dark body,
+.dark .bg-gray-100 {
+    background-color: #171717; /* neutral-900 */
+}
+
+/* Cards, panels, modals */
+.dark .bg-white {
+    background-color: #262626; /* neutral-800 */
+}
+
+/* Tabel hover, subtiele achtergronden */
+.dark .bg-gray-50,
+.dark .hover\:bg-gray-50:hover {
+    background-color: #2e2e2e;
+}
+
+/* Hover op knoppen/rijen */
+.dark .hover\:bg-gray-100:hover {
+    background-color: #404040; /* neutral-700 */
+}
+
+/* Borders */
+.dark .border-gray-100,
+.dark .border-gray-200 {
+    border-color: #404040; /* neutral-700 */
+}
+
+.dark .border-gray-300 {
+    border-color: #525252; /* neutral-600 */
+}
+
+.dark .divide-gray-50 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #404040;
+}
+
+/* Tekst */
+.dark .text-gray-800,
+.dark .text-gray-700 {
+    color: #e5e5e5; /* neutral-200 */
+}
+
+.dark .text-gray-600 {
+    color: #a3a3a3; /* neutral-400 */
+}
+
+.dark .text-gray-500 {
+    color: #737373; /* neutral-500 */
+}
+
+.dark .text-gray-400 {
+    color: #525252; /* neutral-600 */
+}
+
+/* Inputs, selects, textareas */
+.dark input,
+.dark select,
+.dark textarea {
+    background-color: #2e2e2e;
+    border-color: #525252;
+    color: #e5e5e5;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #737373;
+}
+
+/* Shadows */
+.dark .shadow,
+.dark .shadow-sm {
+    --tw-shadow: 0 2px 8px 0 rgb(0 0 0 / 0.5);
+    box-shadow: var(--tw-shadow);
+}
+
+/* Actief item sidebar */
+.dark .bg-blue-50 {
+    background-color: #404040;
+}
+
+/* Status badges */
+.dark .bg-green-100 {
+    background-color: rgba(20, 83, 45, 0.35);
+}
+.dark .text-green-700 {
+    color: #86efac;
+}
+
+.dark .bg-amber-100 {
+    background-color: rgba(120, 53, 15, 0.35);
+}
+.dark .text-amber-700 {
+    color: #fcd34d;
+}
+
+.dark .bg-red-100 {
+    background-color: rgba(127, 29, 29, 0.35);
+}
+.dark .text-red-700 {
+    color: #fca5a5;
+}
+
+.dark .bg-blue-100 {
+    background-color: rgba(37, 99, 235, 0.2);
+}
+.dark .text-blue-700 {
+    color: #93c5fd;
+}
+
+/* Modals */
+.dark .bg-black {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Kleur behoud in dark mode */
+.dark .text-amber-500 { color: #fbbf24; }
+.dark .text-red-500   { color: #f87171; }
+.dark .text-blue-500  { color: #3b82f6; }
+.dark .text-red-400   { color: #f87171; }
+.dark .text-blue-600  { color: #3b82f6; }
+.dark .text-green-600 { color: #34d399; }
+
+/* Sidebar dropdown borders */
+.dark .border-l-2 {
+    border-color: #404040;
 }
