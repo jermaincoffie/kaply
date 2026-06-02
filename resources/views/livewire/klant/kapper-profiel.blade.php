@@ -19,11 +19,11 @@
         @php
             $woorden = explode(' ', trim($kapper->salon_naam));
             $init    = mb_strtoupper(mb_substr($woorden[0], 0, 1) . (isset($woorden[1]) ? mb_substr($woorden[1], 0, 1) : ''));
-            $kleuren = ['bg-sky-300','bg-lime-300','bg-yellow-300','bg-pink-300','bg-teal-300','bg-indigo-300'];
-            $kleur   = $kleuren[abs(crc32($kapper->salon_naam)) % count($kleuren)];
+            $tekst   = ['text-sky-300','text-lime-300','text-yellow-300','text-pink-300','text-teal-300','text-indigo-300'];
+            $idx     = abs(crc32($kapper->salon_naam)) % count($tekst);
         @endphp
         <div class="w-full h-32 bg-neutral-800 flex items-center justify-center">
-            <span class="text-5xl font-bold {{ str_replace('bg-', 'text-', $kleur) }}">{{ $init }}</span>
+            <span class="text-5xl font-bold {{ $tekst[$idx] }}">{{ $init }}</span>
         </div>
         @endif
 
