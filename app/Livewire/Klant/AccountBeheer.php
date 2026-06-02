@@ -8,7 +8,9 @@ use Illuminate\Validation\Rule;
 
 class AccountBeheer extends Component
 {
-    public string $name = '';
+    public string $voornaam = '';
+    public string $achternaam = '';
+    public string $telefoon = '';
     public string $email = '';
     public string $huidig_wachtwoord = '';
     public string $nieuw_wachtwoord = '';
@@ -16,20 +18,28 @@ class AccountBeheer extends Component
 
     public function mount(): void
     {
-        $this->name  = auth()->user()->name;
-        $this->email = auth()->user()->email;
+        $user = auth()->user();
+        $this->voornaam   = $user->voornaam ?? '';
+        $this->achternaam = $user->achternaam ?? '';
+        $this->telefoon   = $user->telefoon ?? '';
+        $this->email      = $user->email;
     }
 
     public function opslaanGegevens(): void
     {
         $this->validate([
-            'name'  => 'required|string|max:255',
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore(auth()->id())],
+            'voornaam'   => 'required|string|max:100',
+            'achternaam' => 'required|string|max:100',
+            'telefoon'   => 'nullable|string|max:20',
+            'email'      => ['required', 'email', Rule::unique('users', 'email')->ignore(auth()->id())],
         ]);
 
         auth()->user()->update([
-            'name'  => $this->name,
-            'email' => $this->email,
+            'voornaam'   => $this->voornaam,
+            'achternaam' => $this->achternaam,
+            'name'       => $this->voornaam . ' ' . $this->achternaam,
+            'telefoon'   => $this->telefoon ?: null,
+            'email'      => $this->email,
         ]);
 
         $this->dispatch('gegevens-opgeslagen');

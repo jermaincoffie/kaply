@@ -32,11 +32,19 @@
 
             <form method="POST" action="{{ route('register') }}" class="space-y-4">
                 @csrf
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Naam</label>
-                    <input type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
-                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-                    @error('name') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Voornaam</label>
+                        <input type="text" name="voornaam" value="{{ old('voornaam') }}" required autofocus
+                               class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                        @error('voornaam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Achternaam</label>
+                        <input type="text" name="achternaam" value="{{ old('achternaam') }}" required
+                               class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                        @error('achternaam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">E-mailadres</label>
