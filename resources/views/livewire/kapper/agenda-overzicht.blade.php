@@ -76,23 +76,37 @@
     </div>
 </div>
 
-@push('scripts')
+@script
 <script>
-    // Sync Preline datepicker → Livewire
-    window.addEventListener('load', function () {
+    // Na elke Livewire render: Preline datepicker opnieuw initialiseren + sync koppelen
+    function initAgendaDatepicker() {
         var dp = document.getElementById('agenda-dp');
         if (!dp) return;
 
-        dp.addEventListener('change', function () {
-            var raw = dp.value.trim();
+        // Preline opnieuw initialiseren op dit element
+        if (window.HSDatepicker) {
+            try { window.HSDatepicker.autoInit(); } catch(e) {}
+        }
+        if (window.HSStaticMethods) {
+            try { window.HSStaticMethods.autoInit(); } catch(e) {}
+        }
+
+        // Verwijder oude listener om dubbele triggers te voorkomen
+        var newDp = dp.cloneNode(true);
+        dp.parentNode.replaceChild(newDp, dp);
+
+        newDp.addEventListener('change', function () {
+            var raw = newDp.value.trim();
             if (!raw) return;
             // DD/MM/YYYY → YYYY-MM-DD
             var parts = raw.split('/');
             if (parts.length === 3) {
                 var iso = parts[2] + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
-                window.Livewire.find(dp.closest('[wire\\:id]')?.getAttribute('wire:id'))?.set('geselecteerdeDatum', iso);
+                $wire.set('geselecteerdeDatum', iso);
             }
         });
-    });
+    }
+
+    initAgendaDatepicker();
 </script>
-@endpush
+@endscript
