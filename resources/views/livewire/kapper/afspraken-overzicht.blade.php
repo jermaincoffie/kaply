@@ -33,19 +33,53 @@
         <table class="w-full text-sm">
             <thead>
                 <tr class="border-b border-gray-100 dark:border-neutral-700">
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Datum & tijd</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Tijd</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Klant</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide hidden md:table-cell">Dienst</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide hidden md:table-cell">Betaling</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Status</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-50 dark:divide-neutral-700">
+            @php $vorigeDatum = null; @endphp
+            <tbody>
                 @forelse($afspraken as $afspraak)
+                @php
+                    $dagKey = $afspraak->datum->toDateString();
+                    $isNieuweDag = $dagKey !== $vorigeDatum;
+                    $vorigeDatum = $dagKey;
+
+                    $dagLabel = match(true) {
+                        $afspraak->datum->isToday()    => 'Vandaag',
+                        $afspraak->datum->isTomorrow() => 'Morgen',
+                        $afspraak->datum->diffInDays(today()) === 2 && $afspraak->datum->isFuture() => 'Overmorgen',
+                        default => $afspraak->datum->isoFormat('dddd D MMMM'),
+                    };
+                @endphp
+
+                {{-- Datum header rij --}}
+                @if($isNieuweDag)
+                <tr>
+                    <td colspan="5" class="px-6 pt-4 pb-1.5 {{ $loop->first ? '' : 'border-t border-gray-100 dark:border-neutral-700' }}">
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-semibold text-gray-500 dark:text-neutral-400 uppercase tracking-wide">
+                                {{ $dagLabel }}
+                            </span>
+                            @if($afspraak->datum->isToday())
+                            <span class="inline-flex px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-600 text-white">Vandaag</span>
+                            @endif
+                            <div class="flex-1 h-px bg-gray-100 dark:bg-neutral-700"></div>
+                            <span class="text-xs text-gray-400 dark:text-neutral-500">
+                                {{ $afspraken->groupBy(fn($a) => $a->datum->toDateString())[$dagKey]->count() }}
+                                afspraak{{ $afspraken->groupBy(fn($a) => $a->datum->toDateString())[$dagKey]->count() !== 1 ? 'en' : '' }}
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                @endif
+
                 <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
-                    <td class="px-6 py-3.5">
-                        <p class="font-medium text-gray-800 dark:text-neutral-100">{{ $afspraak->datum->format('d-m-Y') }}</p>
-                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $afspraak->start_tijd }} – {{ $afspraak->eind_tijd }}</p>
+                    <td class="px-6 py-3">
+                        <p class="font-medium text-gray-800 dark:text-neutral-100">{{ $afspraak->start_tijd }} – {{ $afspraak->eind_tijd }}</p>
                     </td>
                     <td class="px-6 py-3.5 text-gray-700 dark:text-neutral-300">{{ str($afspraak->klant->name)->title() }}</td>
                     <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400 hidden md:table-cell">
