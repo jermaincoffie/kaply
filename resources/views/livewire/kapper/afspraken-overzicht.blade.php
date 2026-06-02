@@ -20,13 +20,11 @@
         </div>
 
         {{-- Status filter --}}
-        <x-select wire:model.live="filterStatus">
-            <option value="">Alle statussen</option>
-            <option value="gepland">Gepland</option>
-            <option value="voltooid">Voltooid</option>
-            <option value="geannuleerd">Geannuleerd</option>
-            <option value="no_show">No-show</option>
-        </x-select>
+        <x-select
+            wire:model.live="filterStatus"
+            :options="['' => 'Alle statussen', 'gepland' => 'Gepland', 'voltooid' => 'Voltooid', 'geannuleerd' => 'Geannuleerd', 'no_show' => 'No-show']"
+            placeholder="Alle statussen"
+        />
     </div>
 
     {{-- Tabel --}}
