@@ -16,7 +16,10 @@
              alt="{{ $kapper->salon_naam }}"
              class="w-full h-48 object-cover">
         @else
-        <div class="w-full h-32 bg-blue-900/30"></div>
+        <div class="w-full h-32 bg-blue-900/30 flex flex-col items-center justify-center gap-0.5">
+            <span class="text-xs font-medium text-blue-300/70 uppercase tracking-widest">Welkom bij</span>
+            <span class="text-2xl font-bold text-white">{{ str($kapper->salon_naam)->title() }}</span>
+        </div>
         @endif
 
         <div class="px-6 py-5">
