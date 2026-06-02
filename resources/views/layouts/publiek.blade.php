@@ -82,6 +82,7 @@
         @endif
     </main>
 
+    <x-confirm-modal />
     @livewireScripts
     @stack('scripts')
 

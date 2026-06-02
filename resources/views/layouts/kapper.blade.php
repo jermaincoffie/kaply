@@ -212,6 +212,7 @@
     </div>
 </main>
 
+<x-confirm-modal />
 @livewireScripts
 @stack('scripts')
 

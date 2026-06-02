@@ -454,7 +454,7 @@
                             class="flex-1 py-2.5 text-sm font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors">
                         Voltooid
                     </button>
-                    <button wire:click="noShow({{ $a->id }})" wire:confirm="No-show markeren?"
+                    <button @click.prevent="$dispatch('open-confirm', { title: 'No-show markeren', message: 'Klant markeren als no-show? Dit kan niet ongedaan worden gemaakt.', action: () => $wire.noShow({{ $a->id }}) })"
                             class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-red-300 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors">
                         No-show
                     </button>

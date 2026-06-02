@@ -14,7 +14,7 @@
                 <p class="text-gray-700">{{ $afspraak->kapper->salon_naam }}</p>
                 <p class="text-gray-500 text-sm">{{ $afspraak->dienst->naam }}</p>
             </div>
-            <button wire:click="annuleer({{ $afspraak->id }})" wire:confirm="Afspraak annuleren?"
+            <button @click.prevent="$dispatch('open-confirm', { title: 'Afspraak annuleren', message: 'Weet je zeker dat je deze afspraak wilt annuleren?', action: () => $wire.annuleer({{ $afspraak->id }}) })"
                 class="text-sm text-red-600 border border-red-300 px-3 py-1 rounded hover:bg-red-50">
                 Annuleer
             </button>

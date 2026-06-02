@@ -85,7 +85,7 @@
                                 class="text-xs font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                             Bewerk
                         </button>
-                        <button wire:click="verwijder({{ $dienst->id }})" wire:confirm="Dienst '{{ $dienst->naam }}' verwijderen?"
+                        <button @click.prevent="$dispatch('open-confirm', { title: 'Dienst verwijderen', message: 'Weet je zeker dat je \'{{ addslashes($dienst->naam) }}\' wilt verwijderen?', action: () => $wire.verwijder({{ $dienst->id }}) })"
                                 class="text-xs font-medium text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors">
                             Verwijder
                         </button>
