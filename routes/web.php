@@ -11,6 +11,7 @@ use App\Livewire\Kapper\DienstenBeheer;
 use App\Livewire\Kapper\KlantenOverzicht as KapperKlanten;
 use App\Livewire\Kapper\ProfielBeheer;
 use App\Livewire\Kapper\Registratie as KapperRegistratie;
+use App\Livewire\Klant\AccountBeheer;
 use App\Livewire\Klant\BoekingWizard;
 use App\Livewire\Klant\KapperProfiel;
 use App\Livewire\Klant\KapperZoeken;
@@ -49,6 +50,7 @@ Route::middleware(['auth'])->get('/dashboard', function () {
 // Klant
 Route::middleware(['auth'])->group(function () {
     Route::get('/mijn-afspraken', MijnAfspraken::class)->name('klant.afspraken');
+    Route::get('/mijn-account', AccountBeheer::class)->name('klant.account');
     Route::get('/boeken/{kapperSlug}/{dienstId}', BoekingWizard::class)->name('boeken');
 });
 

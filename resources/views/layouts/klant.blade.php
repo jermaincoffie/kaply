@@ -35,6 +35,10 @@
                class="px-3 py-2 rounded-lg text-sm {{ request()->routeIs('klant.afspraken') ? 'bg-blue-50 text-blue-900 dark:bg-neutral-700 dark:text-neutral-200 font-medium' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200' }} transition-colors">
                 Mijn afspraken
             </a>
+            <a href="{{ route('klant.account') }}"
+               class="px-3 py-2 rounded-lg text-sm {{ request()->routeIs('klant.account') ? 'bg-blue-50 text-blue-900 dark:bg-neutral-700 dark:text-neutral-200 font-medium' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200' }} transition-colors">
+                Account
+            </a>
         </nav>
 
         {{-- Account dropdown --}}
