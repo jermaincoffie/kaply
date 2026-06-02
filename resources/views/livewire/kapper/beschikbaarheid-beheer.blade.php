@@ -1,47 +1,104 @@
 <div>
-    <h2 class="text-xl font-bold mb-4">Beschikbaarheid</h2>
+    {{-- Header --}}
+    <div class="mb-6">
+        <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100">Beschikbaarheid</h1>
+        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Stel je weekrooster en sluitingsdagen in</p>
+    </div>
 
     @if(session('message'))
-        <div class="bg-green-100 text-green-800 px-4 py-2 rounded mb-4">{{ session('message') }}</div>
+    <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-xl text-sm mb-6">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        {{ session('message') }}
+    </div>
     @endif
 
-    <form wire:submit="opslaan" class="bg-white p-4 rounded shadow mb-6">
-        <h3 class="font-semibold mb-3">Weekrooster</h3>
-        @foreach($rooster as $dag => $data)
-        <div class="flex items-center gap-4 py-2 border-b last:border-b-0">
-            <div class="w-24">
-                <label class="flex items-center gap-2 cursor-pointer">
-                    <input wire:model.live="rooster.{{ $dag }}.actief" type="checkbox" class="rounded">
-                    <span class="text-sm font-medium">{{ $data['naam'] }}</span>
-                </label>
-            </div>
-            @if($data['actief'])
-            <input wire:model="rooster.{{ $dag }}.start_tijd" type="time" class="rounded border-gray-300 text-sm">
-            <span class="text-gray-500">tot</span>
-            <input wire:model="rooster.{{ $dag }}.eind_tijd" type="time" class="rounded border-gray-300 text-sm">
-            @endif
+    {{-- Weekrooster --}}
+    <form wire:submit="opslaan" class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden mb-6">
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200">Weekrooster</h2>
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                Opslaan
+            </button>
         </div>
-        @endforeach
-        <button type="submit" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Opslaan</button>
+
+        <div class="divide-y divide-gray-50 dark:divide-neutral-700">
+            @foreach($rooster as $dag => $data)
+            <div class="flex items-center gap-4 px-6 py-3.5">
+                <label class="flex items-center gap-3 w-32 cursor-pointer flex-shrink-0">
+                    <input wire:model.live="rooster.{{ $dag }}.actief" type="checkbox"
+                           class="rounded border-gray-300 dark:border-neutral-600 text-blue-600 focus:ring-blue-500 dark:bg-neutral-700">
+                    <span class="text-sm font-medium text-gray-700 dark:text-neutral-300">{{ $data['naam'] }}</span>
+                </label>
+
+                @if($data['actief'])
+                <div class="flex items-center gap-2">
+                    <input wire:model="rooster.{{ $dag }}.start_tijd" type="time"
+                           class="py-1.5 px-2.5 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    <span class="text-xs text-gray-400 dark:text-neutral-500">tot</span>
+                    <input wire:model="rooster.{{ $dag }}.eind_tijd" type="time"
+                           class="py-1.5 px-2.5 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                </div>
+                @else
+                <span class="text-xs text-gray-400 dark:text-neutral-500">Gesloten</span>
+                @endif
+            </div>
+            @endforeach
+        </div>
     </form>
 
-    <div class="bg-white p-4 rounded shadow">
-        <h3 class="font-semibold mb-3">Sluitingsdagen / Vakantie</h3>
-        <form wire:submit="sluitingsdagToevoegen" class="flex gap-3 mb-4">
-            <input wire:model="sluitingsDatum" type="date" class="rounded border-gray-300">
-            <input wire:model="sluitingsReden" type="text" placeholder="Reden (optioneel)" class="rounded border-gray-300 flex-1">
-            @error('sluitingsDatum') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror
-            <button type="submit" class="bg-gray-800 text-white px-3 py-1 rounded">Toevoegen</button>
-        </form>
-        <ul class="space-y-1">
+    {{-- Sluitingsdagen --}}
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">
+            <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200">Sluitingsdagen / Vakantie</h2>
+            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Dagen waarop je niet beschikbaar bent</p>
+        </div>
+
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">
+            <form wire:submit="sluitingsdagToevoegen" class="flex flex-wrap gap-3">
+                <input wire:model="sluitingsDatum" type="date"
+                       class="py-2 px-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                <input wire:model="sluitingsReden" type="text" placeholder="Reden (optioneel)"
+                       class="flex-1 min-w-40 py-2 px-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Toevoegen
+                </button>
+            </form>
+            @error('sluitingsDatum')
+            <p class="text-xs text-red-500 dark:text-red-400 mt-2">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div class="divide-y divide-gray-50 dark:divide-neutral-700">
             @forelse($sluitingsdagen as $dag)
-            <li class="flex justify-between text-sm py-1 border-b">
-                <span>{{ $dag->datum->format('d-m-Y') }} {{ $dag->reden ? '— '.$dag->reden : '' }}</span>
-                <button wire:click="sluitingsdagVerwijderen({{ $dag->id }})" class="text-red-600 hover:underline">Verwijder</button>
-            </li>
+            <div class="flex items-center justify-between px-6 py-3.5">
+                <div>
+                    <span class="text-sm font-medium text-gray-700 dark:text-neutral-300">
+                        {{ $dag->datum->isoFormat('dddd D MMMM YYYY') }}
+                    </span>
+                    @if($dag->reden)
+                    <span class="text-xs text-gray-400 dark:text-neutral-500 ml-2">— {{ $dag->reden }}</span>
+                    @endif
+                </div>
+                <button wire:click="sluitingsdagVerwijderen({{ $dag->id }})"
+                        class="text-xs font-medium text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors">
+                    Verwijder
+                </button>
+            </div>
             @empty
-            <li class="text-gray-500 text-sm">Geen sluitingsdagen gepland.</li>
+            <div class="px-6 py-8 text-center">
+                <p class="text-sm text-gray-400 dark:text-neutral-500">Geen sluitingsdagen gepland</p>
+            </div>
             @endforelse
-        </ul>
+        </div>
     </div>
 </div>
