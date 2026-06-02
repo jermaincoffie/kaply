@@ -61,17 +61,24 @@
 
         <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 overflow-visible">
             <form wire:submit="sluitingsdagToevoegen" class="space-y-3 overflow-visible">
-                <div class="flex flex-wrap gap-3 items-center">
-                    <div class="flex items-center gap-2">
+                <div class="flex flex-wrap gap-3 items-center overflow-visible">
+                    <div class="flex items-center gap-2 overflow-visible">
                         <span class="text-xs font-medium text-gray-500 dark:text-neutral-400 whitespace-nowrap">Van</span>
-                        <input wire:model.live="sluitingsDatum" type="date" min="{{ today()->toDateString() }}"
-                               class="py-2 px-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                        <x-datepicker
+                            wire-model="sluitingsDatum"
+                            :value="$sluitingsDatum"
+                            :date-min="today()->toDateString()"
+                            placeholder="Startdatum"
+                        />
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 overflow-visible">
                         <span class="text-xs font-medium text-gray-500 dark:text-neutral-400 whitespace-nowrap">Tot</span>
-                        <input wire:model="sluitingsDatumTot" type="date" min="{{ $sluitingsDatum ?: today()->toDateString() }}"
-                               class="py-2 px-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-                        <span class="text-xs text-gray-400 dark:text-neutral-500">optioneel</span>
+                        <x-datepicker
+                            wire-model="sluitingsDatumTot"
+                            :value="$sluitingsDatumTot"
+                            :date-min="$sluitingsDatum ?: today()->toDateString()"
+                            placeholder="Einddatum (optioneel)"
+                        />
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-3">
