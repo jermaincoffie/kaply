@@ -3,6 +3,7 @@
 use App\Livewire\Admin\AfsprakenOverzicht as AdminAfspraken;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\KappersOverzicht;
+use App\Livewire\Admin\KlantenOverzicht as AdminKlanten;
 use App\Livewire\Kapper\AgendaOverzicht;
 use App\Livewire\Kapper\BeschikbaarheidBeheer;
 use App\Livewire\Kapper\DienstenBeheer;
@@ -58,4 +59,5 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
     Route::get('/kappers', KappersOverzicht::class)->name('kappers');
     Route::get('/afspraken', AdminAfspraken::class)->name('afspraken');
+    Route::get('/klanten', AdminKlanten::class)->name('klanten');
 });

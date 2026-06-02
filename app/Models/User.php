@@ -95,4 +95,5 @@ class User extends Authenticatable
 
     public function kapper() { return $this->hasOne(Kapper::class); }
     public function klantprofiel() { return $this->hasOne(Klant::class); }
+    public function afspraken() { return $this->hasMany(\App\Models\Afspraak::class, 'klant_id'); }
 }
