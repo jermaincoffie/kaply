@@ -26,44 +26,48 @@
 
         <div class="flex-1"></div>
 
-        <nav class="flex items-center gap-1">
+        <nav class="flex items-center gap-2">
             <a href="{{ route('home') }}"
-               class="px-3 py-2 rounded-lg text-sm {{ request()->routeIs('home') ? 'bg-blue-50 text-blue-900 dark:bg-neutral-700 dark:text-neutral-200 font-medium' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200' }} transition-colors">
+               class="px-3 py-2 rounded-lg text-sm {{ request()->routeIs('home') ? 'text-gray-900 dark:text-neutral-100 font-medium' : 'text-gray-500 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-neutral-100' }} transition-colors">
                 Kappers zoeken
             </a>
 
             @auth
                 @if(auth()->user()->isKapper())
-                <a href="{{ route('kapper.dashboard') }}"
-                   class="px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200 transition-colors">
-                    Mijn salon
-                </a>
+                    <a href="{{ route('kapper.dashboard') }}"
+                       class="px-3 py-2 rounded-lg text-sm text-gray-500 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors">
+                        Mijn salon
+                    </a>
                 @elseif(auth()->user()->isAdmin())
-                <a href="{{ route('admin.dashboard') }}"
-                   class="px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200 transition-colors">
-                    Admin
-                </a>
+                    <a href="{{ route('admin.dashboard') }}"
+                       class="px-3 py-2 rounded-lg text-sm text-gray-500 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors">
+                        Admin
+                    </a>
                 @else
-                <a href="{{ route('klant.afspraken') }}"
-                   class="px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200 transition-colors">
-                    Mijn afspraken
-                </a>
+                    <a href="{{ route('klant.afspraken') }}"
+                       class="px-3 py-2 rounded-lg text-sm text-gray-500 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors">
+                        Mijn afspraken
+                    </a>
                 @endif
                 <form method="POST" action="{{ route('logout') }}" class="inline">
                     @csrf
                     <button type="submit"
-                            class="px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200 transition-colors">
+                            class="px-3 py-2 rounded-lg text-sm text-gray-500 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors">
                         Uitloggen
                     </button>
                 </form>
             @else
-                <a href="{{ route('login') }}"
-                   class="px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200 transition-colors">
-                    Inloggen
-                </a>
+                {{-- Knipklok-stijl: outlined registreren knop + tekst login link --}}
                 <a href="{{ route('kapper.registreer') }}"
-                   class="px-3 py-2 rounded-lg text-sm bg-blue-600 text-white hover:bg-blue-700 transition-colors">
-                    Kapper worden
+                   class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 dark:border-neutral-600 text-gray-700 dark:text-neutral-300 hover:border-gray-400 dark:hover:border-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                    Kapperszaak registreren
+                </a>
+                <a href="{{ route('login') }}"
+                   class="px-3 py-2 text-sm font-medium text-gray-600 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 transition-colors inline-flex items-center gap-1">
+                    Inloggen voor kappers
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
                 </a>
             @endauth
         </nav>
