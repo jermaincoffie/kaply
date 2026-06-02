@@ -53,14 +53,14 @@
     </form>
 
     {{-- Sluitingsdagen --}}
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200">Sluitingsdagen / Vakantie</h2>
             <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Dagen waarop je niet beschikbaar bent</p>
         </div>
 
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">
-            <form wire:submit="sluitingsdagToevoegen" class="flex flex-wrap gap-3">
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 overflow-visible">
+            <form wire:submit="sluitingsdagToevoegen" class="flex flex-wrap gap-3 overflow-visible">
                 <x-datepicker
                     wire-model="sluitingsDatum"
                     :value="$sluitingsDatum"

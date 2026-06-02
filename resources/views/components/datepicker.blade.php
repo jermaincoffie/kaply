@@ -24,7 +24,7 @@
 @endphp
 
 {{-- wire:ignore zodat Livewire Preline niet overschrijft na elke render --}}
-<div wire:ignore>
+<div wire:ignore class="relative">
     <div
         x-data
         x-init="
