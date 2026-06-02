@@ -4,14 +4,6 @@
         <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Jouw publieke profielpagina voor klanten</p>
     </div>
 
-    @if(session('message'))
-    <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-xl text-sm mb-6">
-        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-        </svg>
-        {{ session('message') }}
-    </div>
-    @endif
 
     <form wire:submit="opslaan" class="space-y-6" enctype="multipart/form-data">
 
@@ -85,11 +77,14 @@
         </div>
 
         <button type="submit"
-                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                x-data="{ saved: false }"
+                @profiel-opgeslagen.window="saved = true; setTimeout(() => saved = false, 3000)"
+                :class="saved ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'"
+                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white transition-colors">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
             </svg>
-            Profiel opslaan
+            <span x-text="saved ? 'Profiel opgeslagen!' : 'Profiel opslaan'"></span>
         </button>
     </form>
 </div>

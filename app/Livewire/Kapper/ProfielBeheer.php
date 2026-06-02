@@ -57,7 +57,7 @@ class ProfielBeheer extends Component
 
         auth()->user()->kapper->update($data);
         $this->foto = null;
-        session()->flash('message', 'Profiel opgeslagen.');
+        $this->dispatch('profiel-opgeslagen');
     }
 
     public function render()
