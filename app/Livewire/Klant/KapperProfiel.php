@@ -44,6 +44,12 @@ class KapperProfiel extends Component
         $this->laadTijdsloten();
     }
 
+    public function updatedGeselecteerdeDienstId(): void
+    {
+        $this->geselecteerdeDienstId = (int) $this->geselecteerdeDienstId;
+        $this->laadTijdsloten();
+    }
+
     public function updatedGeselecteerdeDatum(): void
     {
         $this->laadTijdsloten();

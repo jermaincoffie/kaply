@@ -54,21 +54,17 @@
             @if($kapper->diensten->isEmpty())
             <p class="text-sm text-gray-400 dark:text-neutral-500">Geen diensten beschikbaar.</p>
             @else
-            <div class="space-y-2">
-                @foreach($kapper->diensten as $dienst)
-                <button wire:click="selecteerDienst({{ $dienst->id }})"
-                        class="w-full text-left px-4 py-3 rounded-lg border transition-colors
-                            {{ $geselecteerdeDienstId === $dienst->id
-                                ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
-                                : 'border-gray-200 dark:border-neutral-700 hover:border-gray-300 dark:hover:border-neutral-600 hover:bg-gray-50 dark:hover:bg-neutral-700' }}">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm font-medium {{ $geselecteerdeDienstId === $dienst->id ? 'text-blue-700 dark:text-blue-400' : 'text-gray-800 dark:text-neutral-100' }}">{{ $dienst->naam }}</span>
-                        <span class="text-sm font-semibold {{ $geselecteerdeDienstId === $dienst->id ? 'text-blue-700 dark:text-blue-400' : 'text-gray-700 dark:text-neutral-300' }}">€ {{ $dienst->prijs_in_euros }}</span>
-                    </div>
-                    <span class="text-xs {{ $geselecteerdeDienstId === $dienst->id ? 'text-blue-500 dark:text-blue-500' : 'text-gray-400 dark:text-neutral-500' }}">{{ $dienst->duur_minuten }} min</span>
-                </button>
-                @endforeach
-            </div>
+            <x-select
+                wire-target="geselecteerdeDienstId"
+                :current="(string) $geselecteerdeDienstId"
+                :options="$kapper->diensten->mapWithKeys(fn($d) => [(string)$d->id => $d->naam . ' — ' . $d->duur_minuten . ' min · €' . $d->prijs_in_euros])->toArray()"
+                placeholder="Kies een dienst..."
+            />
+            @if($geselecteerdeDienst)
+            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2">
+                {{ $geselecteerdeDienst->duur_minuten }} min · € {{ $geselecteerdeDienst->prijs_in_euros }}
+            </p>
+            @endif
             @endif
         </div>
 
