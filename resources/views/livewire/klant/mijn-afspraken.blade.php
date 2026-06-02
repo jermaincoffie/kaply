@@ -20,7 +20,7 @@
                         <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100">
                             {{ $afspraak->datum->isoFormat('dddd D MMMM') }} · {{ $afspraak->start_tijd }}
                         </p>
-                        <p class="text-sm text-gray-600 dark:text-neutral-300">{{ str($afspraak->kapper->salon_naam)->title() }}</p>
+                        <p class="text-sm text-gray-600 dark:text-neutral-300">{{ $afspraak->kapper->salon_naam }}</p>
                         <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
                             {{ $afspraak->dienst->naam }} · {{ $afspraak->betaalmethode === 'online' ? 'Online betaald' : 'Betalen in de zaak' }}
                         </p>
@@ -74,7 +74,7 @@
                             {{ $afspraak->datum->format('d-m-Y') }}
                             <span class="text-xs text-gray-400 dark:text-neutral-500 ml-1">{{ $afspraak->start_tijd }}</span>
                         </td>
-                        <td class="px-5 py-3 text-gray-500 dark:text-neutral-400 hidden sm:table-cell">{{ str($afspraak->kapper->salon_naam)->title() }}</td>
+                        <td class="px-5 py-3 text-gray-500 dark:text-neutral-400 hidden sm:table-cell">{{ $afspraak->kapper->salon_naam }}</td>
                         <td class="px-5 py-3 text-gray-500 dark:text-neutral-400 hidden md:table-cell">{{ $afspraak->dienst->naam }}</td>
                         <td class="px-5 py-3">
                             <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badge }}">

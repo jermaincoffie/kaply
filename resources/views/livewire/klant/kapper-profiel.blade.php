@@ -19,12 +19,12 @@
         @endphp
         <div class="w-full h-40 bg-blue-900/30 flex flex-col items-center justify-center gap-0.5">
             <span class="text-xs font-medium text-white/60 uppercase tracking-widest">Welkom bij</span>
-            <span class="text-2xl font-bold text-white">{{ str($kapper->salon_naam)->title() }}</span>
+            <span class="text-2xl font-bold text-white">{{ $kapper->salon_naam }}</span>
         </div>
         @endif
 
         <div class="px-5 py-4">
-            <h1 class="text-lg font-bold text-gray-900 dark:text-neutral-100">{{ str($kapper->salon_naam)->title() }}</h1>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-neutral-100">{{ $kapper->salon_naam }}</h1>
             <div class="flex flex-wrap items-center gap-3 mt-1">
                 @if($kapper->stad)
                 <span class="flex items-center gap-1 text-sm text-gray-500 dark:text-neutral-400">
