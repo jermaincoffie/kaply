@@ -42,28 +42,40 @@
     {{-- Abonnement kaarten --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">MRR</p>
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
+                MRR
+                <x-tooltip>Monthly Recurring Revenue — het bedrag dat maandelijks binnenkomt van alle actieve abonnees. Berekend als: aantal actieve abonnees × €20 per maand.</x-tooltip>
+            </p>
             <div class="flex items-end justify-between">
                 <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($mrr / 100, 0, ',', '.') }}</span>
                 <span class="text-xs text-gray-400 dark:text-neutral-500">per maand</span>
             </div>
         </div>
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Abonnees</p>
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
+                Abonnees
+                <x-tooltip>Kappers met een actief abonnement die momenteel €20 per maand betalen en zichtbaar zijn voor klanten op het platform.</x-tooltip>
+            </p>
             <div class="flex items-end justify-between">
                 <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">{{ $abonnees_actief }}</span>
                 <span class="text-xs text-gray-400 dark:text-neutral-500">betalend</span>
             </div>
         </div>
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Gepauzeerd</p>
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
+                Gepauzeerd
+                <x-tooltip>Kappers waarvan het abonnement is gepauzeerd of verlopen. Hun profiel is niet zichtbaar voor klanten. Neem contact op om ze te reactiveren.</x-tooltip>
+            </p>
             <div class="flex items-end justify-between">
                 <span class="text-3xl font-bold {{ $abonnees_gepauzeerd > 0 ? 'text-amber-500' : 'text-gray-900 dark:text-neutral-100' }}">{{ $abonnees_gepauzeerd }}</span>
                 <span class="text-xs text-gray-400 dark:text-neutral-500">kappers</span>
             </div>
         </div>
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Prognose MRR</p>
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
+                Prognose MRR
+                <x-tooltip position="right">Het maximale maandbedrag als alle {{ $kappers_totaal }} geregistreerde kappers een actief abonnement hadden. Geeft aan hoeveel groeiruimte er nog is.</x-tooltip>
+            </p>
             <div class="flex items-end justify-between">
                 <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($prognose_mrr / 100, 0, ',', '.') }}</span>
                 <span class="text-xs text-gray-400 dark:text-neutral-500">als allen betalen</span>
