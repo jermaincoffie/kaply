@@ -99,9 +99,46 @@
             @endif
         </div>
 
-        {{-- Stap 2: Datum --}}
+        {{-- Stap 2: Medewerker (alleen als er medewerkers zijn) --}}
+        @if($medewerkers->isNotEmpty())
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">2 — Kies een barber</p>
+            <div class="flex flex-wrap gap-2">
+                {{-- Maakt niet uit --}}
+                <button wire:click="selecteerMedewerker(null)"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors
+                            {{ $geselecteerdeMedewerkerId === null
+                                ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                                : 'border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:border-gray-300 dark:hover:border-neutral-600' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Maakt niet uit
+                </button>
+                {{-- Individuele medewerkers --}}
+                @foreach($medewerkers as $mw)
+                <button wire:click="selecteerMedewerker({{ $mw->id }})"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors
+                            {{ $geselecteerdeMedewerkerId === $mw->id
+                                ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                                : 'border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:border-gray-300 dark:hover:border-neutral-600' }}">
+                    @if($mw->foto)
+                    <img src="{{ asset('storage/' . $mw->foto) }}" class="w-5 h-5 rounded-full object-cover">
+                    @else
+                    <div class="w-5 h-5 rounded-full bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                        <span class="text-[10px] font-bold text-blue-400">{{ mb_strtoupper(mb_substr($mw->naam, 0, 1)) }}</span>
+                    </div>
+                    @endif
+                    {{ $mw->naam }}
+                </button>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        {{-- Stap 2/3: Datum --}}
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5 overflow-visible">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">2 — Kies een datum</p>
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">{{ $medewerkers->isNotEmpty() ? '3' : '2' }} — Kies een datum</p>
             <x-datepicker
                 wire-model="geselecteerdeDatum"
                 :value="$geselecteerdeDatum"
@@ -110,9 +147,9 @@
             />
         </div>
 
-        {{-- Stap 3: Tijdslot --}}
+        {{-- Stap 3/4: Tijdslot --}}
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">3 — Kies een tijdstip</p>
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">{{ $medewerkers->isNotEmpty() ? '4' : '3' }} — Kies een tijdstip</p>
 
             <div wire:loading.delay wire:target="geselecteerdeDatum,selecteerDienst" class="text-xs text-gray-400 dark:text-neutral-500">Beschikbaarheid laden...</div>
 

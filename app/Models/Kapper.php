@@ -23,6 +23,7 @@ class Kapper extends Model
     public function beschikbaarheden() { return $this->hasMany(Beschikbaarheid::class); }
     public function sluitingsdagen() { return $this->hasMany(Sluitingsdag::class); }
     public function afspraken() { return $this->hasMany(Afspraak::class); }
+    public function medewerkers() { return $this->hasMany(Medewerker::class); }
 
     public function setSalonNaamAttribute(string $value): void
     {

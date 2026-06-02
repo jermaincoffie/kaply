@@ -15,6 +15,7 @@ class KapperProfiel extends Component
     public ?int $geselecteerdeDienstId = null;
     public string $geselecteerdeDatum = '';
     public array $tijdsloten = [];
+    public ?int $geselecteerdeMedewerkerId = null; // null = maakt niet uit
 
     // Boeking modal
     public bool $toonBoekModal = false;
@@ -55,6 +56,12 @@ class KapperProfiel extends Component
         $this->laadTijdsloten();
     }
 
+    public function selecteerMedewerker(?int $id): void
+    {
+        $this->geselecteerdeMedewerkerId = $id;
+        $this->laadTijdsloten();
+    }
+
     public function openBoekModal(string $tijd): void
     {
         if (!auth()->check()) {
@@ -85,6 +92,7 @@ class KapperProfiel extends Component
             'klant_id'      => auth()->id(),
             'kapper_id'     => $this->kapper->id,
             'dienst_id'     => $dienst->id,
+            'medewerker_id' => $this->geselecteerdeMedewerkerId,
             'datum'         => $this->geselecteerdeDatum,
             'start_tijd'    => $this->geselecteerdeTijd,
             'eind_tijd'     => $eind,
@@ -107,7 +115,7 @@ class KapperProfiel extends Component
         if (!$dienst) { $this->tijdsloten = []; return; }
 
         $service = new BeschikbaarheidsService();
-        $this->tijdsloten = $service->getVrijeTijdslots($this->kapper, $dienst, $this->geselecteerdeDatum);
+        $this->tijdsloten = $service->getVrijeTijdslots($this->kapper, $dienst, $this->geselecteerdeDatum, $this->geselecteerdeMedewerkerId);
     }
 
     public function render()
@@ -122,7 +130,8 @@ class KapperProfiel extends Component
             ]);
 
         return view('livewire.klant.kapper-profiel', [
-            'openingstijden'    => $openingstijden,
+            'openingstijden'      => $openingstijden,
+            'medewerkers'         => $this->kapper->medewerkers()->where('actief', true)->get(),
             'geselecteerdeDienst' => $this->geselecteerdeDienstId
                 ? $this->kapper->diensten->firstWhere('id', $this->geselecteerdeDienstId)
                 : null,

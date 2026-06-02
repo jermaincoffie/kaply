@@ -12,7 +12,7 @@ class Afspraak extends Model
     protected $table = 'afspraken';
 
     protected $fillable = [
-        'klant_id', 'kapper_id', 'dienst_id', 'datum', 'start_tijd',
+        'klant_id', 'kapper_id', 'dienst_id', 'medewerker_id', 'datum', 'start_tijd',
         'eind_tijd', 'status', 'betaalmethode',
         'stripe_payment_intent_id', 'stripe_setup_intent_id',
     ];
@@ -32,4 +32,5 @@ class Afspraak extends Model
     public function klant() { return $this->belongsTo(User::class, 'klant_id'); }
     public function kapper() { return $this->belongsTo(Kapper::class); }
     public function dienst() { return $this->belongsTo(Dienst::class); }
+    public function medewerker() { return $this->belongsTo(Medewerker::class); }
 }

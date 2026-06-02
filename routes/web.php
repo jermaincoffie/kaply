@@ -9,6 +9,7 @@ use App\Livewire\Kapper\AgendaOverzicht;
 use App\Livewire\Kapper\BeschikbaarheidBeheer;
 use App\Livewire\Kapper\DienstenBeheer;
 use App\Livewire\Kapper\KlantenOverzicht as KapperKlanten;
+use App\Livewire\Kapper\MedewerkersBeheer;
 use App\Livewire\Kapper\ProfielBeheer;
 use App\Livewire\Kapper\Registratie as KapperRegistratie;
 use App\Livewire\Klant\AccountBeheer;
@@ -29,6 +30,7 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
     Route::get('/klanten', KapperKlanten::class)->name('klanten');
     Route::get('/diensten', DienstenBeheer::class)->name('diensten');
     Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
+    Route::get('/medewerkers', MedewerkersBeheer::class)->name('medewerkers');
     Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
 });
 
