@@ -16,7 +16,7 @@
              alt="{{ $kapper->salon_naam }}"
              class="w-full h-48 object-cover">
         @else
-        <div class="w-full h-32 bg-gradient-to-br from-blue-600 to-blue-800"></div>
+        <div class="w-full h-32 bg-gray-100 dark:bg-neutral-700"></div>
         @endif
 
         <div class="px-6 py-5">
