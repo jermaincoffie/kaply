@@ -26,8 +26,8 @@
                     $kleuren  = ['bg-blue-500','bg-violet-500','bg-emerald-500','bg-rose-500','bg-amber-500','bg-cyan-500'];
                     $kleur    = $kleuren[abs(crc32(auth()->user()->kapper->salon_naam)) % count($kleuren)];
                 @endphp
-                <div class="w-32 h-32 rounded-xl {{ $kleur }} flex items-center justify-center">
-                    <span class="text-3xl font-bold text-white">{{ $init }}</span>
+                <div class="w-32 h-32 rounded-xl bg-neutral-800 flex items-center justify-center">
+                    <span class="text-3xl font-bold {{ str_replace('bg-', 'text-', $kleur) }}">{{ $init }}</span>
                 </div>
                 @endif
 
