@@ -55,8 +55,11 @@
             @if($medewerker->foto)
             <img src="{{ asset('storage/' . $medewerker->foto) }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0">
             @else
-            <div class="w-9 h-9 rounded-full bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                <span class="text-sm font-bold text-blue-400">{{ mb_strtoupper(mb_substr($medewerker->naam, 0, 1)) }}</span>
+            <div class="w-9 h-9 rounded-full bg-gray-100 dark:bg-neutral-700 border border-gray-200 dark:border-neutral-600 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-gray-400 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
             </div>
             @endif
 
