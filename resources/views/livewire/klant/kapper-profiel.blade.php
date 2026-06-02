@@ -16,15 +16,7 @@
              alt="{{ $kapper->salon_naam }}"
              class="w-full h-48 object-cover">
         @else
-        @php
-            $woorden = explode(' ', trim($kapper->salon_naam));
-            $init    = mb_strtoupper(mb_substr($woorden[0], 0, 1) . (isset($woorden[1]) ? mb_substr($woorden[1], 0, 1) : ''));
-            $tekst   = ['text-white','text-white','text-white','text-white','text-white','text-white'];
-            $idx     = abs(crc32($kapper->salon_naam)) % count($tekst);
-        @endphp
-        <div class="w-full h-32 bg-blue-900/30 flex items-center justify-center">
-            <span class="text-5xl font-bold {{ $tekst[$idx] }}">{{ $init }}</span>
-        </div>
+        <div class="w-full h-32 bg-blue-900/30"></div>
         @endif
 
         <div class="px-6 py-5">

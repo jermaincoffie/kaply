@@ -20,15 +20,7 @@
                      alt="Salon foto"
                      class="w-32 h-32 rounded-xl object-cover border border-gray-200 dark:border-neutral-700">
                 @else
-                @php
-                    $woorden  = explode(' ', trim(auth()->user()->kapper->salon_naam));
-                    $init     = mb_strtoupper(mb_substr($woorden[0], 0, 1) . (isset($woorden[1]) ? mb_substr($woorden[1], 0, 1) : ''));
-                    $tekst    = ['text-white','text-white','text-white','text-white','text-white','text-white'];
-                    $idx      = abs(crc32(auth()->user()->kapper->salon_naam)) % count($tekst);
-                @endphp
-                <div class="w-32 h-32 rounded-xl bg-blue-900/30 flex items-center justify-center">
-                    <span class="text-3xl font-bold {{ $tekst[$idx] }}">{{ $init }}</span>
-                </div>
+                <div class="w-32 h-32 rounded-xl bg-blue-900/30"></div>
                 @endif
 
                 <div class="flex items-center gap-2">
