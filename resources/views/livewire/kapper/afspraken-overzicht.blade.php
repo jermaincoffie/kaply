@@ -58,20 +58,15 @@
 
                 {{-- Datum header rij --}}
                 @if($isNieuweDag)
-                <tr>
-                    <td colspan="5" class="px-6 pt-4 pb-1.5 {{ $loop->first ? '' : 'border-t border-gray-100 dark:border-neutral-700' }}">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-semibold text-gray-500 dark:text-neutral-400 uppercase tracking-wide">
+                <tr class="{{ $loop->first ? '' : 'border-t border-gray-100 dark:border-neutral-700' }} bg-gray-50 dark:bg-neutral-700/40">
+                    <td colspan="5" class="px-6 py-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-semibold text-gray-600 dark:text-neutral-300">
                                 {{ $dagLabel }}
                             </span>
                             @if($afspraak->datum->isToday())
                             <span class="inline-flex px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-600 text-white">Vandaag</span>
                             @endif
-                            <div class="flex-1 h-px bg-gray-100 dark:bg-neutral-700"></div>
-                            <span class="text-xs text-gray-400 dark:text-neutral-500">
-                                {{ $afspraken->groupBy(fn($a) => $a->datum->toDateString())[$dagKey]->count() }}
-                                afspraak{{ $afspraken->groupBy(fn($a) => $a->datum->toDateString())[$dagKey]->count() !== 1 ? 'en' : '' }}
-                            </span>
                         </div>
                     </td>
                 </tr>
