@@ -108,7 +108,7 @@
                     <span class="text-sm font-medium text-gray-700 dark:text-neutral-300">
                         {{ $dag->datum->isoFormat('D MMM YYYY') }}
                         @if($dag->datum_tot && !$dag->datum->equalTo($dag->datum_tot))
-                        <span class="text-gray-400 dark:text-neutral-500 font-normal"> – {{ $dag->datum_tot->isoFormat('D MMM YYYY') }}</span>
+                        – {{ $dag->datum_tot->isoFormat('D MMM YYYY') }}
                         @endif
                     </span>
                     @if($dag->reden)
