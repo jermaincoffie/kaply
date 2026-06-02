@@ -27,7 +27,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2">Foto <span class="text-gray-400">(optioneel)</span></label>
-                    <div class="flex items-center gap-4">
+                    <div class="flex flex-col items-start gap-3">
                         {{-- Avatar preview --}}
                         @if($foto)
                         <img src="{{ $foto->temporaryUrl() }}"
