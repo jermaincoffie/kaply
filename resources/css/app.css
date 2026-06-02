@@ -149,7 +149,7 @@
 
 /* Outer container */
 .vc { @apply bg-white border border-gray-200 shadow-xl rounded-xl overflow-hidden; }
-.vc[data-vc-input] { @apply absolute; z-index: 60; min-width: 300px; }
+.vc[data-vc-input] { position: fixed !important; z-index: 9999; min-width: 300px; }
 .vc[data-vc-calendar-hidden] { @apply hidden; }
 .dark .vc { @apply bg-neutral-800 border-neutral-700; }
 
