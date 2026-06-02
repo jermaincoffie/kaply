@@ -17,17 +17,12 @@ class MedewerkersBeheer extends Component
     public function openFormulier(): void { $this->toonFormulier = true; }
     public function sluitFormulier(): void { $this->toonFormulier = false; $this->reset(['naam', 'foto']); }
 
-    protected function rules(): array
-    {
-        return [
-            'naam' => 'required|string|max:100',
-            'foto' => 'nullable|image|max:2048',
-        ];
-    }
-
     public function toevoegen(): void
     {
-        $this->validate();
+        $this->validate([
+            'naam' => 'required|string|max:100',
+            'foto' => 'nullable|image|max:2048',
+        ]);
 
         $data = ['kapper_id' => auth()->user()->kapper->id, 'naam' => $this->naam];
 
