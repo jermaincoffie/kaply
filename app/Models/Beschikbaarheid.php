@@ -12,6 +12,6 @@ class Beschikbaarheid extends Model
 
     public function getDagNaamAttribute(): string
     {
-        return ['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag','Zondag'][$this->dag_van_week];
+        return ['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag','Zondag'][$this->dag_van_week] ?? 'Onbekend';
     }
 }

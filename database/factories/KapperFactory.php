@@ -12,7 +12,7 @@ class KapperFactory extends Factory
     {
         $naam = $this->faker->company();
         return [
-            'user_id' => User::factory()->create(['role' => 'kapper'])->id,
+            'user_id' => User::factory()->state(['role' => 'kapper']),
             'salon_naam' => $naam,
             'slug' => Str::slug($naam) . '-' . $this->faker->unique()->numberBetween(1, 999),
             'adres' => $this->faker->streetAddress(),

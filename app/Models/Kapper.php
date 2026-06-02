@@ -26,8 +26,13 @@ class Kapper extends Model
 
     public static function generateSlug(string $naam): string
     {
-        $slug = Str::slug($naam);
-        $count = static::where('slug', 'like', "{$slug}%")->count();
-        return $count ? "{$slug}-{$count}" : $slug;
+        $base = Str::slug($naam);
+        $slug = $base;
+        $i = 1;
+        while (static::where('slug', $slug)->exists()) {
+            $slug = "{$base}-{$i}";
+            $i++;
+        }
+        return $slug;
     }
 }
