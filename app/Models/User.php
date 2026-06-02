@@ -82,4 +82,7 @@ class User extends Authenticatable
     {
         return $this->role === 'klant';
     }
+
+    public function kapper() { return $this->hasOne(Kapper::class); }
+    public function klantprofiel() { return $this->hasOne(Klant::class); }
 }

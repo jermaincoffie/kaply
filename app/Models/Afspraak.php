@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Afspraak extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'klant_id', 'kapper_id', 'dienst_id', 'datum', 'start_tijd',
+        'eind_tijd', 'status', 'betaalmethode',
+        'stripe_payment_intent_id', 'stripe_setup_intent_id',
+    ];
+
+    protected $casts = ['datum' => 'date'];
+
+    public function klant() { return $this->belongsTo(User::class, 'klant_id'); }
+    public function kapper() { return $this->belongsTo(Kapper::class); }
+    public function dienst() { return $this->belongsTo(Dienst::class); }
+}
