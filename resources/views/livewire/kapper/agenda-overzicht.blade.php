@@ -87,31 +87,33 @@
                 {{ $day->isToday() ? 'bg-blue-50/30 dark:bg-blue-900/5' : '' }}"
                  style="height: {{ $hoogte }}px"
                  x-data
-                 @click.self="
+                 @click="
                     const rect = $el.getBoundingClientRect();
-                    const y = $event.clientY - rect.top + $el.closest('.overflow-y-auto').scrollTop;
+                    const scrollTop = $el.closest('.overflow-y-auto')?.scrollTop ?? 0;
+                    const y = $event.clientY - rect.top + scrollTop;
                     const minFromTop = Math.floor(y / {{ $pxPerUur }} * 60);
                     const roundedMin = Math.round(minFromTop / 15) * 15;
                     const hour = Math.floor(roundedMin / 60) + {{ $dagStart }};
                     const min = roundedMin % 60;
+                    if (hour < {{ $dagStart }} || hour >= {{ $dagEind }}) return;
                     const tijd = String(hour).padStart(2,'0') + ':' + String(min).padStart(2,'0');
                     $wire.openNieuwFormulier('{{ $dagKey }}', tijd);
                  "
             >
 
-                {{-- Uurlijnen --}}
+                {{-- Uurlijnen (pointer-events-none zodat klikken doorgaan naar parent) --}}
                 @for ($u = 0; $u < $uren; $u++)
-                <div class="absolute w-full border-t {{ $u === 0 ? 'border-gray-200 dark:border-neutral-600' : 'border-gray-100 dark:border-neutral-700/50' }}"
+                <div class="absolute w-full border-t pointer-events-none {{ $u === 0 ? 'border-gray-200 dark:border-neutral-600' : 'border-gray-100 dark:border-neutral-700/50' }}"
                      style="top: {{ $u * $pxPerUur }}px"></div>
                 @endfor
 
                 {{-- Halvuurslijnen --}}
                 @for ($u = 0; $u < $uren; $u++)
-                <div class="absolute w-full border-t border-gray-50 dark:border-neutral-800"
+                <div class="absolute w-full border-t pointer-events-none border-gray-50 dark:border-neutral-800"
                      style="top: {{ $u * $pxPerUur + $pxPerUur / 2 }}px"></div>
                 @endfor
 
-                {{-- Huidig tijdstip lijn (alleen vandaag) --}}
+                {{-- Huidig tijdstip lijn --}}
                 @if($day->isToday())
                 @php
                     $now = now();
@@ -119,7 +121,7 @@
                     $nowTop = ($nowMin / 60) * $pxPerUur;
                 @endphp
                 @if($nowMin >= 0 && $nowTop <= $hoogte)
-                <div class="absolute w-full z-10 flex items-center" style="top: {{ $nowTop }}px">
+                <div class="absolute w-full z-10 flex items-center pointer-events-none" style="top: {{ $nowTop }}px">
                     <div class="w-2 h-2 rounded-full bg-blue-500 -ml-1 flex-shrink-0"></div>
                     <div class="flex-1 h-px bg-blue-500"></div>
                 </div>
@@ -145,6 +147,7 @@
                 @endphp
                 <button
                     wire:click="selecteerAfspraak({{ $afspraak->id }})"
+                    @click.stop
                     class="absolute left-1 right-1 rounded-md border-l-2 px-1.5 py-0.5 text-left transition-all cursor-pointer {{ $kleur }}
                         {{ $isSelected ? 'ring-2 ring-offset-1 ring-blue-400 z-20' : 'z-10' }}"
                     style="top: {{ $top }}px; height: {{ $height }}px"
