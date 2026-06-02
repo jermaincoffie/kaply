@@ -19,9 +19,12 @@
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-6">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mb-4">Salon foto</h2>
             <div class="flex items-start gap-5">
-                {{-- Huidige foto --}}
+                {{-- Preview: nieuw > huidig > placeholder --}}
                 <div class="flex-shrink-0">
-                    @if(auth()->user()->kapper->foto)
+                    @if($foto)
+                    <img src="{{ $foto->temporaryUrl() }}"
+                         class="w-24 h-24 rounded-xl object-cover border-2 border-blue-400">
+                    @elseif(auth()->user()->kapper->foto)
                     <img src="{{ asset('storage/' . auth()->user()->kapper->foto) }}"
                          alt="Salon foto"
                          class="w-24 h-24 rounded-xl object-cover border border-gray-200 dark:border-neutral-700">
@@ -34,9 +37,6 @@
                     @endif
                 </div>
                 <div class="flex-1">
-                    @if($foto)
-                    <img src="{{ $foto->temporaryUrl() }}" class="w-24 h-24 rounded-xl object-cover border border-blue-300 mb-3">
-                    @endif
                     <label class="flex items-center gap-2 cursor-pointer inline-flex px-3 py-2 rounded-lg border border-gray-200 dark:border-neutral-700 text-sm text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
