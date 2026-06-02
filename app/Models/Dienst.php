@@ -9,6 +9,8 @@ class Dienst extends Model
 {
     use HasFactory;
 
+    protected $table = 'diensten';
+
     protected $fillable = ['kapper_id', 'naam', 'duur_minuten', 'prijs', 'no_show_bedrag'];
 
     public function kapper() { return $this->belongsTo(Kapper::class); }
