@@ -12,6 +12,7 @@ use App\Livewire\Kapper\KlantenOverzicht as KapperKlanten;
 use App\Livewire\Kapper\ProfielBeheer;
 use App\Livewire\Kapper\Registratie as KapperRegistratie;
 use App\Livewire\Klant\BoekingWizard;
+use App\Livewire\Klant\KapperProfiel;
 use App\Livewire\Klant\KapperZoeken;
 use App\Livewire\Klant\MijnAfspraken;
 use Illuminate\Support\Facades\Route;
@@ -30,15 +31,8 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
     Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
 });
 
-// Publieke kapper profielpagina (wildcard — altijd als LAATSTE /kapper/* route)
-Route::get('/kapper/{slug}', function ($slug) {
-    $kapper = \App\Models\Kapper::where('slug', $slug)
-        ->where('actief', true)
-        ->where('abonnement_status', 'actief')
-        ->with('diensten')
-        ->firstOrFail();
-    return view('pages.kapper-profiel', compact('kapper'));
-})->name('kapper.profiel');
+// Publieke kapper profielpagina
+Route::get('/kapper/{slug}', KapperProfiel::class)->name('kapper.profiel');
 
 // Algemeen dashboard (Jetstream redirect na login)
 Route::middleware(['auth'])->get('/dashboard', function () {
