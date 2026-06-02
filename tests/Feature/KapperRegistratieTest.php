@@ -5,18 +5,36 @@ use App\Models\Kapper;
 use Livewire\Livewire;
 use App\Livewire\Kapper\Registratie;
 
-it('kapper kan zich registreren', function () {
+it('stap 1 validatie werkt', function () {
+    Livewire::test(Registratie::class)
+        ->call('volgende')
+        ->assertHasErrors(['name', 'email', 'password']);
+});
+
+it('stap 1 gaat naar stap 2 bij geldige gegevens', function () {
     Livewire::test(Registratie::class)
         ->set('name', 'Jan Jansen')
         ->set('email', 'jan@salon.nl')
         ->set('password', 'password123')
         ->set('password_confirmation', 'password123')
+        ->call('volgende')
+        ->assertHasNoErrors()
+        ->assertSet('stap', 2);
+});
+
+it('kapper kan zich volledig registreren', function () {
+    Livewire::test(Registratie::class)
+        ->set('name', 'Jan Jansen')
+        ->set('email', 'jan@salon.nl')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('stap', 2)
         ->set('salon_naam', 'Salon Jan')
         ->set('stad', 'Amsterdam')
         ->set('telefoon', '0612345678')
         ->call('registreer')
         ->assertHasNoErrors()
-        ->assertRedirect(route('kapper.dashboard'));
+        ->assertSet('stap', 3);
 
     $user = User::where('email', 'jan@salon.nl')->first();
     expect($user->role)->toBe('kapper');
@@ -24,12 +42,9 @@ it('kapper kan zich registreren', function () {
     expect($user->kapper->slug)->toBe('salon-jan');
 });
 
-it('kapper registratie vereist salon_naam en stad', function () {
+it('stap 2 vereist salon_naam en stad', function () {
     Livewire::test(Registratie::class)
-        ->set('name', 'Jan')
-        ->set('email', 'jan@salon.nl')
-        ->set('password', 'password123')
-        ->set('password_confirmation', 'password123')
+        ->set('stap', 2)
         ->call('registreer')
         ->assertHasErrors(['salon_naam', 'stad']);
 });
