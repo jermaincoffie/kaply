@@ -4,111 +4,83 @@
         <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Platform overzicht</p>
     </div>
 
-    {{-- Statistiek kaarten --}}
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Actieve kappers</p>
-            <div class="flex items-end justify-between">
-                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">{{ $kappers_actief }}</span>
-                <span class="text-xs text-gray-400 dark:text-neutral-500">van {{ $kappers_totaal }} totaal</span>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Afspraken vandaag</p>
-            <div class="flex items-end justify-between">
-                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">{{ $afspraken_vandaag }}</span>
-                <span class="text-xs text-gray-400 dark:text-neutral-500">{{ today()->format('d-m-Y') }}</span>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Afspraken deze week</p>
-            <div class="flex items-end justify-between">
-                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">{{ $afspraken_week }}</span>
-                <span class="text-xs text-gray-400 dark:text-neutral-500">week {{ today()->weekOfYear }}</span>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Klanten</p>
-            <div class="flex items-end justify-between">
-                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">{{ $klanten_totaal }}</span>
-                <span class="text-xs text-gray-400 dark:text-neutral-500">geregistreerd</span>
-            </div>
-        </div>
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5 {{ $nieuw_aangemeld > 0 ? 'ring-2 ring-amber-400 dark:ring-amber-500' : '' }}">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
-                Nieuw aangemeld
-                <x-tooltip>Kappers die zich hebben geregistreerd maar nog niet geactiveerd zijn. Ga naar Kappers om ze te activeren.</x-tooltip>
-            </p>
-            <div class="flex items-end justify-between">
-                <span class="text-3xl font-bold {{ $nieuw_aangemeld > 0 ? 'text-amber-500' : 'text-gray-900 dark:text-neutral-100' }}">{{ $nieuw_aangemeld }}</span>
-                @if($nieuw_aangemeld > 0)
-                <a href="{{ route('admin.kappers') }}" class="text-xs font-medium text-amber-600 dark:text-amber-400 hover:underline">Bekijk →</a>
-                @else
-                <span class="text-xs text-gray-400 dark:text-neutral-500">wachtend</span>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    {{-- Abonnement kaarten --}}
+    {{-- 4 KPI kaarten --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+
+        {{-- MRR --}}
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
             <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
                 MRR
-                <x-tooltip>Monthly Recurring Revenue — het bedrag dat maandelijks binnenkomt van alle actieve abonnees. Berekend als: aantal actieve abonnees × €20 per maand.</x-tooltip>
+                <x-tooltip>Monthly Recurring Revenue — actieve abonnees × €20 per maand.</x-tooltip>
             </p>
-            <div class="flex items-end justify-between">
-                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($mrr / 100, 0, ',', '.') }}</span>
-                <span class="text-xs text-gray-400 dark:text-neutral-500">per maand</span>
-            </div>
+            <p class="text-3xl font-bold text-gray-900 dark:text-neutral-100 mb-1">€ {{ number_format($mrr / 100, 0, ',', '.') }}</p>
+            <p class="text-xs text-gray-400 dark:text-neutral-500">
+                Prognose
+                <x-tooltip position="below">Als alle {{ $kappers_totaal }} geregistreerde kappers betaalden: € {{ number_format($prognose_mrr / 100, 0, ',', '.') }} / maand.</x-tooltip>
+                <span class="font-medium text-gray-500 dark:text-neutral-400">€ {{ number_format($prognose_mrr / 100, 0, ',', '.') }}</span>
+            </p>
         </div>
+
+        {{-- Abonnees --}}
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
             <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
                 Abonnees
-                <x-tooltip>Kappers met een actief abonnement die momenteel €20 per maand betalen en zichtbaar zijn voor klanten op het platform.</x-tooltip>
+                <x-tooltip>Kappers met actief abonnement — zichtbaar op platform.</x-tooltip>
             </p>
-            <div class="flex items-end justify-between">
-                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">{{ $abonnees_actief }}</span>
-                <span class="text-xs text-gray-400 dark:text-neutral-500">betalend</span>
-            </div>
+            <p class="text-3xl font-bold text-gray-900 dark:text-neutral-100 mb-1">{{ $abonnees_actief }}</p>
+            <p class="text-xs text-gray-400 dark:text-neutral-500">
+                van <span class="font-medium text-gray-500 dark:text-neutral-400">{{ $kappers_totaal }}</span> geregistreerd
+            </p>
         </div>
+
+        {{-- Nieuw aangemeld --}}
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5 {{ $nieuw_aangemeld > 0 ? 'ring-2 ring-amber-400 dark:ring-amber-500' : '' }}">
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
+                Nieuw aangemeld
+                <x-tooltip>Kappers die wachten op activatie.</x-tooltip>
+            </p>
+            <p class="text-3xl font-bold mb-1 {{ $nieuw_aangemeld > 0 ? 'text-amber-500' : 'text-gray-900 dark:text-neutral-100' }}">{{ $nieuw_aangemeld }}</p>
+            @if($nieuw_aangemeld > 0)
+            <a href="{{ route('admin.kappers') }}" class="text-xs font-medium text-amber-600 dark:text-amber-400 hover:underline">Activeer nu →</a>
+            @else
+            <p class="text-xs text-gray-400 dark:text-neutral-500">geen wachtenden</p>
+            @endif
+        </div>
+
+        {{-- Gepauzeerd --}}
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
             <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
                 Gepauzeerd
-                <x-tooltip>Kappers waarvan het abonnement is gepauzeerd of verlopen. Hun profiel is niet zichtbaar voor klanten. Neem contact op om ze te reactiveren.</x-tooltip>
+                <x-tooltip position="right">Kappers met verlopen abonnement — niet zichtbaar voor klanten.</x-tooltip>
             </p>
-            <div class="flex items-end justify-between">
-                <span class="text-3xl font-bold {{ $abonnees_gepauzeerd > 0 ? 'text-amber-500' : 'text-gray-900 dark:text-neutral-100' }}">{{ $abonnees_gepauzeerd }}</span>
-                <span class="text-xs text-gray-400 dark:text-neutral-500">kappers</span>
-            </div>
+            <p class="text-3xl font-bold mb-1 {{ $abonnees_gepauzeerd > 0 ? 'text-amber-500' : 'text-gray-900 dark:text-neutral-100' }}">{{ $abonnees_gepauzeerd }}</p>
+            <p class="text-xs text-gray-400 dark:text-neutral-500">kappers inactief</p>
         </div>
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
-                Prognose MRR
-                <x-tooltip position="right">Het maximale maandbedrag als alle {{ $kappers_totaal }} geregistreerde kappers een actief abonnement hadden. Geeft aan hoeveel groeiruimte er nog is.</x-tooltip>
-            </p>
-            <div class="flex items-end justify-between">
-                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($prognose_mrr / 100, 0, ',', '.') }}</span>
-                <span class="text-xs text-gray-400 dark:text-neutral-500">als allen betalen</span>
-            </div>
-        </div>
+
     </div>
 
     {{-- Recente afspraken --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex items-center justify-between">
-            <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200">Recente afspraken</h2>
-            <a href="{{ route('admin.afspraken') }}" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Alle afspraken →</a>
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex flex-wrap items-center gap-4">
+            <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mr-auto">Recente afspraken</h2>
+            {{-- Inline stats --}}
+            <span class="text-xs text-gray-400 dark:text-neutral-500">
+                Vandaag: <span class="font-semibold text-gray-600 dark:text-neutral-300">{{ $afspraken_vandaag }}</span>
+            </span>
+            <span class="text-xs text-gray-400 dark:text-neutral-500">
+                Week: <span class="font-semibold text-gray-600 dark:text-neutral-300">{{ $afspraken_week }}</span>
+            </span>
+            <span class="text-xs text-gray-400 dark:text-neutral-500">
+                Klanten: <span class="font-semibold text-gray-600 dark:text-neutral-300">{{ $klanten_totaal }}</span>
+            </span>
+            <a href="{{ route('admin.afspraken') }}" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Alle →</a>
         </div>
         <table class="w-full text-sm">
             <thead>
                 <tr class="border-b border-gray-100 dark:border-neutral-700">
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Klant</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Kapper</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Dienst</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide hidden md:table-cell">Dienst</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Datum</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Status</th>
                 </tr>
@@ -118,7 +90,7 @@
                 <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
                     <td class="px-6 py-3.5 font-medium text-gray-800 dark:text-neutral-100">{{ str($afspraak->klant->name)->title() }}</td>
                     <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ str($afspraak->kapper->salon_naam)->title() }}</td>
-                    <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ $afspraak->dienst->naam }}</td>
+                    <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400 hidden md:table-cell">{{ $afspraak->dienst->naam }}</td>
                     <td class="px-6 py-3.5 text-gray-400 dark:text-neutral-500 text-xs">{{ $afspraak->datum->format('d-m-Y') }} {{ $afspraak->start_tijd }}</td>
                     <td class="px-6 py-3.5">
                         @php
