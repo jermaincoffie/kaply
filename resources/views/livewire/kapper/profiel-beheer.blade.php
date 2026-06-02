@@ -23,7 +23,7 @@
                 @php
                     $woorden  = explode(' ', trim(auth()->user()->kapper->salon_naam));
                     $init     = mb_strtoupper(mb_substr($woorden[0], 0, 1) . (isset($woorden[1]) ? mb_substr($woorden[1], 0, 1) : ''));
-                    $kleuren  = ['bg-blue-400','bg-violet-400','bg-emerald-400','bg-rose-400','bg-amber-400','bg-cyan-400'];
+                    $kleuren  = ['bg-sky-300','bg-lime-300','bg-yellow-300','bg-pink-300','bg-teal-300','bg-indigo-300'];
                     $kleur    = $kleuren[abs(crc32(auth()->user()->kapper->salon_naam)) % count($kleuren)];
                 @endphp
                 <div class="w-32 h-32 rounded-xl bg-neutral-800 flex items-center justify-center">
