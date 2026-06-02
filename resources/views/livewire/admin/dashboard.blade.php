@@ -39,55 +39,37 @@
         </div>
     </div>
 
-    {{-- Omzet kaarten --}}
-    <div class="grid grid-cols-2 gap-4 mb-8">
+    {{-- Abonnement kaarten --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Omzet totaal</p>
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">MRR</p>
             <div class="flex items-end justify-between">
-                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($omzet_totaal / 100, 2, ',', '.') }}</span>
-                <span class="text-xs text-gray-400 dark:text-neutral-500">voltooide afspraken</span>
+                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($mrr / 100, 0, ',', '.') }}</span>
+                <span class="text-xs text-gray-400 dark:text-neutral-500">per maand</span>
             </div>
         </div>
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Omzet deze maand</p>
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Abonnees</p>
             <div class="flex items-end justify-between">
-                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($omzet_maand / 100, 2, ',', '.') }}</span>
-                <span class="text-xs text-gray-400 dark:text-neutral-500">{{ now()->isoFormat('MMMM YYYY') }}</span>
+                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">{{ $abonnees_actief }}</span>
+                <span class="text-xs text-gray-400 dark:text-neutral-500">betalend</span>
+            </div>
+        </div>
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Gepauzeerd</p>
+            <div class="flex items-end justify-between">
+                <span class="text-3xl font-bold {{ $abonnees_gepauzeerd > 0 ? 'text-amber-500' : 'text-gray-900 dark:text-neutral-100' }}">{{ $abonnees_gepauzeerd }}</span>
+                <span class="text-xs text-gray-400 dark:text-neutral-500">kappers</span>
+            </div>
+        </div>
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Prognose MRR</p>
+            <div class="flex items-end justify-between">
+                <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($prognose_mrr / 100, 0, ',', '.') }}</span>
+                <span class="text-xs text-gray-400 dark:text-neutral-500">als allen betalen</span>
             </div>
         </div>
     </div>
-
-    {{-- Omzet per kapper --}}
-    @if($omzet_per_kapper->isNotEmpty())
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden mb-8">
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">
-            <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200">Omzet per kapper</h2>
-            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Gebaseerd op voltooide afspraken</p>
-        </div>
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="border-b border-gray-100 dark:border-neutral-700">
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Salon</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Stad</th>
-                    <th class="px-6 py-3 text-right text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Afspraken</th>
-                    <th class="px-6 py-3 text-right text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Omzet</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-50 dark:divide-neutral-700">
-                @foreach($omzet_per_kapper as $k)
-                <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
-                    <td class="px-6 py-3.5 font-medium text-gray-800 dark:text-neutral-100">{{ str($k['salon_naam'])->title() }}</td>
-                    <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ str($k['stad'])->title() }}</td>
-                    <td class="px-6 py-3.5 text-right text-gray-500 dark:text-neutral-400">{{ $k['voltooide_afspraken'] }}</td>
-                    <td class="px-6 py-3.5 text-right font-semibold text-gray-800 dark:text-neutral-100">
-                        € {{ number_format($k['omzet'] / 100, 2, ',', '.') }}
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    @endif
 
     {{-- Recente afspraken --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">

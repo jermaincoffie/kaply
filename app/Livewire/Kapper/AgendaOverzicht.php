@@ -26,12 +26,35 @@ class AgendaOverzicht extends Component
 
     public function render()
     {
+        $kapper_id = auth()->user()->kapper->id;
+
+        $omzet_maand = Afspraak::where('kapper_id', $kapper_id)
+            ->where('status', 'voltooid')
+            ->whereMonth('datum', now()->month)
+            ->whereYear('datum', now()->year)
+            ->join('diensten', 'afspraken.dienst_id', '=', 'diensten.id')
+            ->sum('diensten.prijs');
+
+        $afspraken_maand = Afspraak::where('kapper_id', $kapper_id)
+            ->whereMonth('datum', now()->month)
+            ->whereYear('datum', now()->year)
+            ->whereIn('status', ['gepland', 'voltooid'])
+            ->count();
+
+        $komende_afspraken = Afspraak::where('kapper_id', $kapper_id)
+            ->where('datum', '>=', today())
+            ->where('status', 'gepland')
+            ->count();
+
         return view('livewire.kapper.agenda-overzicht', [
-            'afspraken' => Afspraak::where('kapper_id', auth()->user()->kapper->id)
+            'afspraken'        => Afspraak::where('kapper_id', $kapper_id)
                 ->whereDate('datum', $this->geselecteerdeDatum)
                 ->with(['klant', 'dienst'])
                 ->orderBy('start_tijd')
                 ->get(),
+            'omzet_maand'      => $omzet_maand,
+            'afspraken_maand'  => $afspraken_maand,
+            'komende_afspraken' => $komende_afspraken,
         ])->layout('layouts.kapper');
     }
 }
