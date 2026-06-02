@@ -12,6 +12,7 @@ use Livewire\Component;
 class AgendaOverzicht extends Component
 {
     public string $weekStart;
+    public string $mobielDatum;
     public ?int $geselecteerdeAfspraakId = null;
 
     // Nieuw formulier
@@ -27,7 +28,26 @@ class AgendaOverzicht extends Component
 
     public function mount(): void
     {
-        $this->weekStart = today()->startOfWeek(Carbon::MONDAY)->toDateString();
+        $this->weekStart   = today()->startOfWeek(Carbon::MONDAY)->toDateString();
+        $this->mobielDatum = today()->toDateString();
+    }
+
+    public function vorigeDag(): void
+    {
+        $this->mobielDatum = Carbon::parse($this->mobielDatum)->subDay()->toDateString();
+        $this->sluitAlles();
+    }
+
+    public function volgendeDag(): void
+    {
+        $this->mobielDatum = Carbon::parse($this->mobielDatum)->addDay()->toDateString();
+        $this->sluitAlles();
+    }
+
+    public function naarVandaagMobiel(): void
+    {
+        $this->mobielDatum = today()->toDateString();
+        $this->sluitAlles();
     }
 
     public function vorigeWeek(): void
@@ -185,8 +205,15 @@ class AgendaOverzicht extends Component
             ->where('status', 'gepland')
             ->count();
 
+        $mobielAfspraken = Afspraak::where('kapper_id', $kapper_id)
+            ->whereDate('datum', $this->mobielDatum)
+            ->with(['klant', 'dienst'])
+            ->orderBy('start_tijd')
+            ->get();
+
         $geselecteerdeAfspraak = $this->geselecteerdeAfspraakId
             ? $afspraken->firstWhere('id', $this->geselecteerdeAfspraakId)
+                ?? $mobielAfspraken->firstWhere('id', $this->geselecteerdeAfspraakId)
             : null;
 
         $eigenDiensten = auth()->user()->kapper->diensten()->orderBy('naam')->get();
@@ -200,7 +227,7 @@ class AgendaOverzicht extends Component
         return view('livewire.kapper.agenda-overzicht', compact(
             'days', 'afsprakenPerDag', 'omzet_maand', 'afspraken_maand',
             'komende_afspraken', 'geselecteerdeAfspraak', 'weekStartDate',
-            'eigenDiensten', 'zoekKlanten'
+            'eigenDiensten', 'zoekKlanten', 'mobielAfspraken'
         ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }

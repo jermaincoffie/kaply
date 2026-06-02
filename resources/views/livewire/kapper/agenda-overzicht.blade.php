@@ -15,8 +15,114 @@
         </div>
     </div>
 
-    {{-- Week navigatie --}}
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
+    {{-- ===== MOBIELE DAG VIEW (alleen zichtbaar op < lg) ===== --}}
+    @php $mobielDate = \Carbon\Carbon::parse($mobielDatum); @endphp
+    <div class="lg:hidden mb-6">
+        {{-- Datum navigatie --}}
+        <div class="flex items-center justify-between mb-4">
+            <button wire:click="vorigeDag"
+                    class="p-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+
+            <div class="text-center flex-1 px-3">
+                <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100">
+                    {{ $mobielDate->isoFormat('dddd') }}
+                </p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500">
+                    {{ $mobielDate->isoFormat('D MMMM YYYY') }}
+                    @if($mobielDate->isToday())
+                    <span class="ml-1 inline-flex px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-600 text-white">Vandaag</span>
+                    @endif
+                </p>
+            </div>
+
+            <button wire:click="volgendeDag"
+                    class="p-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+
+        {{-- Terug naar vandaag (alleen als niet vandaag) --}}
+        @if(!$mobielDate->isToday())
+        <div class="flex justify-center mb-4">
+            <button wire:click="naarVandaagMobiel"
+                    class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                ← Terug naar vandaag
+            </button>
+        </div>
+        @endif
+
+        {{-- Afspraken lijst --}}
+        <div class="space-y-2">
+            @forelse($mobielAfspraken as $afspraak)
+            @php
+                $kleur = match($afspraak->status) {
+                    'voltooid'    => 'border-green-400 bg-green-50 dark:bg-green-900/20',
+                    'no_show'     => 'border-red-400 bg-red-50 dark:bg-red-900/20',
+                    'geannuleerd' => 'border-gray-300 bg-gray-50 dark:bg-neutral-800',
+                    default       => 'border-blue-400 bg-blue-50 dark:bg-blue-900/20',
+                };
+            @endphp
+            <button wire:click="selecteerAfspraak({{ $afspraak->id }})"
+                    class="w-full text-left flex items-center gap-3 p-3 rounded-xl border-l-4 {{ $kleur }} border border-gray-200 dark:border-neutral-700 transition-colors hover:shadow-sm">
+                <div class="text-center flex-shrink-0 w-12">
+                    <p class="text-sm font-bold text-gray-800 dark:text-neutral-100">{{ $afspraak->start_tijd }}</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $afspraak->eind_tijd }}</p>
+                </div>
+                <div class="w-px self-stretch bg-gray-200 dark:bg-neutral-700 flex-shrink-0"></div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">
+                        {{ str($afspraak->klant->name)->title() }}
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-neutral-400 truncate">
+                        {{ $afspraak->dienst->naam }} · € {{ $afspraak->dienst->prijs_in_euros }}
+                    </p>
+                </div>
+                <div class="flex-shrink-0">
+                    @php
+                        $dot = match($afspraak->status) {
+                            'voltooid'    => 'bg-green-500',
+                            'no_show'     => 'bg-red-500',
+                            'geannuleerd' => 'bg-gray-400',
+                            default       => 'bg-blue-500',
+                        };
+                    @endphp
+                    <span class="w-2 h-2 rounded-full inline-block {{ $dot }}"></span>
+                </div>
+            </button>
+            @empty
+            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl px-4 py-10 text-center">
+                <p class="text-sm text-gray-400 dark:text-neutral-500 mb-3">Geen afspraken</p>
+                <button wire:click="openNieuwFormulier('{{ $mobielDatum }}', '09:00')"
+                        class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Afspraak inplannen
+                </button>
+            </div>
+            @endforelse
+
+            {{-- + knop onderaan lijst --}}
+            @if($mobielAfspraken->isNotEmpty())
+            <button wire:click="openNieuwFormulier('{{ $mobielDatum }}', '09:00')"
+                    class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-gray-300 dark:border-neutral-600 text-sm text-gray-500 dark:text-neutral-400 hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Afspraak toevoegen
+            </button>
+            @endif
+        </div>
+    </div>
+
+    {{-- Week navigatie (alleen desktop) --}}
+    <div class="hidden lg:block bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
 
         {{-- Header toolbar --}}
         <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-neutral-700">
