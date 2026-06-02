@@ -22,7 +22,7 @@
             $tekst   = ['text-sky-400','text-lime-400','text-yellow-400','text-pink-400','text-teal-400','text-indigo-400'];
             $idx     = abs(crc32($kapper->salon_naam)) % count($tekst);
         @endphp
-        <div class="w-full h-32 bg-neutral-600 flex items-center justify-center">
+        <div class="w-full h-32 bg-neutral-700 flex items-center justify-center">
             <span class="text-5xl font-bold {{ $tekst[$idx] }}">{{ $init }}</span>
         </div>
         @endif
