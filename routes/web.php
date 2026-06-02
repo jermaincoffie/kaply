@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\Admin\AfsprakenOverzicht as AdminAfspraken;
+use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\KappersOverzicht;
 use App\Livewire\Kapper\AgendaOverzicht;
 use App\Livewire\Kapper\BeschikbaarheidBeheer;
@@ -39,7 +41,7 @@ Route::middleware(['auth'])->get('/dashboard', function () {
         return redirect()->route('kapper.dashboard');
     }
     if (auth()->user()->isAdmin()) {
-        return redirect()->route('admin.kappers');
+        return redirect()->route('admin.dashboard');
     }
     return redirect()->route('klant.afspraken');
 })->name('dashboard');
@@ -53,5 +55,7 @@ Route::middleware(['auth'])->group(function () {
 
 // Admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
     Route::get('/kappers', KappersOverzicht::class)->name('kappers');
+    Route::get('/afspraken', AdminAfspraken::class)->name('afspraken');
 });
