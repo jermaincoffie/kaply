@@ -7,27 +7,11 @@
             </p>
         </div>
 
-        {{-- Preline datepicker (desktop) + native fallback (mobiel) --}}
-        <div x-data id="agenda-datepicker-wrapper">
-            {{-- Desktop: Preline hs-datepicker --}}
-            <input
-                id="agenda-dp"
-                type="text"
-                readonly
-                autocomplete="off"
-                placeholder="Selecteer datum"
-                value="{{ \Carbon\Carbon::parse($geselecteerdeDatum)->format('d/m/Y') }}"
-                class="hs-datepicker hidden sm:block py-2 px-3 w-44 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder:text-gray-400 dark:placeholder:text-neutral-500 shadow-sm focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 cursor-pointer"
-                data-hs-datepicker='{"type":"default","applyUtilityClasses":true,"mode":"custom-select","dateFormat":"DD/MM/YYYY"}'
-            >
-            {{-- Mobiel: native date input --}}
-            <input
-                type="date"
-                value="{{ $geselecteerdeDatum }}"
-                class="sm:hidden py-2 px-3 block w-full bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 shadow-sm focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-                onchange="@this.set('geselecteerdeDatum', this.value)"
-            >
-        </div>
+        <input
+            wire:model.live="geselecteerdeDatum"
+            type="date"
+            class="py-2 px-3 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 shadow-sm focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 cursor-pointer"
+        >
     </div>
 
     {{-- Afspraken lijst --}}
@@ -76,37 +60,3 @@
     </div>
 </div>
 
-@script
-<script>
-    // Na elke Livewire render: Preline datepicker opnieuw initialiseren + sync koppelen
-    function initAgendaDatepicker() {
-        var dp = document.getElementById('agenda-dp');
-        if (!dp) return;
-
-        // Preline opnieuw initialiseren op dit element
-        if (window.HSDatepicker) {
-            try { window.HSDatepicker.autoInit(); } catch(e) {}
-        }
-        if (window.HSStaticMethods) {
-            try { window.HSStaticMethods.autoInit(); } catch(e) {}
-        }
-
-        // Verwijder oude listener om dubbele triggers te voorkomen
-        var newDp = dp.cloneNode(true);
-        dp.parentNode.replaceChild(newDp, dp);
-
-        newDp.addEventListener('change', function () {
-            var raw = newDp.value.trim();
-            if (!raw) return;
-            // DD/MM/YYYY → YYYY-MM-DD
-            var parts = raw.split('/');
-            if (parts.length === 3) {
-                var iso = parts[2] + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
-                $wire.set('geselecteerdeDatum', iso);
-            }
-        });
-    }
-
-    initAgendaDatepicker();
-</script>
-@endscript
