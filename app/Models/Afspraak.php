@@ -9,6 +9,8 @@ class Afspraak extends Model
 {
     use HasFactory;
 
+    protected $table = 'afspraken';
+
     protected $fillable = [
         'klant_id', 'kapper_id', 'dienst_id', 'datum', 'start_tijd',
         'eind_tijd', 'status', 'betaalmethode',

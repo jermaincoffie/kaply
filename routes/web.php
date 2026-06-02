@@ -33,8 +33,7 @@ Route::middleware(['auth'])->get('/dashboard', function () {
 // Klant routes
 Route::middleware(['auth'])->get('/mijn-afspraken', fn() => 'klant dashboard placeholder')->name('klant.afspraken');
 
-// Placeholder — volledig geïmplementeerd in Task 9
-Route::middleware(['auth'])->get('/boeken/{kapperSlug}/{dienstId}', fn() => 'boeking placeholder')->name('boeken');
+Route::middleware(['auth'])->get('/boeken/{kapperSlug}/{dienstId}', \App\Livewire\Klant\BoekingWizard::class)->name('boeken');
 
 // Kapper dashboard (placeholder — volledig gebouwd in Task 10)
 Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->group(function () {
