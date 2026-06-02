@@ -52,7 +52,8 @@ class KapperProfiel extends Component
     public function openBoekModal(string $tijd): void
     {
         if (!auth()->check()) {
-            return $this->redirect(route('login'));
+            $this->redirect(route('login'));
+            return;
         }
         $this->geselecteerdeTijd = $tijd;
         $this->betaalmethode     = 'in_zaak';
