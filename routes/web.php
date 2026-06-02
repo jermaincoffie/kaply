@@ -1,18 +1,19 @@
 <?php
 
-use App\Livewire\Kapper\Registratie as KapperRegistratie;
-use App\Livewire\Kapper\DienstenBeheer;
+use App\Livewire\Admin\KappersOverzicht;
+use App\Livewire\Kapper\AgendaOverzicht;
 use App\Livewire\Kapper\BeschikbaarheidBeheer;
+use App\Livewire\Kapper\DienstenBeheer;
+use App\Livewire\Kapper\ProfielBeheer;
+use App\Livewire\Kapper\Registratie as KapperRegistratie;
+use App\Livewire\Klant\BoekingWizard;
 use App\Livewire\Klant\KapperZoeken;
+use App\Livewire\Klant\MijnAfspraken;
 use Illuminate\Support\Facades\Route;
 
-// Homepage — publieke zoekopdracht
+// Publiek
 Route::get('/', KapperZoeken::class)->name('home');
-
-// Publiek — kapper registratie (MUST be before /{slug} route)
 Route::get('/kapper/registreer', KapperRegistratie::class)->name('kapper.registreer');
-
-// Kapper profielpagina
 Route::get('/kapper/{slug}', function ($slug) {
     $kapper = \App\Models\Kapper::where('slug', $slug)
         ->where('actief', true)
@@ -22,22 +23,32 @@ Route::get('/kapper/{slug}', function ($slug) {
     return view('pages.kapper-profiel', compact('kapper'));
 })->name('kapper.profiel');
 
-// General dashboard — redirects based on role (required by Jetstream auth flow)
+// Algemeen dashboard (Jetstream redirect na login)
 Route::middleware(['auth'])->get('/dashboard', function () {
     if (auth()->user()->isKapper()) {
         return redirect()->route('kapper.dashboard');
     }
+    if (auth()->user()->isAdmin()) {
+        return redirect()->route('admin.kappers');
+    }
     return redirect()->route('klant.afspraken');
 })->name('dashboard');
 
-// Klant routes
-Route::middleware(['auth'])->get('/mijn-afspraken', fn() => 'klant dashboard placeholder')->name('klant.afspraken');
-
-Route::middleware(['auth'])->get('/boeken/{kapperSlug}/{dienstId}', \App\Livewire\Klant\BoekingWizard::class)->name('boeken');
-
-// Kapper dashboard (placeholder — volledig gebouwd in Task 10)
+// Kapper dashboard
 Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->group(function () {
-    Route::get('/dashboard', fn() => 'dashboard placeholder')->name('dashboard');
+    Route::get('/dashboard', AgendaOverzicht::class)->name('dashboard');
     Route::get('/diensten', DienstenBeheer::class)->name('diensten');
     Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
+    Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
+});
+
+// Klant
+Route::middleware(['auth'])->group(function () {
+    Route::get('/mijn-afspraken', MijnAfspraken::class)->name('klant.afspraken');
+    Route::get('/boeken/{kapperSlug}/{dienstId}', BoekingWizard::class)->name('boeken');
+});
+
+// Admin
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/kappers', KappersOverzicht::class)->name('kappers');
 });
