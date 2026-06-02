@@ -24,7 +24,11 @@ class BeschikbaarheidsService
             ->first();
 
         if (!$beschikbaarheid) return [];
-        if ($kapper->sluitingsdagen()->whereDate('datum', $datum)->exists()) return [];
+        $isGesloten = $kapper->sluitingsdagen()
+            ->where('datum', '<=', $datum)
+            ->where(fn($q) => $q->whereNull('datum_tot')->orWhere('datum_tot', '>=', $datum))
+            ->exists();
+        if ($isGesloten) return [];
 
         // Capaciteit = aantal actieve medewerkers, minimaal 1
         $aantalMedewerkers = $kapper->medewerkers()->where('actief', true)->count();

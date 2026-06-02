@@ -60,24 +60,43 @@
         </div>
 
         <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 overflow-visible">
-            <form wire:submit="sluitingsdagToevoegen" class="flex flex-wrap gap-3 overflow-visible">
-                <x-datepicker
-                    wire-model="sluitingsDatum"
-                    :value="$sluitingsDatum"
-                    :date-min="today()->toDateString()"
-                    placeholder="Selecteer datum"
-                />
-                <input wire:model="sluitingsReden" type="text" placeholder="Reden (optioneel)"
-                       class="flex-1 min-w-40 py-2 px-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-                <button type="submit"
-                        class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Toevoegen
-                </button>
+            <form wire:submit="sluitingsdagToevoegen" class="space-y-3 overflow-visible">
+                <div class="flex flex-wrap gap-3 items-center overflow-visible">
+                    <div class="flex items-center gap-2 overflow-visible">
+                        <span class="text-xs font-medium text-gray-500 dark:text-neutral-400 whitespace-nowrap">Van</span>
+                        <x-datepicker
+                            wire-model="sluitingsDatum"
+                            :value="$sluitingsDatum"
+                            :date-min="today()->toDateString()"
+                            placeholder="Startdatum"
+                        />
+                    </div>
+                    <div class="flex items-center gap-2 overflow-visible">
+                        <span class="text-xs font-medium text-gray-500 dark:text-neutral-400 whitespace-nowrap">Tot</span>
+                        <x-datepicker
+                            wire-model="sluitingsDatumTot"
+                            :value="$sluitingsDatumTot"
+                            :date-min="$sluitingsDatum ?: today()->toDateString()"
+                            placeholder="Einddatum (optioneel)"
+                        />
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <input wire:model="sluitingsReden" type="text" placeholder="Reden (optioneel)"
+                           class="flex-1 min-w-40 py-2 px-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Toevoegen
+                    </button>
+                </div>
             </form>
             @error('sluitingsDatum')
+            <p class="text-xs text-red-500 dark:text-red-400 mt-2">{{ $message }}</p>
+            @enderror
+            @error('sluitingsDatumTot')
             <p class="text-xs text-red-500 dark:text-red-400 mt-2">{{ $message }}</p>
             @enderror
         </div>
@@ -87,7 +106,10 @@
             <div class="flex items-center justify-between px-6 py-3.5">
                 <div>
                     <span class="text-sm font-medium text-gray-700 dark:text-neutral-300">
-                        {{ $dag->datum->isoFormat('dddd D MMMM YYYY') }}
+                        {{ $dag->datum->isoFormat('D MMM YYYY') }}
+                        @if($dag->datum_tot && !$dag->datum->equalTo($dag->datum_tot))
+                        <span class="text-gray-400 dark:text-neutral-500 font-normal"> – {{ $dag->datum_tot->isoFormat('D MMM YYYY') }}</span>
+                        @endif
                     </span>
                     @if($dag->reden)
                     <span class="text-xs text-gray-400 dark:text-neutral-500 ml-2">— {{ $dag->reden }}</span>

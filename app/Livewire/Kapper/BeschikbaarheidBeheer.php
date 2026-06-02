@@ -10,6 +10,7 @@ class BeschikbaarheidBeheer extends Component
 {
     public array $rooster = [];
     public string $sluitingsDatum = '';
+    public string $sluitingsDatumTot = '';
     public string $sluitingsReden = '';
 
     protected array $dagNamen = ['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag','Zondag'];
@@ -50,14 +51,18 @@ class BeschikbaarheidBeheer extends Component
 
     public function sluitingsdagToevoegen(): void
     {
-        $this->validate(['sluitingsDatum' => 'required|date|after_or_equal:today']);
-
-        auth()->user()->kapper->sluitingsdagen()->create([
-            'datum' => $this->sluitingsDatum,
-            'reden' => $this->sluitingsReden ?: null,
+        $this->validate([
+            'sluitingsDatum'    => 'required|date|after_or_equal:today',
+            'sluitingsDatumTot' => 'nullable|date|after_or_equal:sluitingsDatum',
         ]);
 
-        $this->reset(['sluitingsDatum', 'sluitingsReden']);
+        auth()->user()->kapper->sluitingsdagen()->create([
+            'datum'     => $this->sluitingsDatum,
+            'datum_tot' => $this->sluitingsDatumTot ?: null,
+            'reden'     => $this->sluitingsReden ?: null,
+        ]);
+
+        $this->reset(['sluitingsDatum', 'sluitingsDatumTot', 'sluitingsReden']);
     }
 
     public function sluitingsdagVerwijderen(int $id): void
@@ -71,7 +76,7 @@ class BeschikbaarheidBeheer extends Component
     {
         return view('livewire.kapper.beschikbaarheid-beheer', [
             'sluitingsdagen' => auth()->user()->kapper->sluitingsdagen()
-                ->where('datum', '>=', today())
+                ->where(fn($q) => $q->where('datum', '>=', today())->orWhere('datum_tot', '>=', today()))
                 ->orderBy('datum')
                 ->get(),
         ])->layout('layouts.kapper');
