@@ -19,6 +19,16 @@ class Afspraak extends Model
 
     protected $casts = ['datum' => 'date'];
 
+    public function getStartTijdAttribute(string $value): string
+    {
+        return substr($value, 0, 5);
+    }
+
+    public function getEindTijdAttribute(string $value): string
+    {
+        return substr($value, 0, 5);
+    }
+
     public function klant() { return $this->belongsTo(User::class, 'klant_id'); }
     public function kapper() { return $this->belongsTo(Kapper::class); }
     public function dienst() { return $this->belongsTo(Dienst::class); }
