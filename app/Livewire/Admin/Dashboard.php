@@ -24,9 +24,14 @@ class Dashboard extends Component
             ->get()
             ->keyBy('abonnement_status');
 
+        $nieuw_aangemeld = Kapper::where('actief', false)
+            ->where('abonnement_status', 'geen')
+            ->count();
+
         return view('livewire.admin.dashboard', [
             'kappers_actief'      => Kapper::where('actief', true)->count(),
             'kappers_totaal'      => $kappers_totaal,
+            'nieuw_aangemeld'     => $nieuw_aangemeld,
             'afspraken_vandaag'   => Afspraak::whereDate('datum', today())->count(),
             'afspraken_week'      => Afspraak::whereBetween('datum', [today()->startOfWeek(), today()->endOfWeek()])->count(),
             'klanten_totaal'      => User::where('role', 'klant')->count(),

@@ -5,7 +5,7 @@
     </div>
 
     {{-- Statistiek kaarten --}}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
             <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Actieve kappers</p>
             <div class="flex items-end justify-between">
@@ -35,6 +35,20 @@
             <div class="flex items-end justify-between">
                 <span class="text-3xl font-bold text-gray-900 dark:text-neutral-100">{{ $klanten_totaal }}</span>
                 <span class="text-xs text-gray-400 dark:text-neutral-500">geregistreerd</span>
+            </div>
+        </div>
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5 {{ $nieuw_aangemeld > 0 ? 'ring-2 ring-amber-400 dark:ring-amber-500' : '' }}">
+            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
+                Nieuw aangemeld
+                <x-tooltip>Kappers die zich hebben geregistreerd maar nog niet geactiveerd zijn. Ga naar Kappers om ze te activeren.</x-tooltip>
+            </p>
+            <div class="flex items-end justify-between">
+                <span class="text-3xl font-bold {{ $nieuw_aangemeld > 0 ? 'text-amber-500' : 'text-gray-900 dark:text-neutral-100' }}">{{ $nieuw_aangemeld }}</span>
+                @if($nieuw_aangemeld > 0)
+                <a href="{{ route('admin.kappers') }}" class="text-xs font-medium text-amber-600 dark:text-amber-400 hover:underline">Bekijk →</a>
+                @else
+                <span class="text-xs text-gray-400 dark:text-neutral-500">wachtend</span>
+                @endif
             </div>
         </div>
     </div>

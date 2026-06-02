@@ -19,8 +19,21 @@ class KappersOverzicht extends Component
 
     public function render()
     {
-        return view('livewire.admin.kappers-overzicht', [
-            'kappers' => Kapper::with('user')->orderByDesc('created_at')->get(),
-        ])->layout('layouts.admin');
+        $kappers = Kapper::with('user')
+            ->withCount([
+                'afspraken as totaal_afspraken' => fn($q) => $q->whereIn('status', ['voltooid', 'no_show']),
+                'afspraken as no_show_count'    => fn($q) => $q->where('status', 'no_show'),
+            ])
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(function ($k) {
+                $k->no_show_rate = $k->totaal_afspraken > 0
+                    ? round(($k->no_show_count / $k->totaal_afspraken) * 100)
+                    : null;
+                return $k;
+            });
+
+        return view('livewire.admin.kappers-overzicht', compact('kappers'))
+            ->layout('layouts.admin');
     }
 }

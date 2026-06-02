@@ -23,15 +23,29 @@
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Stad</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Status</th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Abonnement</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">
+                        <span class="flex items-center gap-1">
+                            No-show
+                            <x-tooltip>Percentage afspraken waarbij de klant niet is komen opdagen, van alle voltooide + no-show afspraken. Rood boven 20%.</x-tooltip>
+                        </span>
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Aangemeld</th>
                     <th class="px-6 py-3"></th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50 dark:divide-neutral-700">
                 @forelse($kappers as $kapper)
-                <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
+                <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20 {{ !$kapper->actief && $kapper->abonnement_status === 'geen' ? 'bg-amber-50/30 dark:bg-amber-900/5' : '' }}">
                     <td class="px-6 py-3.5">
-                        <p class="font-medium text-gray-800 dark:text-neutral-100">{{ str($kapper->salon_naam)->title() }}</p>
-                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ strtolower($kapper->user->email) }}</p>
+                        <div class="flex items-center gap-2">
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-neutral-100">{{ str($kapper->salon_naam)->title() }}</p>
+                                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ strtolower($kapper->user->email) }}</p>
+                            </div>
+                            @if(!$kapper->actief && $kapper->abonnement_status === 'geen')
+                            <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 uppercase tracking-wide flex-shrink-0">Nieuw</span>
+                            @endif
+                        </div>
                     </td>
                     <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ str($kapper->stad)->title() }}</td>
                     <td class="px-6 py-3.5">
@@ -51,6 +65,19 @@
                             {{ $kapper->abonnement_status }}
                         </span>
                     </td>
+                    <td class="px-6 py-3.5">
+                        @if($kapper->no_show_rate !== null)
+                        <span class="text-xs font-semibold {{ $kapper->no_show_rate >= 20 ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-neutral-400' }}">
+                            {{ $kapper->no_show_rate }}%
+                        </span>
+                        <span class="text-xs text-gray-400 dark:text-neutral-600 ml-1">({{ $kapper->no_show_count }}/{{ $kapper->totaal_afspraken }})</span>
+                        @else
+                        <span class="text-xs text-gray-300 dark:text-neutral-600">—</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-3.5 text-xs text-gray-400 dark:text-neutral-500">
+                        {{ $kapper->created_at->format('d-m-Y') }}
+                    </td>
                     <td class="px-6 py-3.5 text-right">
                         @if($kapper->actief)
                         <button wire:click="deactiveer({{ $kapper->id }})"
@@ -67,7 +94,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="px-6 py-12 text-center">
+                    <td colspan="7" class="px-6 py-12 text-center">
                         <p class="text-sm text-gray-400 dark:text-neutral-500">Geen kappers geregistreerd</p>
                     </td>
                 </tr>
