@@ -145,73 +145,95 @@
     border-color: #404040;
 }
 
-/* ===== PRELINE DATEPICKER (VanillaCalendarPro) ===== */
-.vc {
-  @apply bg-white border border-gray-200 shadow-lg rounded-xl;
-}
-.vc[data-vc-input] { @apply absolute; z-index: 60; }
-.vc[data-vc-type="default"] { @apply p-3; }
+/* ===== PRELINE DATEPICKER (VanillaCalendarPro v3) ===== */
+
+/* Outer container */
+.vc { @apply bg-white border border-gray-200 shadow-xl rounded-xl overflow-hidden; }
+.vc[data-vc-input] { @apply absolute; z-index: 60; min-width: 300px; }
 .vc[data-vc-calendar-hidden] { @apply hidden; }
-.dark .vc:not([data-vc-theme="light"]) { @apply bg-neutral-900 border-neutral-700; }
+.dark .vc { @apply bg-neutral-800 border-neutral-700; }
 
-.vc-week { @apply flex pb-1.5; }
-.vc-week__day { @apply m-px w-10 block font-normal text-center text-sm text-gray-500; }
-.dark .vc:not([data-vc-theme="light"]) .vc-week__day { @apply text-neutral-500; }
+/* Wrapper + content */
+.vc-wrapper { @apply p-3; }
+.vc-content { }
 
-.vc-dates { @apply grid grid-cols-7 gap-y-0.5; }
+/* Controls row (prev | header | next) */
+.vc-controls { @apply flex items-center justify-between mb-3; }
 
+/* Header (month + year) */
+.vc-header { @apply flex-1 text-center; }
+.vc-header__content { @apply flex items-center justify-center gap-1; }
+.vc-month {
+  @apply text-sm font-semibold text-gray-800 hover:text-blue-600 px-1 rounded transition-colors cursor-pointer;
+}
+.vc-year {
+  @apply text-sm font-semibold text-gray-800 hover:text-blue-600 px-1 rounded transition-colors cursor-pointer;
+}
+.dark .vc-month, .dark .vc-year { @apply text-neutral-100; }
+
+/* Navigation arrows */
+.vc-arrow {
+  @apply w-8 h-8 flex items-center justify-center text-gray-600 rounded-full hover:bg-gray-100 transition-colors cursor-pointer;
+}
+.vc-arrow:disabled { @apply opacity-30 pointer-events-none; }
+.dark .vc-arrow { @apply text-neutral-400 hover:bg-neutral-700; }
+
+/* Weekday headers */
+.vc-week { @apply flex mb-1; }
+.vc-week__day {
+  @apply flex-none text-center text-xs font-medium text-gray-400 uppercase;
+  width: 2.625rem;
+}
+.dark .vc-week__day { @apply text-neutral-500; }
+
+/* Dates grid — v3 uses rows */
+.vc-dates { @apply flex flex-col gap-y-0.5; }
+.vc-dates__row { @apply flex; }
+
+/* Individual date cell */
 .vc-date {
-  @apply relative flex justify-center items-center text-sm text-gray-800 rounded-full;
+  @apply relative flex-none flex items-center justify-center;
   width: 2.625rem;
   height: 2.625rem;
 }
-.vc-date:empty { @apply invisible; }
-.vc-date:hover { @apply text-blue-600; }
-.vc-date::before {
-  content: "";
-  @apply absolute inset-0 border border-transparent rounded-full;
-  border-width: 1.5px;
+.vc-date__btn {
+  @apply w-9 h-9 flex items-center justify-center text-sm text-gray-700 rounded-full hover:bg-gray-100 transition-colors cursor-pointer;
 }
-.vc-date button { @apply relative w-full h-full rounded-full; }
-.vc-date[data-vc-date-month="prev"],
-.vc-date[data-vc-date-month="next"] { @apply text-gray-400; }
-.vc-date[data-vc-date-today] { @apply bg-blue-100 text-blue-700 font-semibold; }
-.vc-date[data-vc-date-selected] { @apply bg-blue-600 text-white; }
-.vc-date[data-vc-date-today][data-vc-date-selected] { @apply bg-blue-600 text-white; }
-.dark .vc:not([data-vc-theme="light"]) .vc-date { @apply text-neutral-200; }
-.dark .vc:not([data-vc-theme="light"]) .vc-date[data-vc-date-month="prev"],
-.dark .vc:not([data-vc-theme="light"]) .vc-date[data-vc-date-month="next"] { @apply text-neutral-600; }
-.dark .vc:not([data-vc-theme="light"]) .vc-date[data-vc-date-today] { background-color: rgba(59,130,246,0.15); color: #93c5fd; }
-.dark .vc:not([data-vc-theme="light"]) .vc-date[data-vc-date-today][data-vc-date-selected] { @apply bg-blue-600 text-white; }
+.dark .vc-date__btn { @apply text-neutral-200 hover:bg-neutral-700; }
 
-.vc-months { @apply grid grid-cols-4 gap-3 px-3 pb-3; }
+/* Date states via data attributes on .vc-date */
+.vc-date[data-vc-date-month="prev"] .vc-date__btn,
+.vc-date[data-vc-date-month="next"] .vc-date__btn { @apply text-gray-300; }
+.dark .vc-date[data-vc-date-month="prev"] .vc-date__btn,
+.dark .vc-date[data-vc-date-month="next"] .vc-date__btn { @apply text-neutral-600; }
+
+.vc-date[data-vc-date-today] .vc-date__btn {
+  @apply bg-blue-100 text-blue-700 font-semibold;
+}
+.dark .vc-date[data-vc-date-today] .vc-date__btn {
+  background-color: rgba(59,130,246,0.15); color: #93c5fd;
+}
+.vc-date[data-vc-date-selected] .vc-date__btn { @apply bg-blue-600 text-white hover:bg-blue-700; }
+.vc-date[data-vc-date-disabled] .vc-date__btn { @apply opacity-30 pointer-events-none; }
+
+/* Also handle .vc-date-today / .vc-date-selected as class variants */
+.vc-date-today .vc-date__btn { @apply bg-blue-100 text-blue-700 font-semibold; }
+.vc-date-selected .vc-date__btn { @apply bg-blue-600 text-white hover:bg-blue-700; }
+
+/* Months picker */
+.vc-months { @apply grid grid-cols-3 gap-1.5 p-1; }
 .vc-months__month {
-  @apply py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 text-gray-800;
+  @apply py-1.5 px-2 text-sm font-medium rounded-lg border border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer text-center;
 }
-.vc-months__month:hover { @apply border-gray-300 text-gray-500; }
-.vc-months__month[data-vc-months-month-selected] { @apply bg-blue-600 border-blue-600 text-white; }
-.dark .vc:not([data-vc-theme="light"]) .vc-months__month { @apply border-neutral-700 text-neutral-200; }
+.vc-months__month[data-vc-months-month-selected],
+.vc-months-month-selected { @apply bg-blue-600 border-blue-600 text-white hover:bg-blue-700; }
+.dark .vc-months__month { @apply border-neutral-700 text-neutral-300 hover:bg-neutral-700; }
 
-.vc-years { @apply grid grid-cols-5 gap-2 px-3 pb-3; }
+/* Years picker */
+.vc-years { @apply grid grid-cols-4 gap-1.5 p-1; }
 .vc-years__year {
-  @apply py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 text-gray-800;
+  @apply py-1.5 px-2 text-sm font-medium rounded-lg border border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer text-center;
 }
-.vc-years__year:hover { @apply border-gray-300 text-gray-500; }
-.vc-years__year[data-vc-years-year-selected] { @apply bg-blue-600 border-blue-600 text-white; }
-.dark .vc:not([data-vc-theme="light"]) .vc-years__year { @apply border-neutral-700 text-neutral-200; }
-
-.vc-month { @apply text-gray-800; }
-.vc-month:hover { @apply text-gray-600; }
-.dark .vc:not([data-vc-theme="light"]) .vc-month { @apply text-neutral-200; }
-
-.vc-year { @apply text-gray-800; }
-.vc-year:hover { @apply text-gray-600; }
-.dark .vc:not([data-vc-theme="light"]) .vc-year { @apply text-neutral-200; }
-
-.vc-arrow {
-  @apply w-8 h-8 flex justify-center items-center text-gray-800 rounded-full;
-}
-.vc-arrow:hover { @apply bg-gray-100; }
-.vc-arrow:disabled { @apply opacity-50 pointer-events-none; }
-.dark .vc:not([data-vc-theme="light"]) .vc-arrow { @apply text-neutral-400; }
-.dark .vc:not([data-vc-theme="light"]) .vc-arrow:hover { @apply bg-neutral-800; }
+.vc-years__year[data-vc-years-year-selected],
+.vc-years-year-selected { @apply bg-blue-600 border-blue-600 text-white hover:bg-blue-700; }
+.dark .vc-years__year { @apply border-neutral-700 text-neutral-300 hover:bg-neutral-700; }

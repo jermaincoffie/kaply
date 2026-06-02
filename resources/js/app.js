@@ -1,13 +1,10 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
 import _ from 'lodash';
-import * as VanillaCalendarProModule from 'vanilla-calendar-pro';
+import { Calendar } from 'vanilla-calendar-pro';
 
-// Preline's datepicker checks window.VanillaCalendarPro
-window.VanillaCalendarPro = VanillaCalendarProModule.VanillaCalendarPro
-    ?? VanillaCalendarProModule.Calendar
-    ?? VanillaCalendarProModule.default
-    ?? VanillaCalendarProModule;
+// Preline datepicker checkt window.VanillaCalendarPro
+window.VanillaCalendarPro = Calendar;
 
 // Livewire 3 start Alpine zelf — window.Alpine instellen zodat plugins werken,
 // maar NIET Alpine.start() aanroepen (dubbele instantie breekt @entangle)
