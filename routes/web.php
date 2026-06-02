@@ -4,9 +4,11 @@ use App\Livewire\Admin\AfsprakenOverzicht as AdminAfspraken;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\KappersOverzicht;
 use App\Livewire\Admin\KlantenOverzicht as AdminKlanten;
+use App\Livewire\Kapper\AfsprakenOverzicht as KapperAfspraken;
 use App\Livewire\Kapper\AgendaOverzicht;
 use App\Livewire\Kapper\BeschikbaarheidBeheer;
 use App\Livewire\Kapper\DienstenBeheer;
+use App\Livewire\Kapper\KlantenOverzicht as KapperKlanten;
 use App\Livewire\Kapper\ProfielBeheer;
 use App\Livewire\Kapper\Registratie as KapperRegistratie;
 use App\Livewire\Klant\BoekingWizard;
@@ -21,6 +23,8 @@ Route::get('/kapper/registreer', KapperRegistratie::class)->name('kapper.registr
 // Kapper dashboard (MOET vóór /kapper/{slug} staan — anders vangt slug 'dashboard' af)
 Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->group(function () {
     Route::get('/dashboard', AgendaOverzicht::class)->name('dashboard');
+    Route::get('/afspraken', KapperAfspraken::class)->name('afspraken');
+    Route::get('/klanten', KapperKlanten::class)->name('klanten');
     Route::get('/diensten', DienstenBeheer::class)->name('diensten');
     Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
     Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
