@@ -7,10 +7,13 @@
 
     <form wire:submit="bevestig" class="space-y-6">
         <div>
-            <label class="block font-medium mb-1">Kies een datum</label>
-            <input wire:model.live="gekozenDatum" type="date"
-                min="{{ today()->addDay()->toDateString() }}"
-                class="rounded border-gray-300 w-full">
+            <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Kies een datum</label>
+            <x-datepicker
+                wire-model="gekozenDatum"
+                :value="$gekozenDatum"
+                :date-min="today()->addDay()->toDateString()"
+                placeholder="Selecteer datum"
+            />
             @error('gekozenDatum') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
 

@@ -61,8 +61,12 @@
 
         <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">
             <form wire:submit="sluitingsdagToevoegen" class="flex flex-wrap gap-3">
-                <input wire:model="sluitingsDatum" type="date"
-                       class="py-2 px-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                <x-datepicker
+                    wire-model="sluitingsDatum"
+                    :value="$sluitingsDatum"
+                    :date-min="today()->toDateString()"
+                    placeholder="Selecteer datum"
+                />
                 <input wire:model="sluitingsReden" type="text" placeholder="Reden (optioneel)"
                        class="flex-1 min-w-40 py-2 px-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
                 <button type="submit"

@@ -11,10 +11,16 @@ window._ = _;
 const preline = await import('preline');
 window.HSStaticMethods = preline.HSStaticMethods;
 
+// HSDatepicker global beschikbaar voor x-datepicker component
+if (preline.HSDatepicker) window.HSDatepicker = preline.HSDatepicker;
+
+const initPreline = () => preline.HSStaticMethods.autoInit();
+
 if (document.readyState === 'complete') {
-    preline.HSStaticMethods.autoInit();
+    initPreline();
 } else {
-    window.addEventListener('load', () => {
-        preline.HSStaticMethods.autoInit();
-    });
+    window.addEventListener('load', initPreline);
 }
+
+// Herinitialiseer na Livewire navigatie
+document.addEventListener('livewire:navigated', initPreline);
