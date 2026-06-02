@@ -20,7 +20,7 @@
         </div>
 
         <select wire:model.live="filterStatus"
-            class="py-2 px-3 text-sm rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            class="py-2 pl-3 pr-8 text-sm rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="">Alle statussen</option>
             <option value="gepland">Gepland</option>
             <option value="voltooid">Voltooid</option>
@@ -46,10 +46,10 @@
                 @forelse($afspraken as $afspraak)
                 <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
                     <td class="px-6 py-3.5 font-medium text-gray-800 dark:text-neutral-100">
-                        {{ $afspraak->klant->name }}
+                        {{ str($afspraak->klant->name)->title() }}
                     </td>
                     <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">
-                        {{ $afspraak->kapper->salon_naam }}
+                        {{ str($afspraak->kapper->salon_naam)->title() }}
                     </td>
                     <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">
                         {{ $afspraak->dienst->naam }}

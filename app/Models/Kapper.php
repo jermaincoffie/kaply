@@ -24,6 +24,21 @@ class Kapper extends Model
     public function sluitingsdagen() { return $this->hasMany(Sluitingsdag::class); }
     public function afspraken() { return $this->hasMany(Afspraak::class); }
 
+    public function setSalonNaamAttribute(string $value): void
+    {
+        $this->attributes['salon_naam'] = ucwords(strtolower($value));
+    }
+
+    public function setStadAttribute(string $value): void
+    {
+        $this->attributes['stad'] = ucwords(strtolower($value));
+    }
+
+    public function setAdresAttribute(?string $value): void
+    {
+        $this->attributes['adres'] = $value ? ucwords(strtolower($value)) : null;
+    }
+
     public static function generateSlug(string $naam): string
     {
         $base = Str::slug($naam);

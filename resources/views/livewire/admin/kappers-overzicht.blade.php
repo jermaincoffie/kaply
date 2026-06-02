@@ -30,10 +30,10 @@
                 @forelse($kappers as $kapper)
                 <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
                     <td class="px-6 py-3.5">
-                        <p class="font-medium text-gray-800 dark:text-neutral-100">{{ $kapper->salon_naam }}</p>
-                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $kapper->user->email }}</p>
+                        <p class="font-medium text-gray-800 dark:text-neutral-100">{{ str($kapper->salon_naam)->title() }}</p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ strtolower($kapper->user->email) }}</p>
                     </td>
-                    <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ $kapper->stad }}</td>
+                    <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ str($kapper->stad)->title() }}</td>
                     <td class="px-6 py-3.5">
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium
                             {{ $kapper->actief

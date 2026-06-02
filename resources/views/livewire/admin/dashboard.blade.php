@@ -58,8 +58,8 @@
             <tbody class="divide-y divide-gray-50 dark:divide-neutral-700">
                 @forelse($recente_afspraken as $afspraak)
                 <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
-                    <td class="px-6 py-3.5 font-medium text-gray-800 dark:text-neutral-100">{{ $afspraak->klant->name }}</td>
-                    <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ $afspraak->kapper->salon_naam }}</td>
+                    <td class="px-6 py-3.5 font-medium text-gray-800 dark:text-neutral-100">{{ str($afspraak->klant->name)->title() }}</td>
+                    <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ str($afspraak->kapper->salon_naam)->title() }}</td>
                     <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ $afspraak->dienst->naam }}</td>
                     <td class="px-6 py-3.5 text-gray-400 dark:text-neutral-500 text-xs">{{ $afspraak->datum->format('d-m-Y') }} {{ $afspraak->start_tijd }}</td>
                     <td class="px-6 py-3.5">

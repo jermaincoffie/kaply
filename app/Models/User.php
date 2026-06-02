@@ -68,6 +68,16 @@ class User extends Authenticatable
         ];
     }
 
+    public function setNameAttribute(string $value): void
+    {
+        $this->attributes['name'] = ucwords(strtolower($value));
+    }
+
+    public function setEmailAttribute(string $value): void
+    {
+        $this->attributes['email'] = strtolower($value);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
