@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Beschikbaarheid extends Model
 {
+    protected $table = 'beschikbaarheden';
     protected $fillable = ['kapper_id', 'dag_van_week', 'start_tijd', 'eind_tijd'];
 
     public function kapper() { return $this->belongsTo(Kapper::class); }
