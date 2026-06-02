@@ -17,7 +17,7 @@
     @if($toonFormulier)
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5 mb-5">
         <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mb-4">Nieuwe medewerker</h2>
-        <form wire:submit="toevoegen" class="space-y-4">
+        <div class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Naam</label>
@@ -52,10 +52,10 @@
                 </div>
             </div>
             <div class="flex gap-2">
-                <button type="submit" class="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">Toevoegen</button>
+                <button type="button" wire:click="toevoegen" class="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">Toevoegen</button>
                 <button type="button" wire:click="sluitFormulier" class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">Annuleer</button>
             </div>
-        </form>
+        </div>
     </div>
     @endif
 
