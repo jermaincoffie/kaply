@@ -26,17 +26,29 @@
                     @error('naam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Foto <span class="text-gray-400">(optioneel)</span></label>
-                    @if($foto)
-                    <img src="{{ $foto->temporaryUrl() }}" class="w-10 h-10 rounded-full object-cover mb-2">
-                    @endif
-                    <label class="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg border border-gray-200 dark:border-neutral-700 text-sm text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors w-fit">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                        </svg>
-                        Uploaden
-                        <input wire:model="foto" type="file" accept="image/*" class="hidden">
-                    </label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2">Foto <span class="text-gray-400">(optioneel)</span></label>
+                    <div class="flex items-center gap-4">
+                        {{-- Avatar preview --}}
+                        @if($foto)
+                        <img src="{{ $foto->temporaryUrl() }}"
+                             class="w-16 h-16 rounded-full object-cover border-2 border-blue-400 flex-shrink-0">
+                        @else
+                        <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-neutral-700 border border-gray-200 dark:border-neutral-600 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-8 h-8 text-gray-400 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        @endif
+                        {{-- Upload knop --}}
+                        <label class="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg border border-gray-200 dark:border-neutral-700 text-sm text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            {{ $foto ? 'Wijzigen' : 'Foto uploaden' }}
+                            <input wire:model="foto" type="file" accept="image/*" class="hidden">
+                        </label>
+                    </div>
                 </div>
             </div>
             <div class="flex gap-2">
