@@ -10,51 +10,75 @@ use Livewire\Component;
 
 class Registratie extends Component
 {
+    public int $stap = 1;
+
+    // Stap 1
     public string $name = '';
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
+
+    // Stap 2
     public string $salon_naam = '';
     public string $stad = '';
+    public string $adres = '';
     public string $telefoon = '';
 
-    protected function rules(): array
+    protected function stapEenRules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
-            'salon_naam' => 'required|string|max:255',
-            'stad' => 'required|string|max:255',
-            'telefoon' => 'nullable|string|max:20',
         ];
     }
 
-    public function registreer()
+    protected function stapTweeRules(): array
     {
-        $this->validate();
+        return [
+            'salon_naam' => 'required|string|max:255',
+            'stad'       => 'required|string|max:255',
+            'adres'      => 'nullable|string|max:255',
+            'telefoon'   => 'nullable|string|max:20',
+        ];
+    }
+
+    public function volgende(): void
+    {
+        $this->validate($this->stapEenRules());
+        $this->stap = 2;
+    }
+
+    public function vorige(): void
+    {
+        $this->stap = 1;
+    }
+
+    public function registreer(): void
+    {
+        $this->validate($this->stapTweeRules());
 
         $user = User::create([
-            'name' => $this->name,
-            'email' => $this->email,
+            'name'     => $this->name,
+            'email'    => $this->email,
             'password' => Hash::make($this->password),
+            'role'     => 'kapper',
         ]);
-        $user->role = 'kapper';
-        $user->save();
 
         Kapper::create([
-            'user_id' => $user->id,
-            'salon_naam' => $this->salon_naam,
-            'slug' => Kapper::generateSlug($this->salon_naam),
-            'stad' => $this->stad,
-            'telefoon' => $this->telefoon,
+            'user_id'           => $user->id,
+            'salon_naam'        => $this->salon_naam,
+            'slug'              => Kapper::generateSlug($this->salon_naam),
+            'stad'              => $this->stad,
+            'adres'             => $this->adres ?: null,
+            'telefoon'          => $this->telefoon ?: null,
             'abonnement_status' => 'geen',
-            'actief' => false,
+            'actief'            => false,
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('kapper.dashboard');
+        $this->stap = 3;
     }
 
     public function render()
