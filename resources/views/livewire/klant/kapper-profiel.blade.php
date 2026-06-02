@@ -103,13 +103,17 @@
 
         {{-- Rechts: datum + tijdsloten --}}
         <div class="md:col-span-2">
-            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
+            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5 overflow-visible">
                 <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mb-4">Kies een datum</h2>
 
-                <input wire:model.live="geselecteerdeDatum"
-                       type="date"
-                       min="{{ today()->toDateString() }}"
-                       class="py-2 px-3 w-full sm:w-auto rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 mb-4">
+                <div class="mb-4 overflow-visible">
+                    <x-datepicker
+                        wire-model="geselecteerdeDatum"
+                        :value="$geselecteerdeDatum"
+                        :date-min="today()->toDateString()"
+                        placeholder="Kies een datum"
+                    />
+                </div>
 
                 <div wire:loading class="text-xs text-gray-400 dark:text-neutral-500 mb-3">Beschikbaarheid laden...</div>
 
