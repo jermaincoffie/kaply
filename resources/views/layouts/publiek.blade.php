@@ -33,10 +33,22 @@
             </a>
 
             @auth
-                <a href="{{ auth()->user()->isKapper() ? route('kapper.dashboard') : route('klant.afspraken') }}"
+                @if(auth()->user()->isKapper())
+                <a href="{{ route('kapper.dashboard') }}"
                    class="px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200 transition-colors">
-                    Dashboard
+                    Mijn salon
                 </a>
+                @elseif(auth()->user()->isAdmin())
+                <a href="{{ route('admin.dashboard') }}"
+                   class="px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200 transition-colors">
+                    Admin
+                </a>
+                @else
+                <a href="{{ route('klant.afspraken') }}"
+                   class="px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200 transition-colors">
+                    Mijn afspraken
+                </a>
+                @endif
                 <form method="POST" action="{{ route('logout') }}" class="inline">
                     @csrf
                     <button type="submit"
