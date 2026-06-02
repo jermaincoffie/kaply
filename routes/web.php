@@ -1,17 +1,12 @@
 <?php
 
+use App\Livewire\Kapper\Registratie as KapperRegistratie;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Publiek
+Route::get('/kapper/registreer', KapperRegistratie::class)->name('kapper.registreer');
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+// Kapper dashboard (placeholder — volledig gebouwd in Task 10)
+Route::middleware(['auth'])->prefix('kapper')->name('kapper.')->group(function () {
+    Route::get('/dashboard', fn() => 'dashboard placeholder')->name('dashboard');
 });
