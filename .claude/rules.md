@@ -41,6 +41,25 @@ Alles wat gebouwd wordt volgt de SereneShift design stijl (`c:\Users\jerma\medis
 - Input: `rounded-lg border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-900 text-sm focus:ring-2 focus:ring-blue-500`
 - Label: `block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1`
 
+### Dropdown / Select
+Gebruik ALTIJD `<x-select>` — nooit een native `<select>` element.
+
+```blade
+<x-select
+    wire-target="propertyNaam"
+    :current="$propertyNaam"
+    :options="['' => 'Alle items', 'a' => 'Label A', 'b' => 'Label B']"
+    placeholder="Alle items"
+/>
+```
+
+- `wire-target`: naam van de Livewire property (string, geen wire:model)
+- `current`: huidige waarde vanuit Livewire (`$propertyNaam`)
+- `options`: PHP array `['value' => 'Label']`, lege string `''` = reset optie
+- Werkt via `$wire.set()` intern — geen `@entangle` of `wire:model`
+- Reden: native `<select>` dropdown lijst is onmogelijk te stylen (browser rendert die)
+- Alpine.start() NOOIT handmatig aanroepen — Livewire 3 doet dit automatisch
+
 ### Dark mode
 - Altijd dark mode klassen toevoegen naast light mode
 - Palette: `neutral-900` (pagina) → `neutral-800` (cards) → `neutral-700` (hover/active)
