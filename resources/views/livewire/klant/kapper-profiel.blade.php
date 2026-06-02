@@ -157,10 +157,9 @@
         @endif
 
     </div>
-</div>
 
-{{-- Boeking modal --}}
-@if($toonBoekModal)
+    {{-- Boeking modal --}}
+    @if($toonBoekModal)
 <div
     x-data
     x-transition:enter="transition ease-out duration-200"
@@ -236,5 +235,5 @@
             @endif
         </div>
     </div>
+    @endif
 </div>
-@endif
