@@ -9,12 +9,12 @@ class KappersOverzicht extends Component
 {
     public function activeer(int $id): void
     {
-        Kapper::find($id)->update(['actief' => true]);
+        Kapper::find($id)->update(['actief' => true, 'abonnement_status' => 'actief']);
     }
 
     public function deactiveer(int $id): void
     {
-        Kapper::find($id)->update(['actief' => false]);
+        Kapper::find($id)->update(['actief' => false, 'abonnement_status' => 'gepauzeerd']);
     }
 
     public function render()
