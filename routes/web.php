@@ -3,10 +3,24 @@
 use App\Livewire\Kapper\Registratie as KapperRegistratie;
 use App\Livewire\Kapper\DienstenBeheer;
 use App\Livewire\Kapper\BeschikbaarheidBeheer;
+use App\Livewire\Klant\KapperZoeken;
 use Illuminate\Support\Facades\Route;
 
-// Publiek
+// Homepage — publieke zoekopdracht
+Route::get('/', KapperZoeken::class)->name('home');
+
+// Publiek — kapper registratie (MUST be before /{slug} route)
 Route::get('/kapper/registreer', KapperRegistratie::class)->name('kapper.registreer');
+
+// Kapper profielpagina
+Route::get('/kapper/{slug}', function ($slug) {
+    $kapper = \App\Models\Kapper::where('slug', $slug)
+        ->where('actief', true)
+        ->where('abonnement_status', 'actief')
+        ->with('diensten')
+        ->firstOrFail();
+    return view('pages.kapper-profiel', compact('kapper'));
+})->name('kapper.profiel');
 
 // General dashboard — redirects based on role (required by Jetstream auth flow)
 Route::middleware(['auth'])->get('/dashboard', function () {

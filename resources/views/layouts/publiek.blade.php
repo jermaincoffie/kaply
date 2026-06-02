@@ -8,7 +8,13 @@
     @livewireStyles
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <main>{{ $slot }}</main>
+    <main>
+        @hasSection('content')
+            @yield('content')
+        @else
+            {{ $slot }}
+        @endif
+    </main>
     @livewireScripts
 </body>
 </html>
