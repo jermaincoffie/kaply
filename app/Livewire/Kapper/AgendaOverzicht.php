@@ -28,10 +28,10 @@ class AgendaOverzicht extends Component
     {
         $kapper_id = auth()->user()->kapper->id;
 
-        $omzet_maand = Afspraak::where('kapper_id', $kapper_id)
-            ->where('status', 'voltooid')
-            ->whereMonth('datum', now()->month)
-            ->whereYear('datum', now()->year)
+        $omzet_maand = Afspraak::where('afspraken.kapper_id', $kapper_id)
+            ->where('afspraken.status', 'voltooid')
+            ->whereMonth('afspraken.datum', now()->month)
+            ->whereYear('afspraken.datum', now()->year)
             ->join('diensten', 'afspraken.dienst_id', '=', 'diensten.id')
             ->sum('diensten.prijs');
 
