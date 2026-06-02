@@ -35,10 +35,6 @@
                class="px-3 py-2 rounded-lg text-sm {{ request()->routeIs('klant.afspraken') ? 'bg-blue-50 text-blue-900 dark:bg-neutral-700 dark:text-neutral-200 font-medium' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200' }} transition-colors">
                 Mijn afspraken
             </a>
-            <a href="{{ route('klant.account') }}"
-               class="px-3 py-2 rounded-lg text-sm {{ request()->routeIs('klant.account') ? 'bg-blue-50 text-blue-900 dark:bg-neutral-700 dark:text-neutral-200 font-medium' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200' }} transition-colors">
-                Account
-            </a>
         </nav>
 
         {{-- Account dropdown --}}
@@ -80,19 +76,24 @@
                     </div>
                 </div>
 
-                {{-- Mobile nav links --}}
-                <div class="p-1 border-t border-gray-100 dark:border-neutral-800 sm:hidden">
+                <div class="p-1 border-t border-gray-100 dark:border-neutral-800">
+                    {{-- Mobile only --}}
                     <a href="{{ route('home') }}"
-                       class="flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-gray-800 dark:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors">
+                       class="flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-gray-800 dark:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors sm:hidden">
+                        <svg class="shrink-0 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/></svg>
                         Kappers zoeken
                     </a>
                     <a href="{{ route('klant.afspraken') }}"
-                       class="flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-gray-800 dark:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors">
+                       class="flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-gray-800 dark:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors sm:hidden">
+                        <svg class="shrink-0 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         Mijn afspraken
                     </a>
-                </div>
-
-                <div class="p-1 border-t border-gray-100 dark:border-neutral-800">
+                    {{-- Altijd zichtbaar --}}
+                    <a href="{{ route('klant.account') }}"
+                       class="flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-gray-800 dark:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors">
+                        <svg class="shrink-0 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        Mijn account
+                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"
