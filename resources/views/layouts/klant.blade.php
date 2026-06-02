@@ -107,6 +107,7 @@
         {{ $slot }}
     </main>
 
+    <x-confirm-modal />
     @livewireScripts
     @stack('scripts')
 
