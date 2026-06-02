@@ -4,7 +4,7 @@
             <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100">Medewerkers</h1>
             <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Barbers die klanten kunnen selecteren bij het boeken</p>
         </div>
-        <button wire:click="$set('toonFormulier', true)"
+        <button wire:click="openFormulier"
                 class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -41,7 +41,7 @@
             </div>
             <div class="flex gap-2">
                 <button type="submit" class="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">Toevoegen</button>
-                <button type="button" wire:click="$set('toonFormulier', false)" class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">Annuleer</button>
+                <button type="button" wire:click="sluitFormulier" class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">Annuleer</button>
             </div>
         </form>
     </div>

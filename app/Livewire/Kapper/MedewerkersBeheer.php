@@ -14,6 +14,9 @@ class MedewerkersBeheer extends Component
     public $foto = null;
     public bool $toonFormulier = false;
 
+    public function openFormulier(): void { $this->toonFormulier = true; }
+    public function sluitFormulier(): void { $this->toonFormulier = false; $this->reset(['naam', 'foto']); }
+
     protected function rules(): array
     {
         return [
