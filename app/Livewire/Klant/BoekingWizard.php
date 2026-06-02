@@ -32,6 +32,15 @@ class BoekingWizard extends Component
             'betaalmethode' => 'required|in:online,in_zaak',
         ]);
 
+        // Re-validate slot is still free (TOCTOU guard)
+        $vrijeslots = (new BeschikbaarheidsService())->getVrijeTijdslots(
+            $this->kapper, $this->dienst, $this->gekozenDatum
+        );
+        if (!in_array($this->gekozenTijdslot, $vrijeslots)) {
+            $this->addError('gekozenTijdslot', 'Dit tijdslot is zojuist bezet geraakt. Kies een ander tijdstip.');
+            return;
+        }
+
         $eind = Carbon::parse("{$this->gekozenDatum} {$this->gekozenTijdslot}")
             ->addMinutes($this->dienst->duur_minuten)
             ->format('H:i');

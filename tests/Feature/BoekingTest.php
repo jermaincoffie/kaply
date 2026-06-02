@@ -84,3 +84,42 @@ it('dubbele boeking op hetzelfde tijdslot is niet mogelijk', function () {
 
     expect($slots)->not->toContain('09:00');
 });
+
+it('bevestig weigert een tijdslot dat zojuist bezet is geraakt', function () {
+    $klant = User::factory()->create(['role' => 'klant']);
+    $klant2 = User::factory()->create(['role' => 'klant']);
+    $kapper = Kapper::factory()->create();
+    $dienst = Dienst::factory()->create(['kapper_id' => $kapper->id, 'duur_minuten' => 30]);
+    $maandag = Carbon::now()->next('Monday')->toDateString();
+
+    Beschikbaarheid::create([
+        'kapper_id' => $kapper->id,
+        'dag_van_week' => 0,
+        'start_tijd' => '09:00',
+        'eind_tijd' => '17:00',
+    ]);
+
+    // Klant 2 boekt het slot terwijl klant 1 nog op het wizardscherm zit
+    Afspraak::create([
+        'klant_id' => $klant2->id,
+        'kapper_id' => $kapper->id,
+        'dienst_id' => $dienst->id,
+        'datum' => $maandag,
+        'start_tijd' => '09:00',
+        'eind_tijd' => '09:30',
+        'status' => 'gepland',
+        'betaalmethode' => 'in_zaak',
+    ]);
+
+    // Klant 1 probeert nu hetzelfde slot te bevestigen
+    Livewire::actingAs($klant)
+        ->test(BoekingWizard::class, ['kapperSlug' => $kapper->slug, 'dienstId' => $dienst->id])
+        ->set('gekozenDatum', $maandag)
+        ->set('gekozenTijdslot', '09:00')
+        ->set('betaalmethode', 'in_zaak')
+        ->call('bevestig')
+        ->assertHasErrors(['gekozenTijdslot']);
+
+    // Geen nieuwe afspraak aangemaakt voor klant 1
+    expect(Afspraak::where('klant_id', $klant->id)->exists())->toBeFalse();
+});
