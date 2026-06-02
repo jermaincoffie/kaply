@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Klant;
 
+use App\Models\Afspraak;
 use App\Models\Kapper;
 use App\Models\Dienst;
 use App\Services\BeschikbaarheidsService;
@@ -14,6 +15,12 @@ class KapperProfiel extends Component
     public ?int $geselecteerdeDienstId = null;
     public string $geselecteerdeDatum = '';
     public array $tijdsloten = [];
+
+    // Boeking modal
+    public bool $toonBoekModal = false;
+    public string $geselecteerdeTijd = '';
+    public string $betaalmethode = 'in_zaak';
+    public bool $geboekt = false;
 
     public function mount(string $slug): void
     {
@@ -39,6 +46,46 @@ class KapperProfiel extends Component
 
     public function updatedGeselecteerdeDatum(): void
     {
+        $this->laadTijdsloten();
+    }
+
+    public function openBoekModal(string $tijd): void
+    {
+        if (!auth()->check()) {
+            return $this->redirect(route('login'));
+        }
+        $this->geselecteerdeTijd = $tijd;
+        $this->betaalmethode     = 'in_zaak';
+        $this->geboekt           = false;
+        $this->toonBoekModal     = true;
+    }
+
+    public function sluitModal(): void
+    {
+        $this->toonBoekModal = false;
+    }
+
+    public function bevestigBoeking(): void
+    {
+        if (!auth()->check()) return;
+
+        $dienst = Dienst::findOrFail($this->geselecteerdeDienstId);
+        $eind   = Carbon::parse($this->geselecteerdeDatum . ' ' . $this->geselecteerdeTijd)
+            ->addMinutes($dienst->duur_minuten)
+            ->format('H:i');
+
+        Afspraak::create([
+            'klant_id'      => auth()->id(),
+            'kapper_id'     => $this->kapper->id,
+            'dienst_id'     => $dienst->id,
+            'datum'         => $this->geselecteerdeDatum,
+            'start_tijd'    => $this->geselecteerdeTijd,
+            'eind_tijd'     => $eind,
+            'status'        => 'gepland',
+            'betaalmethode' => $this->betaalmethode,
+        ]);
+
+        $this->geboekt = true;
         $this->laadTijdsloten();
     }
 
