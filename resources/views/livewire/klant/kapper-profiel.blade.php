@@ -249,6 +249,14 @@
                     <span class="text-gray-500 dark:text-neutral-400">Dienst</span>
                     <span class="font-medium text-gray-800 dark:text-neutral-100">{{ $geselecteerdeDienst?->naam }}</span>
                 </div>
+                @if($medewerkers->isNotEmpty())
+                <div class="flex justify-between">
+                    <span class="text-gray-500 dark:text-neutral-400">Barber</span>
+                    <span class="font-medium text-gray-800 dark:text-neutral-100">
+                        {{ $geselecteerdeMedewerker ? $geselecteerdeMedewerker->naam : 'Maakt niet uit' }}
+                    </span>
+                </div>
+                @endif
                 <div class="flex justify-between">
                     <span class="text-gray-500 dark:text-neutral-400">Datum</span>
                     <span class="font-medium text-gray-800 dark:text-neutral-100">{{ \Carbon\Carbon::parse($geselecteerdeDatum)->isoFormat('D MMM YYYY') }}</span>

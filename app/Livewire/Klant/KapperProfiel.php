@@ -136,11 +136,16 @@ class KapperProfiel extends Component
                 'eind'  => substr($b->eind_tijd, 0, 5),
             ]);
 
+        $medewerkers = $this->kapper->medewerkers()->where('actief', true)->get();
+
         return view('livewire.klant.kapper-profiel', [
-            'openingstijden'      => $openingstijden,
-            'medewerkers'         => $this->kapper->medewerkers()->where('actief', true)->get(),
-            'geselecteerdeDienst' => $this->geselecteerdeDienstId
+            'openingstijden'         => $openingstijden,
+            'medewerkers'            => $medewerkers,
+            'geselecteerdeDienst'    => $this->geselecteerdeDienstId
                 ? $this->kapper->diensten->firstWhere('id', $this->geselecteerdeDienstId)
+                : null,
+            'geselecteerdeMedewerker' => $this->geselecteerdeMedewerkerId
+                ? $medewerkers->firstWhere('id', $this->geselecteerdeMedewerkerId)
                 : null,
         ])->layout('layouts.publiek');
     }
