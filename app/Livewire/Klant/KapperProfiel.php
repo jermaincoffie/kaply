@@ -15,7 +15,8 @@ class KapperProfiel extends Component
     public ?int $geselecteerdeDienstId = null;
     public string $geselecteerdeDatum = '';
     public array $tijdsloten = [];
-    public ?int $geselecteerdeMedewerkerId = null; // null = maakt niet uit
+    public ?int $geselecteerdeMedewerkerId = null;
+    public ?string $sluitingsdagReden = null;
 
     // Boeking modal
     public bool $toonBoekModal = false;
@@ -115,7 +116,13 @@ class KapperProfiel extends Component
         if (!$dienst) { $this->tijdsloten = []; return; }
 
         $service = new BeschikbaarheidsService();
-        $this->tijdsloten = $service->getVrijeTijdslots($this->kapper, $dienst, $this->geselecteerdeDatum, $this->geselecteerdeMedewerkerId);
+        $sluitingsdag = $service->getSluitingsdag($this->kapper, $this->geselecteerdeDatum);
+        $this->sluitingsdagReden = $sluitingsdag
+            ? ($sluitingsdag->reden ?: 'gesloten')
+            : null;
+        $this->tijdsloten = $sluitingsdag
+            ? []
+            : $service->getVrijeTijdslots($this->kapper, $dienst, $this->geselecteerdeDatum, $this->geselecteerdeMedewerkerId);
     }
 
     public function render()

@@ -10,6 +10,17 @@ use Carbon\Carbon;
 
 class BeschikbaarheidsService
 {
+    public function getSluitingsdag(Kapper $kapper, string $datum): ?object
+    {
+        return $kapper->sluitingsdagen()
+            ->where(fn($q) => $q
+                ->where(fn($q2) => $q2->whereNull('datum_tot')->whereDate('datum', $datum))
+                ->orWhere(fn($q2) => $q2->whereNotNull('datum_tot')
+                    ->where('datum', '<=', $datum)
+                    ->where('datum_tot', '>=', $datum))
+            )->first();
+    }
+
     public function getVrijeTijdslots(
         Kapper $kapper,
         Dienst $dienst,
@@ -25,9 +36,14 @@ class BeschikbaarheidsService
 
         if (!$beschikbaarheid) return [];
         $isGesloten = $kapper->sluitingsdagen()
-            ->where('datum', '<=', $datum)
-            ->where(fn($q) => $q->whereNull('datum_tot')->orWhere('datum_tot', '>=', $datum))
-            ->exists();
+            ->where(fn($q) => $q
+                // Losse dag: exacte datum match
+                ->where(fn($q2) => $q2->whereNull('datum_tot')->whereDate('datum', $datum))
+                // Range: datum valt binnen van–tot
+                ->orWhere(fn($q2) => $q2->whereNotNull('datum_tot')
+                    ->where('datum', '<=', $datum)
+                    ->where('datum_tot', '>=', $datum))
+            )->exists();
         if ($isGesloten) return [];
 
         // Capaciteit = aantal actieve medewerkers, minimaal 1

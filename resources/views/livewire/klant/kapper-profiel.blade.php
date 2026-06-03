@@ -162,6 +162,16 @@
                 </button>
                 @endforeach
             </div>
+            @elseif($geselecteerdeDatum && $sluitingsdagReden)
+            <div class="py-6 text-center">
+                <div class="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">Salon gesloten</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">{{ ucfirst($sluitingsdagReden) }}</p>
+            </div>
             @elseif($geselecteerdeDatum)
             <div class="py-6 text-center">
                 <svg class="w-8 h-8 text-gray-200 dark:text-neutral-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
