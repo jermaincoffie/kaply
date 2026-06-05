@@ -98,7 +98,10 @@
             </div>
             <div class="px-5 pt-4 pb-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Klantnotitie</h3>
+                    <div class="flex items-center gap-1.5">
+                        <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Klantnotitie</h3>
+                        <x-tooltip>Notities zijn alleen zichtbaar voor jouw kapperszaak. Andere salons zien dit niet.</x-tooltip>
+                    </div>
                     <button wire:click="$set('notitieKlantId', null)" class="text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
