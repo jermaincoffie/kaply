@@ -1,7 +1,18 @@
 <div>
-    <div class="mb-6">
-        <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100">Profiel</h1>
-        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Jouw publieke profielpagina voor klanten</p>
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100">Profiel</h1>
+            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Jouw publieke profielpagina voor klanten</p>
+        </div>
+        @if(auth()->user()->kapper?->slug)
+        <a href="{{ route('kapper.profiel', auth()->user()->kapper->slug) }}" target="_blank"
+           class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+            Bekijk mijn pagina
+        </a>
+        @endif
     </div>
 
 
