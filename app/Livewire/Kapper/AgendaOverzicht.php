@@ -25,6 +25,8 @@ class AgendaOverzicht extends Component
     public ?int $geselecteerdeKlantId = null;
     public string $geselecteerdeKlantNaam = '';
     public bool $toonKlantDropdown = false;
+    public bool $isWalkIn = false;
+    public string $walkInNaam = '';
 
     public function mount(): void
     {
@@ -74,7 +76,7 @@ class AgendaOverzicht extends Component
         $this->toonNieuwFormulier = false;
     }
 
-    public function openNieuwFormulier(string $datum, string $tijd): void
+    public function openNieuwFormulier(string $datum, string $tijd, bool $walkIn = false): void
     {
         $this->geselecteerdeAfspraakId = null;
         $this->toonNieuwFormulier = true;
@@ -86,6 +88,18 @@ class AgendaOverzicht extends Component
         $this->geselecteerdeKlantId = null;
         $this->geselecteerdeKlantNaam = '';
         $this->toonKlantDropdown = false;
+        $this->isWalkIn = $walkIn;
+        $this->walkInNaam = '';
+    }
+
+    public function openWalkIn(): void
+    {
+        $nu = now()->format('H:i');
+        // Afronden op dichtstbijzijnde half uur
+        $minuten = (int) now()->format('i');
+        $afgerond = $minuten < 30 ? '00' : '30';
+        $tijd = now()->format('H') . ':' . $afgerond;
+        $this->openNieuwFormulier(today()->toDateString(), $tijd, true);
     }
 
     public function selecteerKlant(int $id, string $naam): void
@@ -108,27 +122,28 @@ class AgendaOverzicht extends Component
     public function afspraakOpslaan(): void
     {
         $this->validate([
-            'nieuwDatum'       => 'required|date',
-            'nieuwTijd'        => 'required',
-            'nieuwDienstId'    => 'required|integer',
+            'nieuwDatum'        => 'required|date',
+            'nieuwTijd'         => 'required',
+            'nieuwDienstId'     => 'required|integer',
             'nieuwBetaalmethode' => 'required|in:in_zaak,online',
         ]);
 
-        // Klant ophalen of aanmaken als walk-in
-        if ($this->geselecteerdeKlantId) {
-            $klant = User::findOrFail($this->geselecteerdeKlantId);
+        $klantId = null;
+        $walkInNaam = null;
+
+        if ($this->isWalkIn) {
+            $this->validate(['walkInNaam' => 'required|string|min:2']);
+            $walkInNaam = trim($this->walkInNaam);
+        } elseif ($this->geselecteerdeKlantId) {
+            $klantId = $this->geselecteerdeKlantId;
         } else {
             $naam = trim($this->klantZoekterm);
             $this->validate(['klantZoekterm' => 'required|string|min:2']);
-
             $klant = User::firstOrCreate(
                 ['email' => 'walkin-' . now()->timestamp . '@kapperplatform.nl'],
-                [
-                    'name'     => $naam,
-                    'password' => Hash::make(str()->random(16)),
-                    'role'     => 'klant',
-                ]
+                ['name' => $naam, 'password' => Hash::make(str()->random(16)), 'role' => 'klant']
             );
+            $klantId = $klant->id;
         }
 
         $dienst = Dienst::findOrFail($this->nieuwDienstId);
@@ -137,13 +152,14 @@ class AgendaOverzicht extends Component
             ->format('H:i');
 
         Afspraak::create([
-            'klant_id'     => $klant->id,
-            'kapper_id'    => auth()->user()->kapper->id,
-            'dienst_id'    => $dienst->id,
-            'datum'        => $this->nieuwDatum,
-            'start_tijd'   => $this->nieuwTijd,
-            'eind_tijd'    => $eind,
-            'status'       => 'gepland',
+            'klant_id'      => $klantId,
+            'walk_in_naam'  => $walkInNaam,
+            'kapper_id'     => auth()->user()->kapper->id,
+            'dienst_id'     => $dienst->id,
+            'datum'         => $this->nieuwDatum,
+            'start_tijd'    => $this->nieuwTijd,
+            'eind_tijd'     => $eind,
+            'status'        => 'gepland',
             'betaalmethode' => $this->nieuwBetaalmethode,
         ]);
 

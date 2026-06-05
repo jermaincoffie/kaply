@@ -77,7 +77,7 @@
                 <div class="w-px self-stretch bg-gray-200 dark:bg-neutral-700 flex-shrink-0"></div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">
-                        {{ str($afspraak->klant->name)->title() }}
+                        {{ $afspraak->klant_naam }}
                     </p>
                     <p class="text-xs text-gray-500 dark:text-neutral-400 truncate">
                         {{ $afspraak->dienst->naam }} · € {{ $afspraak->dienst->prijs_in_euros }}
@@ -143,10 +143,19 @@
                     {{ $weekStartDate->isoFormat('D MMMM') }} – {{ $weekStartDate->copy()->endOfWeek()->isoFormat('D MMMM YYYY') }}
                 </span>
             </div>
-            <button wire:click="naarVandaag"
-                    class="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
-                Vandaag
-            </button>
+            <div class="flex items-center gap-2">
+                <button wire:click="naarVandaag"
+                        class="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                    Vandaag
+                </button>
+                <button wire:click="openWalkIn"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Walk-in
+                </button>
+            </div>
         </div>
 
         {{-- Dag headers --}}
@@ -258,7 +267,7 @@
                         {{ $isSelected ? 'ring-2 ring-offset-1 ring-blue-400 z-20' : 'z-10' }}"
                     style="top: {{ $top }}px; height: {{ $height }}px"
                 >
-                    <p class="text-xs font-semibold truncate leading-tight">{{ str($afspraak->klant->name)->title() }}</p>
+                    <p class="text-xs font-semibold truncate leading-tight">{{ $afspraak->klant_naam }}</p>
                     @if($height > 35)
                     <p class="text-xs opacity-80 truncate leading-tight">{{ $afspraak->dienst->naam }}</p>
                     @endif
@@ -317,12 +326,31 @@
                 </div>
 
                 <form wire:submit="afspraakOpslaan" class="space-y-4">
-                    {{-- Klant --}}
+
+                    {{-- Walk-in toggle --}}
+                    <div class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-neutral-700/40">
+                        <button type="button" wire:click="$set('isWalkIn', false)"
+                                class="flex-1 py-1.5 rounded-md text-xs font-semibold transition-colors {{ !$isWalkIn ? 'bg-white dark:bg-neutral-800 text-gray-800 dark:text-neutral-100 shadow-sm' : 'text-gray-500 dark:text-neutral-400' }}">
+                            Bestaande klant
+                        </button>
+                        <button type="button" wire:click="$set('isWalkIn', true)"
+                                class="flex-1 py-1.5 rounded-md text-xs font-semibold transition-colors {{ $isWalkIn ? 'bg-green-600 text-white shadow-sm' : 'text-gray-500 dark:text-neutral-400' }}">
+                            Walk-in
+                        </button>
+                    </div>
+
+                    {{-- Klant veld --}}
+                    @if($isWalkIn)
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Naam klant</label>
+                        <input wire:model="walkInNaam" type="text" placeholder="Voornaam..."
+                               class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                        @error('walkInNaam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    @else
                     <div class="relative">
                         <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Klant</label>
-                        <input wire:model.live="klantZoekterm"
-                               type="text"
-                               placeholder="Zoek of typ nieuwe naam..."
+                        <input wire:model.live="klantZoekterm" type="text" placeholder="Zoek op naam of email..."
                                autocomplete="off"
                                class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
                         @error('klantZoekterm') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
@@ -337,23 +365,21 @@
                                     <span class="text-blue-700 dark:text-blue-400 font-bold text-xs">{{ mb_strtoupper(mb_substr($klant->name, 0, 1)) }}</span>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">{{ str($klant->name)->title() }}</p>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">{{ $klant->name }}</p>
                                     <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $klant->email }}</p>
                                 </div>
                             </button>
                             @endforeach
                         </div>
                         @endif
-
                         @if($geselecteerdeKlantId)
                         <p class="text-xs text-green-600 dark:text-green-400 mt-1 flex items-center gap-1">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             Bestaande klant geselecteerd
                         </p>
-                        @else
-                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">Geen match? Wordt opgeslagen als walk-in.</p>
                         @endif
                     </div>
+                    @endif
 
                     {{-- Dienst --}}
                     <div>
@@ -404,7 +430,7 @@
             <div class="px-5 pt-4 pb-6">
                 <div class="flex items-start justify-between mb-5">
                     <div>
-                        <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">{{ str($a->klant->name)->title() }}</h3>
+                        <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">{{ $a->klant_naam }}</h3>
                         <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
                             {{ $a->datum->isoFormat('dddd D MMMM') }} · {{ $a->start_tijd }} – {{ $a->eind_tijd }}
                         </p>
