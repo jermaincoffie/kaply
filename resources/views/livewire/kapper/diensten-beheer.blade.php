@@ -20,44 +20,44 @@
             @endif
         </div>
         <form wire:submit="opslaan" class="px-6 py-5">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-3 items-end">
                 <div class="col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Naam</label>
+                    <label class="block text-xs font-medium text-gray-500 dark:text-neutral-400 mb-1">Naam</label>
                     <input wire:model="naam" type="text" placeholder="bijv. Knippen"
-                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-                    @error('naam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    @error('naam') <p class="text-xs text-red-500 mt-0.5">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Duur (min)</label>
+                    <label class="block text-xs font-medium text-gray-500 dark:text-neutral-400 mb-1">Duur (min)</label>
                     <input wire:model="duur_minuten" type="number" min="5" placeholder="30"
-                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-                    @error('duur_minuten') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    @error('duur_minuten') <p class="text-xs text-red-500 mt-0.5">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">
-                        Prijs (€)
-                    </label>
+                    <label class="block text-xs font-medium text-gray-500 dark:text-neutral-400 mb-1">Prijs (€)</label>
                     <input wire:model="prijs" type="text" placeholder="15.00"
-                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-                    @error('prijs') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    @error('prijs') <p class="text-xs text-red-500 mt-0.5">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1 flex items-center gap-1">
-                        No-show bedrag (€)
-                        <x-tooltip>Bedrag dat wordt afgeschreven als klant niet verschijnt en geen betaling heeft gedaan.</x-tooltip>
+                    <label class="block text-xs font-medium text-gray-500 dark:text-neutral-400 mb-1 flex items-center gap-1">
+                        No-show (€)
+                        <x-tooltip>Bedrag dat wordt afgeschreven als klant niet verschijnt.</x-tooltip>
                     </label>
                     <input wire:model="no_show_bedrag" type="text" placeholder="5.00"
-                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-                    @error('no_show_bedrag') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    @error('no_show_bedrag') <p class="text-xs text-red-500 mt-0.5">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <button type="submit"
+                            class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $bewerkenId ? 'M5 13l4 4L19 7' : 'M12 4v16m8-8H4' }}"/>
+                        </svg>
+                        {{ $bewerkenId ? 'Bijwerken' : 'Toevoegen' }}
+                    </button>
                 </div>
             </div>
-            <button type="submit"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $bewerkenId ? 'M5 13l4 4L19 7' : 'M12 4v16m8-8H4' }}"/>
-                </svg>
-                {{ $bewerkenId ? 'Bijwerken' : 'Toevoegen' }}
-            </button>
         </form>
     </div>
 
