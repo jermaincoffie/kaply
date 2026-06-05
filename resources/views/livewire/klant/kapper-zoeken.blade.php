@@ -29,6 +29,46 @@
         </div>
     </div>
 
+    {{-- Hoe werkt het --}}
+    <div class="bg-gray-50 dark:bg-neutral-800/50 border-b border-gray-200 dark:border-neutral-700 py-14 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-neutral-100">Zo werkt het</h2>
+                <p class="text-sm text-gray-400 dark:text-neutral-500 mt-1">In drie stappen een afspraak bij jouw kapper</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="w-12 h-12 rounded-full bg-blue-600 text-white font-bold text-lg flex items-center justify-center mx-auto mb-4">1</div>
+                    <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-2">Zoek een kapper</h3>
+                    <p class="text-sm text-gray-500 dark:text-neutral-400">Zoek op stad of naam en bekijk alle beschikbare kappers bij jou in de buurt.</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 rounded-full bg-blue-600 text-white font-bold text-lg flex items-center justify-center mx-auto mb-4">2</div>
+                    <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-2">Kies een dienst en datum</h3>
+                    <p class="text-sm text-gray-500 dark:text-neutral-400">Selecteer de gewenste dienst, kies een datum en klik op een vrij tijdstip. Je ziet direct de beschikbaarheid.</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 rounded-full bg-blue-600 text-white font-bold text-lg flex items-center justify-center mx-auto mb-4">3</div>
+                    <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-2">Bevestig je afspraak</h3>
+                    <p class="text-sm text-gray-500 dark:text-neutral-400">Log in of maak een gratis account aan en bevestig je boeking. Je ontvangt een bevestiging.</p>
+                </div>
+            </div>
+
+            @guest
+            <div class="text-center mt-10 flex flex-wrap items-center justify-center gap-3">
+                <a href="{{ route('register') }}"
+                   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
+                    Gratis account aanmaken
+                </a>
+                <a href="{{ route('kapper.registreer') }}"
+                   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 text-sm font-medium hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
+                    Kapper? Meld je aan
+                </a>
+            </div>
+            @endguest
+        </div>
+    </div>
+
     {{-- Results --}}
     <div class="max-w-5xl mx-auto px-4 py-8">
         @if($zoekterm)
