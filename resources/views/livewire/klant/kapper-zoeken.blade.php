@@ -38,17 +38,29 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="text-center">
-                    <div class="w-12 h-12 rounded-full bg-blue-600 text-white font-bold text-lg flex items-center justify-center mx-auto mb-4">1</div>
+                    <div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+                        </svg>
+                    </div>
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-2">Zoek een kapper</h3>
                     <p class="text-sm text-gray-500 dark:text-neutral-400">Zoek op stad of naam en bekijk alle beschikbare kappers bij jou in de buurt.</p>
                 </div>
                 <div class="text-center">
-                    <div class="w-12 h-12 rounded-full bg-blue-600 text-white font-bold text-lg flex items-center justify-center mx-auto mb-4">2</div>
+                    <div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-2">Kies een dienst en datum</h3>
                     <p class="text-sm text-gray-500 dark:text-neutral-400">Selecteer de gewenste dienst, kies een datum en klik op een vrij tijdstip. Je ziet direct de beschikbaarheid.</p>
                 </div>
                 <div class="text-center">
-                    <div class="w-12 h-12 rounded-full bg-blue-600 text-white font-bold text-lg flex items-center justify-center mx-auto mb-4">3</div>
+                    <div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-2">Bevestig je afspraak</h3>
                     <p class="text-sm text-gray-500 dark:text-neutral-400">Log in of maak een gratis account aan en bevestig je boeking. Je ontvangt een bevestiging.</p>
                 </div>
