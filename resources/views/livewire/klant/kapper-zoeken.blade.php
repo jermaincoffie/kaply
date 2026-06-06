@@ -1,18 +1,4 @@
 <div>
-<style>
-@keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-.hero-anim {
-    opacity: 0;
-    animation: fadeSlideUp 0.6s ease forwards;
-}
-.hero-anim-1 { animation-delay: 0.05s; }
-.hero-anim-2 { animation-delay: 0.2s; }
-.hero-anim-3 { animation-delay: 0.35s; }
-.hero-anim-4 { animation-delay: 0.5s; }
-</style>
     {{-- Hero --}}
     <div class="bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 py-20 px-4">
         <div class="text-center mb-10">
