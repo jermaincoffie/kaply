@@ -4,7 +4,7 @@
         <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-50 will-change-transform animate-aurora"></div>
     </div>
     {{-- Fade-to-white overlay: transparant boven, wit onderaan --}}
-    <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[35%] to-white dark:to-neutral-900"></div>
+    <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[50%] to-white dark:to-neutral-900"></div>
 
     {{-- Hero --}}
     <div class="relative z-10 py-20 px-4">
