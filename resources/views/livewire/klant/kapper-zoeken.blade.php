@@ -40,30 +40,44 @@
                 <h2 class="text-xl font-bold text-gray-900 dark:text-neutral-100">Zo werkt het</h2>
                 <p class="text-sm text-gray-400 dark:text-neutral-500 mt-1">In drie stappen een afspraak bij jouw kapper</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {{-- Stap 1 --}}
                 <div class="text-center">
-                    <div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
-                        </svg>
+                    <div class="relative inline-flex mb-5">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-blue-900/40">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0 1 15 0z"/>
+                            </svg>
+                        </div>
+                        <span class="absolute -top-2 -right-2 w-6 h-6 bg-white dark:bg-neutral-700 border-2 border-blue-500 rounded-full text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center justify-center leading-none">1</span>
                     </div>
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-2">Zoek een kapper</h3>
                     <p class="text-sm text-gray-500 dark:text-neutral-400">Zoek op stad of naam en bekijk alle beschikbare kappers bij jou in de buurt.</p>
                 </div>
+                {{-- Stap 2 --}}
                 <div class="text-center">
-                    <div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
+                    <div class="relative inline-flex mb-5">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-200 dark:shadow-violet-900/40">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15.75h.008v.008H12v-.008zm0-3h.008v.008H12v-.008zm-3 3h.008v.008H9v-.008zm6 0h.008v.008H15v-.008z"/>
+                            </svg>
+                        </div>
+                        <span class="absolute -top-2 -right-2 w-6 h-6 bg-white dark:bg-neutral-700 border-2 border-violet-500 rounded-full text-xs font-bold text-violet-600 dark:text-violet-400 flex items-center justify-center leading-none">2</span>
                     </div>
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-2">Kies een dienst en datum</h3>
                     <p class="text-sm text-gray-500 dark:text-neutral-400">Selecteer de gewenste dienst, kies een datum en klik op een vrij tijdstip. Je ziet direct de beschikbaarheid.</p>
                 </div>
+                {{-- Stap 3 --}}
                 <div class="text-center">
-                    <div class="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
+                    <div class="relative inline-flex mb-5">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-200 dark:shadow-emerald-900/40">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12z"/>
+                            </svg>
+                        </div>
+                        <span class="absolute -top-2 -right-2 w-6 h-6 bg-white dark:bg-neutral-700 border-2 border-emerald-500 rounded-full text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center justify-center leading-none">3</span>
                     </div>
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-2">Bevestig je afspraak</h3>
                     <p class="text-sm text-gray-500 dark:text-neutral-400">Log in of maak een gratis account aan en bevestig je boeking. Je ontvangt een bevestiging.</p>
