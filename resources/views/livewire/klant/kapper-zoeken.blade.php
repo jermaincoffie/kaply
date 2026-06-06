@@ -102,6 +102,11 @@
         </div>
     </div>
 
+    {{-- Scheidingslijn --}}
+    <div class="relative z-10 max-w-5xl mx-auto px-4">
+        <hr class="border-gray-200 dark:border-neutral-700">
+    </div>
+
     {{-- Results --}}
     <div class="relative z-10 max-w-5xl mx-auto px-4 py-8">
         @if($zoekterm)
