@@ -27,7 +27,6 @@
                 @endif
             </div>
         </div>
-        </div>
     </div>
 
     {{-- Hoe werkt het --}}
