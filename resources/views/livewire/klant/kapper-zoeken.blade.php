@@ -1,3 +1,4 @@
+<div>
 <style>
 @keyframes fadeSlideUp {
     from { opacity: 0; transform: translateY(24px); }
@@ -12,8 +13,6 @@
 .hero-anim-3 { animation-delay: 0.35s; }
 .hero-anim-4 { animation-delay: 0.5s; }
 </style>
-
-<div>
     {{-- Hero --}}
     <div class="bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 py-20 px-4">
         <div class="text-center mb-10">
