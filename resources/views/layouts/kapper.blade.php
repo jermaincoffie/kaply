@@ -31,17 +31,14 @@
 
     {{-- Logo --}}
     <a href="{{ route('kapper.dashboard') }}"
-       class="flex items-center gap-2 px-4 h-14 border-b border-gray-100 dark:border-neutral-700 flex-shrink-0 hover:opacity-80 transition-opacity">
-        <div class="min-w-0">
-            <div class="font-bold text-base tracking-tight whitespace-nowrap">
-                {{ config('app.name') }}
+       class="flex flex-col items-start justify-center px-4 h-14 border-b border-gray-100 dark:border-neutral-700 flex-shrink-0 hover:opacity-80 transition-opacity">
+        <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-7 w-auto" alt="Kaply">
+        <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-7 w-auto" alt="Kaply">
+        @if(auth()->user()->kapper?->salon_naam)
+            <div class="text-xs text-gray-500 dark:text-neutral-400 truncate leading-tight mt-0.5">
+                {{ auth()->user()->kapper->salon_naam }}
             </div>
-            @if(auth()->user()->kapper?->salon_naam)
-                <div class="text-xs text-gray-500 dark:text-neutral-400 truncate leading-tight">
-                    {{ auth()->user()->kapper->salon_naam }}
-                </div>
-            @endif
-        </div>
+        @endif
     </a>
 
     {{-- Nav --}}
