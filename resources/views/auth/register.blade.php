@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name') }} — Account aanmaken</title>
+    <title>{{ config('app.name') }} â€” Account aanmaken</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script>
         if (localStorage.getItem('darkMode') === 'true') {
@@ -15,8 +15,9 @@
 </head>
 <body class="font-sans antialiased bg-gray-50 dark:bg-neutral-900 min-h-screen flex flex-col items-center justify-center px-4 py-12">
 
-    <a href="{{ route('home') }}" class="font-bold text-xl tracking-tight text-gray-900 dark:text-neutral-100 mb-8 hover:opacity-80 transition-opacity">
-        {{ config('app.name') }}
+    <a href="{{ route('home') }}" class="mb-8 hover:opacity-80 transition-opacity">
+        <img src="{{ asset('images/Kaply logo light.png') }}" class="block dark:hidden h-10 w-auto" alt="Kaply">
+        <img src="{{ asset('images/kaply dark logo.png') }}" class="hidden dark:block h-10 w-auto" alt="Kaply">
     </a>
 
     <div class="w-full max-w-md bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl shadow-sm overflow-hidden">
@@ -84,3 +85,4 @@
 
 </body>
 </html>
+

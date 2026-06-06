@@ -1,8 +1,9 @@
-<div class="min-h-screen bg-gray-50 dark:bg-neutral-900 flex flex-col items-center justify-center px-4 py-12">
+﻿<div class="min-h-screen bg-gray-50 dark:bg-neutral-900 flex flex-col items-center justify-center px-4 py-12">
 
     {{-- Logo --}}
-    <a href="{{ route('home') }}" class="font-bold text-xl tracking-tight text-gray-900 dark:text-neutral-100 mb-8 hover:opacity-80 transition-opacity">
-        {{ config('app.name') }}
+    <a href="{{ route('home') }}" class="mb-8 hover:opacity-80 transition-opacity">
+        <img src="{{ asset('images/Kaply logo light.png') }}" class="block dark:hidden h-10 w-auto" alt="Kaply">
+        <img src="{{ asset('images/kaply dark logo.png') }}" class="hidden dark:block h-10 w-auto" alt="Kaply">
     </a>
 
     {{-- Card --}}
@@ -169,3 +170,4 @@
 
     </div>
 </div>
+

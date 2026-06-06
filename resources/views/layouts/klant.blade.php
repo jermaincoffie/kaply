@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -20,8 +20,9 @@
 
     {{-- Header --}}
     <header class="sticky top-0 z-30 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700 h-14 flex items-center px-4 sm:px-6 gap-4">
-        <a href="{{ route('home') }}" class="font-bold text-base tracking-tight whitespace-nowrap hover:opacity-80 transition-opacity">
-            {{ config('app.name') }}
+        <a href="{{ route('home') }}" class="hover:opacity-80 transition-opacity flex-shrink-0">
+            <img src="{{ asset('images/Kaply logo light.png') }}" class="block dark:hidden h-16 w-auto" alt="Kaply">
+            <img src="{{ asset('images/kaply dark logo.png') }}" class="hidden dark:block h-16 w-auto" alt="Kaply">
         </a>
 
         <div class="flex-1"></div>
@@ -155,3 +156,4 @@
     </script>
 </body>
 </html>
+
