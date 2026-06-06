@@ -139,7 +139,7 @@
                     <p class="text-xs text-gray-500 dark:text-neutral-400 line-clamp-2 mt-2 leading-relaxed">{{ $kapper->bio }}</p>
                     @endif
 
-                    <div class="flex justify-end mt-3 pt-3 border-t border-gray-200 dark:border-neutral-600">
+                    <div class="flex justify-end mt-3">
                         <span class="text-xs font-medium text-blue-600 dark:text-blue-400">Boek afspraak →</span>
                     </div>
                 </div>
