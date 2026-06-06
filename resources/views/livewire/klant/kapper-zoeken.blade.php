@@ -113,7 +113,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @forelse($kappers as $kapper)
             <a href="{{ route('kapper.profiel', $kapper->slug) }}"
-               class="group bg-gradient-to-b from-blue-50 to-white dark:from-neutral-700 dark:to-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-200 dark:hover:border-neutral-500 transition-all duration-150">
+               class="group flex flex-col bg-gradient-to-b from-blue-50 to-white dark:from-neutral-700 dark:to-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-200 dark:hover:border-neutral-500 transition-all duration-150">
 
                 {{-- Logo / foto --}}
                 <div class="h-36 flex items-center justify-center overflow-hidden @if($kapper->foto) bg-transparent @endif">
@@ -129,7 +129,7 @@
                 </div>
 
                 {{-- Info --}}
-                <div class="p-4 bg-transparent border-t border-gray-200 dark:border-neutral-600">
+                <div class="flex flex-col flex-1 p-4 bg-transparent border-t border-gray-200 dark:border-neutral-600">
                     <p class="font-semibold text-sm text-gray-900 dark:text-neutral-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {{ $kapper->salon_naam }}
                     </p>
@@ -139,7 +139,7 @@
                     <p class="text-xs text-gray-500 dark:text-neutral-400 line-clamp-2 mt-2 leading-relaxed">{{ $kapper->bio }}</p>
                     @endif
 
-                    <div class="flex justify-end mt-3">
+                    <div class="flex justify-end mt-auto pt-3">
                         <span class="text-xs font-medium text-blue-600 dark:text-blue-400">Boek afspraak →</span>
                     </div>
                 </div>
