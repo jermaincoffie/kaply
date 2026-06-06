@@ -15,7 +15,15 @@
 
 <div>
     {{-- Hero --}}
-    <div class="bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 py-20 px-4">
+    <div class="relative flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-900 border-b border-gray-200 dark:border-neutral-700 py-20 px-4 overflow-hidden">
+
+        {{-- Aurora achtergrond --}}
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="[--white-gradient:repeating-linear-gradient(100deg,var(--white)_0%,var(--white)_7%,var(--transparent)_10%,var(--transparent)_12%,var(--white)_16%)] [--dark-gradient:repeating-linear-gradient(100deg,var(--black)_0%,var(--black)_7%,var(--transparent)_10%,var(--transparent)_12%,var(--black)_16%)] [--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] [background-image:var(--white-gradient),var(--aurora)] dark:[background-image:var(--dark-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[10px] invert dark:invert-0 pointer-events-none absolute -inset-[10px] opacity-50 will-change-transform [mask-image:radial-gradient(ellipse_at_100%_0%,black_10%,var(--transparent)_70%)] animate-aurora"></div>
+        </div>
+
+        {{-- Content --}}
+        <div class="relative z-10 w-full">
         <div class="text-center mb-10">
             <p class="hero-anim hero-anim-1 text-sm font-medium text-gray-400 dark:text-neutral-500 mb-2 tracking-widest uppercase">Welkom bij</p>
             <h1 class="hero-anim hero-anim-2 text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-6">
@@ -42,6 +50,7 @@
                 @endif
             </div>
         </div>
+        </div>{{-- /content --}}
     </div>
 
     {{-- Hoe werkt het --}}
