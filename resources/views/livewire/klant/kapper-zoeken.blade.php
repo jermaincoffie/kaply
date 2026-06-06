@@ -30,10 +30,10 @@
     </div>
 
     {{-- Hoe werkt het --}}
-    <div class="relative overflow-hidden bg-gray-50 dark:bg-neutral-800/50 border-b border-gray-200 dark:border-neutral-700 py-14 px-4">
+    <div class="relative overflow-hidden bg-white dark:bg-neutral-800/50 border-b border-gray-200 dark:border-neutral-700 py-14 px-4">
         {{-- Aurora achtergrond --}}
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="[--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] [background-image:var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-40 will-change-transform animate-aurora"></div>
+            <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-50 will-change-transform animate-aurora"></div>
         </div>
         <div class="relative z-10 max-w-4xl mx-auto">
             <div class="text-center mb-10">
