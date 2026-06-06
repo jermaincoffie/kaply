@@ -1,7 +1,11 @@
 <div>
     {{-- Hero --}}
-    <div class="bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 py-20 px-4">
-        <div class="text-center mb-10">
+    <div class="relative overflow-hidden bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 py-20 px-4">
+        {{-- Aurora achtergrond --}}
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-50 will-change-transform animate-aurora"></div>
+        </div>
+        <div class="relative z-10 text-center mb-10">
             <p class="hero-anim hero-anim-1 text-sm font-medium text-gray-400 dark:text-neutral-500 mb-2 tracking-widest uppercase">Welkom bij</p>
             <h1 class="hero-anim hero-anim-2 text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-6">
                 {{ config('app.name') }}
@@ -10,7 +14,7 @@
         </div>
 
         {{-- Pill zoekbalk --}}
-        <div class="hero-anim hero-anim-4 max-w-2xl mx-auto">
+        <div class="relative z-10 hero-anim hero-anim-4 max-w-2xl mx-auto">
             <div class="flex items-center bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
@@ -30,12 +34,8 @@
     </div>
 
     {{-- Hoe werkt het --}}
-    <div class="relative overflow-hidden bg-white dark:bg-neutral-800/50 border-b border-gray-200 dark:border-neutral-700 py-14 px-4">
-        {{-- Aurora achtergrond --}}
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-50 will-change-transform animate-aurora"></div>
-        </div>
-        <div class="relative z-10 max-w-4xl mx-auto">
+    <div class="relative overflow-hidden bg-gray-50 dark:bg-neutral-800/50 border-b border-gray-200 dark:border-neutral-700 py-14 px-4">
+        <div class="max-w-4xl mx-auto">
             <div class="text-center mb-10">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-neutral-100">Zo werkt het</h2>
                 <p class="text-sm text-gray-400 dark:text-neutral-500 mt-1">In drie stappen een afspraak bij jouw kapper</p>
