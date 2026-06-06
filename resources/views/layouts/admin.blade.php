@@ -32,8 +32,8 @@
     <a href="{{ route('admin.dashboard') }}"
        class="flex items-center gap-2 px-4 h-14 border-b border-gray-100 dark:border-neutral-700 flex-shrink-0 hover:opacity-80 transition-opacity">
         <div class="min-w-0 flex flex-col">
-            <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-7 w-auto" alt="Kaply">
-            <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-7 w-auto" alt="Kaply">
+            <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-12 w-auto" alt="Kaply">
+            <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-12 w-auto" alt="Kaply">
             <div class="text-xs text-gray-500 dark:text-neutral-400 truncate leading-tight mt-0.5">
                 Admin Panel
             </div>
