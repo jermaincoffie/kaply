@@ -112,10 +112,10 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @forelse($kappers as $kapper)
             <a href="{{ route('kapper.profiel', $kapper->slug) }}"
-               class="group bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-200 dark:hover:border-neutral-500 transition-all duration-150">
+               class="group bg-gradient-to-b from-blue-50 to-white dark:from-neutral-700 dark:to-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-200 dark:hover:border-neutral-500 transition-all duration-150">
 
                 {{-- Logo / foto --}}
-                <div class="h-36 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-neutral-700 dark:to-neutral-600 flex items-center justify-center overflow-hidden">
+                <div class="h-36 flex items-center justify-center overflow-hidden @if($kapper->foto) bg-transparent @endif">
                     @if($kapper->foto)
                     <img src="{{ asset('storage/' . $kapper->foto) }}"
                          alt="{{ $kapper->salon_naam }}"
@@ -128,7 +128,7 @@
                 </div>
 
                 {{-- Info --}}
-                <div class="p-4 bg-gradient-to-b from-blue-50/60 to-white dark:from-neutral-700/60 dark:to-neutral-800">
+                <div class="p-4 bg-transparent">
                     <p class="font-semibold text-sm text-gray-900 dark:text-neutral-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {{ $kapper->salon_naam }}
                     </p>
