@@ -128,7 +128,7 @@
                 </div>
 
                 {{-- Info --}}
-                <div class="p-4">
+                <div class="p-4 bg-gradient-to-b from-blue-50/60 to-white dark:from-neutral-700/60 dark:to-neutral-800">
                     <p class="font-semibold text-sm text-gray-900 dark:text-neutral-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {{ $kapper->salon_naam }}
                     </p>
@@ -138,7 +138,7 @@
                     <p class="text-xs text-gray-500 dark:text-neutral-400 line-clamp-2 mt-2 leading-relaxed">{{ $kapper->bio }}</p>
                     @endif
 
-                    <div class="flex justify-end mt-3 pt-3 border-t border-gray-100 dark:border-neutral-700">
+                    <div class="flex justify-end mt-3">
                         <span class="text-xs font-medium text-blue-600 dark:text-blue-400">Boek afspraak →</span>
                     </div>
                 </div>
