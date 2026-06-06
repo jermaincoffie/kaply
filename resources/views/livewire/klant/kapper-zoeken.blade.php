@@ -1,16 +1,31 @@
+<style>
+@keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.hero-anim {
+    opacity: 0;
+    animation: fadeSlideUp 0.6s ease forwards;
+}
+.hero-anim-1 { animation-delay: 0.05s; }
+.hero-anim-2 { animation-delay: 0.2s; }
+.hero-anim-3 { animation-delay: 0.35s; }
+.hero-anim-4 { animation-delay: 0.5s; }
+</style>
+
 <div>
     {{-- Hero --}}
     <div class="bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 py-20 px-4">
         <div class="text-center mb-10">
-            <p class="text-sm font-medium text-gray-400 dark:text-neutral-500 mb-2 tracking-widest uppercase">Welkom bij</p>
-            <h1 class="text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-6">
+            <p class="hero-anim hero-anim-1 text-sm font-medium text-gray-400 dark:text-neutral-500 mb-2 tracking-widest uppercase">Welkom bij</p>
+            <h1 class="hero-anim hero-anim-2 text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-6">
                 {{ config('app.name') }}
             </h1>
-            <p class="text-gray-400 dark:text-neutral-500 text-sm">Bekijk beschikbare tijden en boek direct online</p>
+            <p class="hero-anim hero-anim-3 text-gray-400 dark:text-neutral-500 text-sm">Bekijk beschikbare tijden en boek direct online</p>
         </div>
 
         {{-- Pill zoekbalk --}}
-        <div class="max-w-2xl mx-auto">
+        <div class="hero-anim hero-anim-4 max-w-2xl mx-auto">
             <div class="flex items-center bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
