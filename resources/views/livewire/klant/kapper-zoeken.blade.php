@@ -129,7 +129,7 @@
                 </div>
 
                 {{-- Info --}}
-                <div class="p-4 bg-transparent">
+                <div class="p-4 bg-transparent border-t border-gray-200 dark:border-neutral-600">
                     <p class="font-semibold text-sm text-gray-900 dark:text-neutral-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {{ $kapper->salon_naam }}
                     </p>
