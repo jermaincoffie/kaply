@@ -36,7 +36,7 @@
     </div>
 
     {{-- Hoe werkt het --}}
-    <div class="relative overflow-hidden bg-gray-50 dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700 py-14 px-4">
+    <div class="relative overflow-hidden bg-white dark:bg-neutral-900 py-14 px-4">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-10">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-neutral-100">Zo werkt het</h2>
