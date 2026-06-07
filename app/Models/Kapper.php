@@ -24,6 +24,7 @@ class Kapper extends Model
     public function sluitingsdagen() { return $this->hasMany(Sluitingsdag::class); }
     public function afspraken() { return $this->hasMany(Afspraak::class); }
     public function medewerkers() { return $this->hasMany(Medewerker::class); }
+    public function reviews()     { return $this->hasMany(Review::class); }
 
     public function setSalonNaamAttribute(string $value): void
     {

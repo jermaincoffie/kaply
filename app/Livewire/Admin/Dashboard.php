@@ -3,13 +3,21 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Afspraak;
+use App\Models\Dienst;
 use App\Models\Kapper;
+use App\Models\Review;
 use App\Models\User;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
     const ABONNEMENT_PRIJS = 2000; // €20 in centen
+
+    public function toggleReviewZichtbaar(int $id): void
+    {
+        $review = Review::findOrFail($id);
+        $review->update(['zichtbaar' => !$review->zichtbaar]);
+    }
 
     public function render()
     {
@@ -43,6 +51,17 @@ class Dashboard extends Component
             'recente_afspraken'   => Afspraak::with(['kapper', 'dienst', 'klant'])
                 ->orderByDesc('datum')->orderByDesc('start_tijd')
                 ->limit(8)
+                ->get(),
+            'populaire_diensten'  => Afspraak::join('diensten', 'afspraken.dienst_id', '=', 'diensten.id')
+                ->selectRaw('diensten.naam, count(*) as aantal, avg(diensten.prijs) as gem_prijs')
+                ->whereIn('afspraken.status', ['voltooid', 'gepland'])
+                ->groupBy('diensten.naam')
+                ->orderByDesc('aantal')
+                ->limit(8)
+                ->get(),
+            'recente_reviews'     => Review::with(['kapper', 'klant'])
+                ->orderByDesc('created_at')
+                ->limit(5)
                 ->get(),
         ])->layout('layouts.admin');
     }

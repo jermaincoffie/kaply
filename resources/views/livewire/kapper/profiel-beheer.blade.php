@@ -20,7 +20,10 @@
                      alt="Salon foto"
                      class="w-32 h-32 rounded-xl object-cover border border-gray-200 dark:border-neutral-700">
                 @else
-                <div class="w-32 h-32 rounded-xl bg-blue-900/30"></div>
+                <div class="w-32 h-32 rounded-xl overflow-hidden relative bg-white flex items-center justify-center">
+                    <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[20px] absolute -inset-[10px] opacity-60 will-change-transform animate-aurora"></div>
+                    <svg class="relative w-8 h-8 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
                 @endif
 
                 <div class="flex items-center gap-2">

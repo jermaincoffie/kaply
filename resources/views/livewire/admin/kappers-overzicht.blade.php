@@ -14,7 +14,64 @@
         </a>
     </div>
 
-    {{-- Tabel --}}
+    {{-- Wachtend op goedkeuring --}}
+    @if($wachtend->count() > 0)
+    <div class="mb-6">
+        <div class="flex items-center gap-2 mb-3">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                {{ $wachtend->count() }} wachtend op goedkeuring
+            </span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            @foreach($wachtend as $k)
+            <div class="bg-white dark:bg-neutral-800 border border-amber-200 dark:border-amber-800/40 rounded-xl p-4 flex flex-col gap-3">
+                <div class="flex items-start justify-between gap-2">
+                    <div>
+                        <p class="font-semibold text-sm text-gray-800 dark:text-neutral-100">{{ $k->salon_naam }}</p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $k->user?->email }}</p>
+                    </div>
+                    <span class="text-xs text-gray-400 dark:text-neutral-500 flex-shrink-0">{{ $k->created_at->diffForHumans() }}</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-neutral-400">
+                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    {{ $k->stad }}
+                    @if($k->telefoon)
+                    <span class="ml-2 flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                        {{ $k->telefoon }}
+                    </span>
+                    @endif
+                </div>
+                <div class="flex items-center gap-2 pt-1 border-t border-gray-100 dark:border-neutral-700">
+                    <button wire:click="goedkeuren({{ $k->id }})"
+                            class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Goedkeuren
+                    </button>
+                    <button
+                            @click="$dispatch('open-confirm', { title: 'Kapper afwijzen', message: '{{ addslashes($k->salon_naam) }} verwijderen? Dit kan niet ongedaan worden gemaakt.', action: () => $wire.afwijzen({{ $k->id }}) })"
+                            class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-red-200 dark:border-red-800/40 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 text-xs font-medium transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Afwijzen
+                    </button>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    {{-- Actieve kappers tabel --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
         <table class="w-full text-sm">
             <thead>
@@ -26,7 +83,7 @@
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">
                         <span class="flex items-center gap-1">
                             No-show
-                            <x-tooltip>Percentage afspraken waarbij de klant niet is komen opdagen, van alle voltooide + no-show afspraken. Rood boven 20%.</x-tooltip>
+                            <x-tooltip>Percentage afspraken waarbij de klant niet is komen opdagen. Rood boven 20%.</x-tooltip>
                         </span>
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Aangemeld</th>
@@ -35,17 +92,10 @@
             </thead>
             <tbody class="divide-y divide-gray-50 dark:divide-neutral-700">
                 @forelse($kappers as $kapper)
-                <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20 {{ !$kapper->actief && $kapper->abonnement_status === 'geen' ? 'bg-amber-50/30 dark:bg-amber-900/5' : '' }}">
+                <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
                     <td class="px-6 py-3.5">
-                        <div class="flex items-center gap-2">
-                            <div>
-                                <p class="font-medium text-gray-800 dark:text-neutral-100">{{ str($kapper->salon_naam)->title() }}</p>
-                                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ strtolower($kapper->user->email) }}</p>
-                            </div>
-                            @if(!$kapper->actief && $kapper->abonnement_status === 'geen')
-                            <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 uppercase tracking-wide flex-shrink-0">Nieuw</span>
-                            @endif
-                        </div>
+                        <p class="font-medium text-gray-800 dark:text-neutral-100">{{ str($kapper->salon_naam)->title() }}</p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ strtolower($kapper->user?->email ?? '—') }}</p>
                     </td>
                     <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ str($kapper->stad)->title() }}</td>
                     <td class="px-6 py-3.5">

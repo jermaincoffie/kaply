@@ -20,6 +20,8 @@ class KapperZoeken extends Component
                 });
             })
             ->with('diensten')
+            ->withAvg(['reviews as gem_rating' => fn($q) => $q->where('zichtbaar', true)], 'rating')
+            ->withCount(['reviews as review_count' => fn($q) => $q->where('zichtbaar', true)])
             ->orderBy('salon_naam')
             ->get();
 

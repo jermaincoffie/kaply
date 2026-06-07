@@ -68,6 +68,14 @@
             Klanten
         </a>
 
+        {{-- Reviews --}}
+        <a href="{{ route('kapper.reviews') }}" class="{{ $linkClass('kapper.reviews') }}">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+            </svg>
+            Reviews
+        </a>
+
         {{-- Instellingen dropdown --}}
         @php
             $instellingenActief = request()->routeIs('kapper.diensten') || request()->routeIs('kapper.beschikbaarheid') || request()->routeIs('kapper.medewerkers') || request()->routeIs('kapper.profiel-beheer');
@@ -147,6 +155,9 @@
 
     <div class="flex-1"></div>
 
+    {{-- Notificatie bel --}}
+    @livewire('kapper.notificatie-bel')
+
     {{-- Account dropdown --}}
     @php $authUser = auth()->user(); @endphp
     <div class="relative" id="account-dropdown-wrapper">
@@ -198,6 +209,13 @@
                     <svg class="shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     Mijn profiel
                 </a>
+                @if(auth()->user()->kapper?->slug)
+                <a href="{{ route('kapper.profiel', auth()->user()->kapper->slug) }}" target="_blank"
+                   class="flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-gray-800 dark:text-neutral-200 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors">
+                    <svg class="shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    Bekijk mijn pagina
+                </a>
+                @endif
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
@@ -214,7 +232,19 @@
 {{-- ===== MAIN CONTENT ===== --}}
 <main class="lg:ml-64 min-h-screen">
     <div class="p-4 sm:p-6">
+        @if(!auth()->user()->kapper?->actief)
+        <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+            <div class="w-16 h-16 rounded-2xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-5">
+                <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                </svg>
+            </div>
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-100 mb-2">Account wacht op goedkeuring</h2>
+            <p class="text-sm text-gray-500 dark:text-neutral-400 max-w-sm">Je registratie is ontvangen. Een beheerder zal je account binnenkort goedkeuren. Je krijgt dan toegang tot je dashboard.</p>
+        </div>
+        @else
         {{ $slot }}
+        @endif
     </div>
 </main>
 

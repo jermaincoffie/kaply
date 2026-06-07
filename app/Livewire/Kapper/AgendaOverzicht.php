@@ -3,6 +3,7 @@
 namespace App\Livewire\Kapper;
 
 use App\Models\Afspraak;
+use App\Models\Blokkering;
 use App\Models\Dienst;
 use App\Models\User;
 use Carbon\Carbon;
@@ -17,6 +18,14 @@ class AgendaOverzicht extends Component
 
     // Nieuw formulier
     public bool $toonNieuwFormulier = false;
+
+    // Blokkeren
+    public bool $toonBlokkerenForm = false;
+    public string $blokkeerDatum = '';
+    public string $blokkeerStartTijd = '';
+    public string $blokkeerEindTijd = '';
+    public string $blokkeerReden = '';
+    public ?int $geselecteerdeBlokkeringId = null;
     public string $nieuwDatum = '';
     public string $nieuwTijd = '';
     public ?int $nieuwDienstId = null;
@@ -166,10 +175,57 @@ class AgendaOverzicht extends Component
         $this->toonNieuwFormulier = false;
     }
 
+    public function openBlokkerenForm(string $datum = '', string $startTijd = ''): void
+    {
+        $this->geselecteerdeAfspraakId = null;
+        $this->geselecteerdeBlokkeringId = null;
+        $this->toonNieuwFormulier = false;
+        $this->toonBlokkerenForm = true;
+        $this->blokkeerDatum = $datum ?: today()->toDateString();
+        $this->blokkeerStartTijd = $startTijd ?: now()->format('H:i');
+        $this->blokkeerEindTijd = Carbon::parse($this->blokkeerStartTijd)->addHour()->format('H:i');
+        $this->blokkeerReden = '';
+    }
+
+    public function blokkeerOpslaan(): void
+    {
+        $this->validate([
+            'blokkeerDatum'     => 'required|date',
+            'blokkeerStartTijd' => 'required',
+            'blokkeerEindTijd'  => 'required|after:blokkeerStartTijd',
+        ]);
+
+        Blokkering::create([
+            'kapper_id'  => auth()->user()->kapper->id,
+            'datum'      => $this->blokkeerDatum,
+            'start_tijd' => $this->blokkeerStartTijd,
+            'eind_tijd'  => $this->blokkeerEindTijd,
+            'reden'      => $this->blokkeerReden ?: null,
+        ]);
+
+        $this->toonBlokkerenForm = false;
+    }
+
+    public function selecteerBlokkering(int $id): void
+    {
+        $this->geselecteerdeBlokkeringId = $this->geselecteerdeBlokkeringId === $id ? null : $id;
+        $this->geselecteerdeAfspraakId = null;
+        $this->toonNieuwFormulier = false;
+        $this->toonBlokkerenForm = false;
+    }
+
+    public function verwijderBlokkering(int $id): void
+    {
+        Blokkering::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->delete();
+        $this->geselecteerdeBlokkeringId = null;
+    }
+
     public function sluitAlles(): void
     {
         $this->geselecteerdeAfspraakId = null;
+        $this->geselecteerdeBlokkeringId = null;
         $this->toonNieuwFormulier = false;
+        $this->toonBlokkerenForm = false;
     }
 
     public function noShow(int $id): void
@@ -227,9 +283,41 @@ class AgendaOverzicht extends Component
             ->orderBy('start_tijd')
             ->get();
 
+        $vandaagAfspraken = Afspraak::where('kapper_id', $kapper_id)
+            ->whereDate('datum', today())
+            ->with(['klant', 'dienst'])
+            ->orderBy('start_tijd')
+            ->get();
+
+        $volgendeAfspraak = $vandaagAfspraken
+            ->where('status', 'gepland')
+            ->filter(fn($a) => Carbon::parse(today()->toDateString() . ' ' . $a->start_tijd)->gt(now()))
+            ->first();
+
+        $omzet_vandaag = $vandaagAfspraken
+            ->where('status', 'voltooid')
+            ->sum(fn($a) => $a->dienst->prijs ?? 0);
+
+        $blokkeringen = Blokkering::where('kapper_id', $kapper_id)
+            ->whereBetween('datum', [$weekStartDate->toDateString(), $weekEndDate->toDateString()])
+            ->orderBy('start_tijd')
+            ->get();
+
+        $blokkeringenPerDag = $blokkeringen->groupBy(fn($b) => $b->datum->toDateString());
+
+        $mobielBlokkeringen = Blokkering::where('kapper_id', $kapper_id)
+            ->whereDate('datum', $this->mobielDatum)
+            ->orderBy('start_tijd')
+            ->get();
+
         $geselecteerdeAfspraak = $this->geselecteerdeAfspraakId
             ? $afspraken->firstWhere('id', $this->geselecteerdeAfspraakId)
                 ?? $mobielAfspraken->firstWhere('id', $this->geselecteerdeAfspraakId)
+            : null;
+
+        $geselecteerdeblokkering = $this->geselecteerdeBlokkeringId
+            ? $blokkeringen->firstWhere('id', $this->geselecteerdeBlokkeringId)
+                ?? $mobielBlokkeringen->firstWhere('id', $this->geselecteerdeBlokkeringId)
             : null;
 
         $eigenDiensten = auth()->user()->kapper->diensten()->orderBy('naam')->get();
@@ -243,7 +331,9 @@ class AgendaOverzicht extends Component
         return view('livewire.kapper.agenda-overzicht', compact(
             'days', 'afsprakenPerDag', 'omzet_maand', 'afspraken_maand',
             'komende_afspraken', 'geselecteerdeAfspraak', 'weekStartDate',
-            'eigenDiensten', 'zoekKlanten', 'mobielAfspraken'
+            'eigenDiensten', 'zoekKlanten', 'mobielAfspraken',
+            'vandaagAfspraken', 'volgendeAfspraak', 'omzet_vandaag',
+            'blokkeringenPerDag', 'mobielBlokkeringen', 'geselecteerdeblokkering'
         ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }

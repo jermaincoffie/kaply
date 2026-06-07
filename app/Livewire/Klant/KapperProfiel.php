@@ -5,6 +5,7 @@ namespace App\Livewire\Klant;
 use App\Models\Afspraak;
 use App\Models\Kapper;
 use App\Models\Dienst;
+use App\Models\Review;
 use App\Services\BeschikbaarheidsService;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -138,6 +139,15 @@ class KapperProfiel extends Component
 
         $medewerkers = $this->kapper->medewerkers()->where('actief', true)->get();
 
+        $reviews = Review::where('kapper_id', $this->kapper->id)
+            ->where('zichtbaar', true)
+            ->with('klant')
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get();
+
+        $gemiddeldRating = $reviews->avg('rating');
+
         return view('livewire.klant.kapper-profiel', [
             'openingstijden'         => $openingstijden,
             'medewerkers'            => $medewerkers,
@@ -147,6 +157,8 @@ class KapperProfiel extends Component
             'geselecteerdeMedewerker' => $this->geselecteerdeMedewerkerId
                 ? $medewerkers->firstWhere('id', $this->geselecteerdeMedewerkerId)
                 : null,
+            'reviews'          => $reviews,
+            'gemiddeldRating'  => $gemiddeldRating,
         ])->layout('layouts.publiek');
     }
 }

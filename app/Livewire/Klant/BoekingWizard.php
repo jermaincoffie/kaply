@@ -2,11 +2,14 @@
 
 namespace App\Livewire\Klant;
 
+use App\Mail\AfspraakBevestigingMail;
 use App\Models\Afspraak;
 use App\Models\Dienst;
 use App\Models\Kapper;
+use App\Notifications\NieuweAfspraakNotificatie;
 use App\Services\BeschikbaarheidsService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class BoekingWizard extends Component
@@ -55,6 +58,11 @@ class BoekingWizard extends Component
             'status' => 'gepland',
             'betaalmethode' => $this->betaalmethode,
         ]);
+
+        $afspraak->load(['kapper', 'dienst', 'klant']);
+
+        Mail::to(auth()->user()->email)->send(new AfspraakBevestigingMail($afspraak));
+        $afspraak->kapper->user->notify(new NieuweAfspraakNotificatie($afspraak));
 
         session()->flash('boeking_bevestigd', true);
         $this->redirect(route('klant.afspraken'));

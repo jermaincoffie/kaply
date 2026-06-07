@@ -17,9 +17,10 @@
             $tekst = ['text-blue-400','text-emerald-400','text-violet-400','text-rose-400','text-amber-400','text-cyan-400'];
             $idx   = abs(crc32($kapper->salon_naam)) % count($tekst);
         @endphp
-        <div class="w-full h-40 bg-blue-900/30 flex flex-col items-center justify-center gap-0.5">
-            <span class="text-xs font-medium text-white/60 uppercase tracking-widest">Welkom bij</span>
-            <span class="text-2xl font-bold text-white">{{ $kapper->salon_naam }}</span>
+        <div class="w-full h-40 relative overflow-hidden bg-white flex flex-col items-center justify-center gap-0.5">
+            <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-50 will-change-transform animate-aurora"></div>
+            <span class="relative z-10 text-xs font-medium text-blue-400 uppercase tracking-widest">Welkom bij</span>
+            <span class="relative z-10 text-2xl font-bold text-blue-900">{{ $kapper->salon_naam }}</span>
         </div>
         @endif
 
@@ -39,6 +40,19 @@
                 </a>
                 @endif
             </div>
+            @if($gemiddeldRating)
+            <div class="flex items-center gap-1.5 mt-2">
+                <div class="flex items-center gap-0.5">
+                    @for($i = 1; $i <= 5; $i++)
+                    <svg class="w-4 h-4 {{ $i <= round($gemiddeldRating) ? 'text-amber-400' : 'text-gray-200 dark:text-neutral-600' }}" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    @endfor
+                </div>
+                <span class="text-sm font-semibold text-gray-700 dark:text-neutral-300">{{ number_format($gemiddeldRating, 1) }}</span>
+                <span class="text-xs text-gray-400 dark:text-neutral-500">({{ $reviews->count() }} {{ $reviews->count() === 1 ? 'beoordeling' : 'beoordelingen' }})</span>
+            </div>
+            @endif
             @if($kapper->bio)
             <p class="mt-3 text-sm text-gray-600 dark:text-neutral-400 leading-relaxed">{{ $kapper->bio }}</p>
             @endif
@@ -204,6 +218,33 @@
         @endif
 
     </div>
+
+    {{-- Reviews --}}
+    @if($reviews->isNotEmpty())
+    <div class="mt-5">
+        <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Beoordelingen</p>
+        <div class="space-y-3">
+            @foreach($reviews as $review)
+            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
+                <div class="flex items-start justify-between gap-3 mb-2">
+                    <div class="flex items-center gap-0.5">
+                        @for($i = 1; $i <= 5; $i++)
+                        <svg class="w-3.5 h-3.5 {{ $i <= $review->rating ? 'text-amber-400' : 'text-gray-200 dark:text-neutral-600' }}" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        @endfor
+                    </div>
+                    <span class="text-xs text-gray-400 dark:text-neutral-500 flex-shrink-0">{{ $review->created_at->diffForHumans() }}</span>
+                </div>
+                @if($review->tekst)
+                <p class="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed">{{ $review->tekst }}</p>
+                @endif
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1.5">— {{ str($review->klant?->name ?? 'Anoniem')->title() }}</p>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
 
     {{-- Boeking modal --}}
     @if($toonBoekModal)

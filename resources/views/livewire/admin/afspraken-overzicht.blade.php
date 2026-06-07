@@ -44,13 +44,13 @@
                 @forelse($afspraken as $afspraak)
                 <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
                     <td class="px-6 py-3.5 font-medium text-gray-800 dark:text-neutral-100">
-                        {{ str($afspraak->klant->name)->title() }}
+                        {{ str($afspraak->klant?->name ?? '—')->title() }}
                     </td>
                     <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">
-                        {{ str($afspraak->kapper->salon_naam)->title() }}
+                        {{ str($afspraak->kapper?->salon_naam ?? '—')->title() }}
                     </td>
                     <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">
-                        {{ $afspraak->dienst->naam }}
+                        {{ $afspraak->dienst?->naam ?? '—' }}
                     </td>
                     <td class="px-6 py-3.5 text-gray-400 dark:text-neutral-500 text-xs">
                         {{ $afspraak->datum->format('d-m-Y') }}<br>
@@ -89,10 +89,9 @@
             </tbody>
         </table>
 
-        @if($afspraken->hasPages())
-        <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-700">
-            {{ $afspraken->links() }}
-        </div>
-        @endif
+    </div>
+
+    <div class="mt-6">
+        {{ $afspraken->links() }}
     </div>
 </div>
