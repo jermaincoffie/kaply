@@ -39,6 +39,19 @@ class KapperProfiel extends Component
 
         $this->geselecteerdeDatum = today()->toDateString();
         $this->laadTijdsloten();
+
+        // Herstel pending boeking na OTP login
+        $pending = session()->pull('pending_boeking');
+        if ($pending && auth()->check() && $pending['kapper_slug'] === $slug) {
+            $this->geselecteerdeDienstId   = $pending['dienst_id'];
+            $this->geselecteerdeDatum      = $pending['datum'];
+            $this->geselecteerdeMedewerkerId = $pending['medewerker_id'] ?? null;
+            $this->laadTijdsloten();
+            $this->geselecteerdeTijd = $pending['tijd'];
+            $this->betaalmethode     = 'in_zaak';
+            $this->geboekt           = false;
+            $this->toonBoekModal     = true;
+        }
     }
 
     public function selecteerDienst(int $id): void
@@ -67,6 +80,16 @@ class KapperProfiel extends Component
     public function openBoekModal(string $tijd): void
     {
         if (!auth()->check()) {
+            session([
+                'pending_boeking' => [
+                    'kapper_slug'  => $this->kapper->slug,
+                    'dienst_id'    => $this->geselecteerdeDienstId,
+                    'datum'        => $this->geselecteerdeDatum,
+                    'tijd'         => $tijd,
+                    'medewerker_id' => $this->geselecteerdeMedewerkerId,
+                ],
+                'url.intended' => url()->current(),
+            ]);
             $this->redirect(route('klant.inloggen'));
             return;
         }

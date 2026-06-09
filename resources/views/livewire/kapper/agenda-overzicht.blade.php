@@ -1,4 +1,95 @@
 <div>
+    {{-- Onboarding checklist --}}
+    @if($toonOnboarding)
+    <div class="bg-white dark:bg-neutral-800 border border-blue-200 dark:border-blue-800 rounded-xl p-5 mb-6">
+        <div class="flex items-start gap-3 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+            </div>
+            <div>
+                <p class="text-sm font-semibold text-gray-900 dark:text-neutral-100">Stel je account in zodat klanten kunnen boeken</p>
+                <p class="text-xs text-gray-500 dark:text-neutral-400 mt-0.5">Voltooi de onderstaande stappen om live te gaan.</p>
+            </div>
+        </div>
+
+        <div class="space-y-2">
+            {{-- Stap 1: Beschikbaarheid --}}
+            <a href="{{ route('kapper.beschikbaarheid') }}"
+               class="flex items-center gap-3 p-3 rounded-lg border {{ $onboarding['beschikbaarheid'] ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700/50' }} transition-colors group">
+                <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 {{ $onboarding['beschikbaarheid'] ? 'bg-green-500' : 'bg-gray-200 dark:bg-neutral-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30' }}">
+                    @if($onboarding['beschikbaarheid'])
+                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    @else
+                    <span class="text-xs font-bold text-gray-500 dark:text-neutral-400">1</span>
+                    @endif
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium {{ $onboarding['beschikbaarheid'] ? 'text-green-700 dark:text-green-400 line-through' : 'text-gray-800 dark:text-neutral-200' }}">Beschikbaarheid instellen</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500">Geef aan op welke dagen en tijden je werkt</p>
+                </div>
+                @if(!$onboarding['beschikbaarheid'])
+                <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 group-hover:text-blue-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                @endif
+            </a>
+
+            {{-- Stap 2: Diensten --}}
+            <a href="{{ route('kapper.diensten') }}"
+               class="flex items-center gap-3 p-3 rounded-lg border {{ $onboarding['diensten'] ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700/50' }} transition-colors group">
+                <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 {{ $onboarding['diensten'] ? 'bg-green-500' : 'bg-gray-200 dark:bg-neutral-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30' }}">
+                    @if($onboarding['diensten'])
+                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    @else
+                    <span class="text-xs font-bold text-gray-500 dark:text-neutral-400">2</span>
+                    @endif
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium {{ $onboarding['diensten'] ? 'text-green-700 dark:text-green-400 line-through' : 'text-gray-800 dark:text-neutral-200' }}">Diensten toevoegen</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500">Voeg je knippen, kleuren en andere diensten toe</p>
+                </div>
+                @if(!$onboarding['diensten'])
+                <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 group-hover:text-blue-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                @endif
+            </a>
+
+            {{-- Stap 3: Medewerkers (optioneel) --}}
+            <a href="{{ route('kapper.medewerkers') }}"
+               class="flex items-center gap-3 p-3 rounded-lg border {{ $onboarding['medewerkers'] ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700/50' }} transition-colors group">
+                <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 {{ $onboarding['medewerkers'] ? 'bg-green-500' : 'bg-gray-200 dark:bg-neutral-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30' }}">
+                    @if($onboarding['medewerkers'])
+                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    @else
+                    <span class="text-xs font-bold text-gray-500 dark:text-neutral-400">3</span>
+                    @endif
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                        <p class="text-sm font-medium {{ $onboarding['medewerkers'] ? 'text-green-700 dark:text-green-400 line-through' : 'text-gray-800 dark:text-neutral-200' }}">Medewerkers toevoegen</p>
+                        <span class="text-xs font-medium px-1.5 py-0.5 rounded bg-gray-100 dark:bg-neutral-700 text-gray-500 dark:text-neutral-400">Optioneel</span>
+                    </div>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500">Voeg medewerkers toe zodat klanten bij hen kunnen boeken</p>
+                </div>
+                @if(!$onboarding['medewerkers'])
+                <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 group-hover:text-blue-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                @endif
+            </a>
+        </div>
+    </div>
+    @endif
+
     {{-- Stats --}}
     <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">

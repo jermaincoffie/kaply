@@ -328,12 +328,21 @@ class AgendaOverzicht extends Component
                 ->limit(6)->get()
             : collect();
 
+        $kapper = auth()->user()->kapper;
+        $onboarding = [
+            'beschikbaarheid' => $kapper->beschikbaarheden()->exists(),
+            'diensten'        => $kapper->diensten()->where('actief', true)->exists(),
+            'medewerkers'     => $kapper->medewerkers()->where('actief', true)->exists(),
+        ];
+        $toonOnboarding = !$onboarding['beschikbaarheid'] || !$onboarding['diensten'];
+
         return view('livewire.kapper.agenda-overzicht', compact(
             'days', 'afsprakenPerDag', 'omzet_maand', 'afspraken_maand',
             'komende_afspraken', 'geselecteerdeAfspraak', 'weekStartDate',
             'eigenDiensten', 'zoekKlanten', 'mobielAfspraken',
             'vandaagAfspraken', 'volgendeAfspraak', 'omzet_vandaag',
-            'blokkeringenPerDag', 'mobielBlokkeringen', 'geselecteerdeblokkering'
+            'blokkeringenPerDag', 'mobielBlokkeringen', 'geselecteerdeblokkering',
+            'onboarding', 'toonOnboarding'
         ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }
