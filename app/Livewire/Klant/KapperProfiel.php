@@ -88,7 +88,7 @@ class KapperProfiel extends Component
                     'tijd'         => $tijd,
                     'medewerker_id' => $this->geselecteerdeMedewerkerId,
                 ],
-                'url.intended' => url()->current(),
+                'url.intended' => route('kapper.profiel', $this->kapper->slug),
             ]);
             $this->redirect(route('klant.inloggen'));
             return;
