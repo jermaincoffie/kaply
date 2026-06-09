@@ -1,0 +1,26 @@
+{
+  "node_modules/preline/dist/index.mjs": {
+    "file": "assets/dist-Dq45oXey.js",
+    "name": "dist",
+    "src": "node_modules/preline/dist/index.mjs",
+    "isDynamicEntry": true
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-Cp-y-GFS.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app--HXGv-gK.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "node_modules/preline/dist/index.mjs"
+    ]
+  }
+}
