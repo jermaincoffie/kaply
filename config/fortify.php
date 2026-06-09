@@ -167,14 +167,8 @@ return [
         // Features::emailVerification(),
         Features::updateProfileInformation(),
         Features::updatePasswords(),
-        Features::twoFactorAuthentication([
-            'confirm' => true,
-            'confirmPassword' => true,
-            // 'window' => 0,
-        ]),
-        Features::passkeys([
-            'confirmPassword' => true,
-        ]),
+        // Features::twoFactorAuthentication([...]) — uitgeschakeld: klanten loggen in via OTP
+        // Features::passkeys([...]) — uitgeschakeld: niet in gebruik
     ],
 
 ];
