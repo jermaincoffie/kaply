@@ -162,7 +162,7 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        // Features::registration(), // Klanten via OTP, kappers via eigen registratie
         Features::resetPasswords(),
         // Features::emailVerification(),
         Features::updateProfileInformation(),

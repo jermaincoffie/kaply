@@ -1,3 +1,10 @@
+<?php
+$intended = session('url.intended', '');
+if (preg_match('#/(boeken|mijn-afspraken|mijn-account)#', $intended)) {
+    header('Location: ' . route('klant.inloggen'));
+    exit;
+}
+?>
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
@@ -44,10 +51,19 @@
             </div>
         </form>
 
-        <div class="mt-6 pt-5 border-t border-gray-100 space-y-1 text-center">
+        <div class="mt-4 text-center">
+            <a href="{{ route('home') }}" class="text-sm text-gray-500 hover:text-gray-700 inline-flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Terug naar zoeken
+            </a>
+        </div>
+
+        <div class="mt-4 pt-5 border-t border-gray-100 space-y-1 text-center">
             <p class="text-xs text-gray-500">
-                Nog geen account?
-                <a href="{{ route('register') }}" class="text-indigo-600 hover:underline font-medium">Registreren als klant</a>
+                Klant? Boek direct via
+                <a href="{{ route('klant.inloggen') }}" class="text-indigo-600 hover:underline font-medium">inloggen met email</a>
             </p>
             <p class="text-xs text-gray-500">
                 Kapper?

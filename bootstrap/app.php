@@ -14,11 +14,28 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'role' => \App\Http\Middleware\CheckRole::class,
+            'role'       => \App\Http\Middleware\CheckRole::class,
+            'klant.auth' => \App\Http\Middleware\KlantAuth::class,
         ]);
+
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if ($request->is('boeken/*', 'mijn-afspraken', 'mijn-account')) {
+                return route('klant.inloggen');
+            }
+            return route('login');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+
+        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, Request $request) {
+            if (!$request->expectsJson()) {
+                if ($request->is('boeken/*', 'mijn-afspraken', 'mijn-account')) {
+                    return redirect()->guest(route('klant.inloggen'));
+                }
+                return redirect()->guest(route('login'));
+            }
+        });
     })->create();

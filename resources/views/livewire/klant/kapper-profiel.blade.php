@@ -197,7 +197,7 @@
 
             @guest
             <p class="text-xs text-gray-400 dark:text-neutral-500 mt-3">
-                <a href="{{ route('login') }}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Inloggen</a> om te boeken
+                <a href="{{ route('klant.inloggen') }}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Inloggen</a> om te boeken
             </p>
             @endguest
         </div>

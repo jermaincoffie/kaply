@@ -89,9 +89,9 @@
 
             @guest
             <div class="text-center mt-10 flex flex-wrap items-center justify-center gap-3">
-                <a href="{{ route('register') }}"
+                <a href="{{ route('klant.inloggen') }}"
                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
-                    Gratis account aanmaken
+                    Inloggen of account aanmaken
                 </a>
                 <a href="{{ route('kapper.registreer') }}"
                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 text-sm font-medium hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">

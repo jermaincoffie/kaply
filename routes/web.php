@@ -15,6 +15,7 @@ use App\Livewire\Kapper\Registratie as KapperRegistratie;
 use App\Livewire\Kapper\ReviewsOverzicht as KapperReviews;
 use App\Livewire\Klant\AccountBeheer;
 use App\Livewire\Klant\BoekingWizard;
+use App\Livewire\Klant\Inloggen;
 use App\Livewire\Klant\KapperProfiel;
 use App\Livewire\Klant\KapperZoeken;
 use App\Livewire\Klant\MijnAfspraken;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 // Publiek
 Route::get('/', KapperZoeken::class)->name('home');
+Route::get('/inloggen', Inloggen::class)->name('klant.inloggen')->middleware('guest');
 Route::get('/kapper/registreer', KapperRegistratie::class)->name('kapper.registreer');
 
 // Kapper dashboard (MOET vóór /kapper/{slug} staan — anders vangt slug 'dashboard' af)
@@ -52,7 +54,7 @@ Route::middleware(['auth'])->get('/dashboard', function () {
 
 
 // Klant
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['klant.auth'])->group(function () {
     Route::get('/mijn-afspraken', MijnAfspraken::class)->name('klant.afspraken');
     Route::get('/mijn-account', AccountBeheer::class)->name('klant.account');
     Route::get('/boeken/{kapperSlug}/{dienstId}', BoekingWizard::class)->name('boeken');
