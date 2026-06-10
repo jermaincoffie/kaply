@@ -9,6 +9,11 @@ class KapperZoeken extends Component
 {
     public string $zoekterm = '';
 
+    public function filterStad(string $stad): void
+    {
+        $this->zoekterm = $stad;
+    }
+
     public function render()
     {
         $kappers = Kapper::where('actief', true)
@@ -25,7 +30,19 @@ class KapperZoeken extends Component
             ->orderBy('salon_naam')
             ->get();
 
-        return view('livewire.klant.kapper-zoeken', compact('kappers'))
+        $kappers_totaal = Kapper::where('actief', true)->where('abonnement_status', 'actief')->count();
+
+        $steden = Kapper::where('actief', true)
+            ->where('abonnement_status', 'actief')
+            ->whereNotNull('stad')
+            ->pluck('stad')
+            ->map(fn($s) => str($s)->title()->toString())
+            ->unique()
+            ->sort()
+            ->values()
+            ->take(8);
+
+        return view('livewire.klant.kapper-zoeken', compact('kappers', 'kappers_totaal', 'steden'))
             ->layout('layouts.publiek');
     }
 }
