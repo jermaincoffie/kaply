@@ -9,7 +9,8 @@
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
-            Medewerker toevoegen
+            <span class="hidden sm:inline">Medewerker toevoegen</span>
+            <span class="sm:hidden">Toevoegen</span>
         </button>
     </div>
 
@@ -62,7 +63,7 @@
     {{-- Lijst --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
         @forelse($medewerkers as $medewerker)
-        <div class="flex items-center gap-4 px-5 py-3.5 {{ !$loop->last ? 'border-b border-gray-100 dark:border-neutral-700' : '' }}">
+        <div class="flex items-center gap-3 px-4 sm:px-5 py-3.5 {{ !$loop->last ? 'border-b border-gray-100 dark:border-neutral-700' : '' }}">
             {{-- Avatar --}}
             @if($medewerker->foto)
             <img src="{{ asset('storage/' . $medewerker->foto) }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0">
@@ -75,21 +76,34 @@
             </div>
             @endif
 
-            <div class="flex-1">
-                <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">{{ $medewerker->naam }}</p>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $medewerker->naam }}</p>
+                {{-- Mobiel: controls onder naam --}}
+                <div class="flex items-center gap-3 mt-1.5 sm:hidden">
+                    <button wire:click="toggleActief({{ $medewerker->id }})"
+                            class="text-xs px-2.5 py-0.5 rounded-full font-medium transition-colors
+                                {{ $medewerker->actief ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400' }}">
+                        {{ $medewerker->actief ? 'Actief' : 'Inactief' }}
+                    </button>
+                    <button @click.prevent="$dispatch('open-confirm', { title: 'Medewerker verwijderen', message: 'Weet je zeker dat je {{ addslashes($medewerker->naam) }} wilt verwijderen?', action: () => $wire.verwijder({{ $medewerker->id }}) })"
+                            class="text-xs font-medium text-red-500 dark:text-red-400">
+                        Verwijder
+                    </button>
+                </div>
             </div>
 
-            {{-- Actief toggle --}}
-            <button wire:click="toggleActief({{ $medewerker->id }})"
-                    class="text-xs px-2.5 py-1 rounded-full font-medium transition-colors
-                        {{ $medewerker->actief ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-100' : 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400 hover:bg-gray-200' }}">
-                {{ $medewerker->actief ? 'Actief' : 'Inactief' }}
-            </button>
-
-            <button @click.prevent="$dispatch('open-confirm', { title: 'Medewerker verwijderen', message: 'Weet je zeker dat je {{ addslashes($medewerker->naam) }} wilt verwijderen?', action: () => $wire.verwijder({{ $medewerker->id }}) })"
-                    class="text-xs font-medium text-red-500 hover:text-red-700 dark:text-red-400 transition-colors">
-                Verwijder
-            </button>
+            {{-- Desktop: controls rechts --}}
+            <div class="hidden sm:flex items-center gap-4">
+                <button wire:click="toggleActief({{ $medewerker->id }})"
+                        class="text-xs px-2.5 py-1 rounded-full font-medium transition-colors
+                            {{ $medewerker->actief ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-100' : 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400 hover:bg-gray-200' }}">
+                    {{ $medewerker->actief ? 'Actief' : 'Inactief' }}
+                </button>
+                <button @click.prevent="$dispatch('open-confirm', { title: 'Medewerker verwijderen', message: 'Weet je zeker dat je {{ addslashes($medewerker->naam) }} wilt verwijderen?', action: () => $wire.verwijder({{ $medewerker->id }}) })"
+                        class="text-xs font-medium text-red-500 hover:text-red-700 dark:text-red-400 transition-colors">
+                    Verwijder
+                </button>
+            </div>
         </div>
         @empty
         <div class="px-5 py-12 text-center">
