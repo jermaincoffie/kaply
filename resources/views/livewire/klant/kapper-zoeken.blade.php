@@ -1,4 +1,31 @@
-<div class="relative bg-white dark:bg-neutral-900">
+<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220" class="relative bg-white dark:bg-neutral-900">
+
+    {{-- Sticky zoekbalk --}}
+    <div x-cloak x-show="sticky"
+         x-transition:enter="transition ease-out duration-150"
+         x-transition:enter-start="-translate-y-full opacity-0"
+         x-transition:enter-end="translate-y-0 opacity-100"
+         x-transition:leave="transition ease-in duration-100"
+         x-transition:leave-start="translate-y-0 opacity-100"
+         x-transition:leave-end="-translate-y-full opacity-0"
+         class="fixed top-14 left-0 right-0 z-20 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-neutral-700 shadow-sm px-4 py-2.5">
+        <div class="max-w-2xl mx-auto flex items-center bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
+            <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+            </svg>
+            <input wire:model.live="zoekterm" type="text"
+                placeholder="Zoek op stad of naam..."
+                class="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 text-sm focus:ring-0">
+            @if($zoekterm)
+            <button wire:click="$set('zoekterm', '')" class="ml-2 text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            @endif
+        </div>
+    </div>
+
     {{-- Aurora: spans volledige hoogte --}}
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
         <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-50 will-change-transform animate-aurora motion-reduce:animate-none"></div>
@@ -121,8 +148,16 @@
                         <p class="text-xs text-gray-500 dark:text-neutral-400 truncate">{{ $kapper->stad }}</p>
                     </div>
 
-                    @if($kapper->bio)
-                    <p class="text-xs text-gray-500 dark:text-neutral-400 line-clamp-2 mt-2 leading-relaxed">{{ $kapper->bio }}</p>
+                    @if($kapper->diensten->count() > 0)
+                    @php $zichtbareDiensten = $kapper->diensten->take(3); $extra = $kapper->diensten->count() - 3; @endphp
+                    <div class="flex flex-wrap gap-1 mt-2">
+                        @foreach($zichtbareDiensten as $dienst)
+                        <span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300">{{ $dienst->naam }}</span>
+                        @endforeach
+                        @if($extra > 0)
+                        <span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-neutral-700 text-gray-500 dark:text-neutral-400">+{{ $extra }}</span>
+                        @endif
+                    </div>
                     @endif
 
                     <div class="flex justify-end mt-auto pt-3">
