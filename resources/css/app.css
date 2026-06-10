@@ -37,7 +37,7 @@
 }
 
 .animate-aurora {
-    animation: aurora 60s linear infinite;
+    animation: aurora 120s linear infinite;
 }
 
 /* Dark mode via class */
