@@ -11,7 +11,7 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         User::firstOrCreate(
-            ['email' => 'admin@kapperplatform.nl'],
+            ['email' => 'admin@kaply.nl'],
             ['name' => 'Admin', 'password' => Hash::make('password'), 'role' => 'admin']
         );
     }
