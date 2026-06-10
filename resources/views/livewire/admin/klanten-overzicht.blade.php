@@ -28,11 +28,9 @@
                 <div class="min-w-0">
                     <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ str($klant->name)->title() }}</p>
                     <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5 truncate">{{ $klant->email }}</p>
-                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
-                        Lid sinds {{ $klant->created_at->format('d-m-Y') }}
-                        @if($klant->afspraken->first())
-                         · Laatste bezoek {{ $klant->afspraken->first()->datum->format('d-m-Y') }}
-                        @endif
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5 truncate">
+                        Lid: {{ $klant->created_at->format('d-m-y') }}
+                        @if($klant->afspraken->first()) · Bezoek: {{ $klant->afspraken->first()->datum->format('d-m-y') }} @endif
                     </p>
                 </div>
                 <span class="inline-flex flex-shrink-0 px-2.5 py-0.5 rounded-full text-xs font-medium
