@@ -34,7 +34,7 @@
                             <p class="text-xs text-gray-400 dark:text-neutral-500 truncate">{{ $klant->email }}</p>
                             <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
                                 {{ $klant->voltooide_afspraken }} voltooid
-                                @if($klant->totaal_afspraken > $klant->voltooide_afspraken)· {{ $klant->totaal_afspraken }} totaal@endif
+                                @if($klant->totaal_afspraken > $klant->voltooide_afspraken)· {{ $klant->totaal_afspraken }} totaal @endif
                                 · lid {{ $klant->created_at->format('d-m-Y') }}
                             </p>
                         </div>
