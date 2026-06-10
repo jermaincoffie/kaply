@@ -103,7 +103,7 @@
 {{-- ===== HEADER ===== --}}
 <header class="sticky top-0 z-30 lg:ml-64 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700 h-14 flex items-center px-4 sm:px-6 gap-4">
 
-    <button onclick="openSidebar()" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-200 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
+    <button onclick="openSidebar()" class="hidden lg:hidden text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-200 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
@@ -167,11 +167,62 @@
 </header>
 
 {{-- ===== MAIN CONTENT ===== --}}
-<main class="lg:ml-64 min-h-screen">
+<main class="lg:ml-64 min-h-screen pb-16 lg:pb-0">
     <div class="p-4 sm:p-6">
         {{ $slot }}
     </div>
 </main>
+
+{{-- ===== BOTTOM NAV (mobiel only) ===== --}}
+@php
+    $adminTab = fn($route) => request()->routeIs($route) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-neutral-500';
+@endphp
+<nav class="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-700"
+     style="padding-bottom: env(safe-area-inset-bottom, 0px)">
+    <div class="flex h-16">
+
+        {{-- Dashboard --}}
+        <a href="{{ route('admin.dashboard') }}"
+           class="flex-1 flex flex-col items-center justify-center gap-0.5 {{ $adminTab('admin.dashboard') }}">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            <span class="text-[10px] font-medium">Dashboard</span>
+        </a>
+
+        {{-- Kappers --}}
+        @php $nieuwAdmin = \App\Models\Kapper::where('actief', false)->where('abonnement_status', 'geen')->count(); @endphp
+        <a href="{{ route('admin.kappers') }}"
+           class="flex-1 flex flex-col items-center justify-center gap-0.5 relative {{ $adminTab('admin.kappers') }}">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span class="text-[10px] font-medium">Kappers</span>
+            @if($nieuwAdmin > 0)
+            <span class="absolute top-1.5 right-6 min-w-[16px] h-4 flex items-center justify-center bg-amber-500 text-white text-[9px] font-bold rounded-full px-1">{{ $nieuwAdmin }}</span>
+            @endif
+        </a>
+
+        {{-- Afspraken --}}
+        <a href="{{ route('admin.afspraken') }}"
+           class="flex-1 flex flex-col items-center justify-center gap-0.5 {{ $adminTab('admin.afspraken') }}">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <span class="text-[10px] font-medium">Afspraken</span>
+        </a>
+
+        {{-- Klanten --}}
+        <a href="{{ route('admin.klanten') }}"
+           class="flex-1 flex flex-col items-center justify-center gap-0.5 {{ $adminTab('admin.klanten') }}">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            <span class="text-[10px] font-medium">Klanten</span>
+        </a>
+
+    </div>
+</nav>
 
 <x-confirm-modal />
 @livewireScripts

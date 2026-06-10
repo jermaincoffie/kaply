@@ -20,7 +20,33 @@
 
     {{-- Tabel --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
-        <table class="w-full text-sm">
+
+        {{-- Mobiel: cards --}}
+        <div class="sm:hidden divide-y divide-gray-50 dark:divide-neutral-700">
+            @forelse($klanten as $klant)
+            <div class="px-4 py-3 flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ str($klant->name)->title() }}</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5 truncate">{{ $klant->email }}</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
+                        Lid sinds {{ $klant->created_at->format('d-m-Y') }}
+                        @if($klant->afspraken->first())
+                         · Laatste bezoek {{ $klant->afspraken->first()->datum->format('d-m-Y') }}
+                        @endif
+                    </p>
+                </div>
+                <span class="inline-flex flex-shrink-0 px-2.5 py-0.5 rounded-full text-xs font-medium
+                    {{ $klant->totaal_afspraken > 0 ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400' }}">
+                    {{ $klant->totaal_afspraken }} {{ $klant->totaal_afspraken === 1 ? 'afspraak' : 'afspraken' }}
+                </span>
+            </div>
+            @empty
+            <div class="px-4 py-12 text-center text-sm text-gray-400 dark:text-neutral-500">Geen klanten gevonden</div>
+            @endforelse
+        </div>
+
+        {{-- Desktop: tabel --}}
+        <table class="hidden sm:table w-full text-sm">
             <thead>
                 <tr class="border-b border-gray-100 dark:border-neutral-700">
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Klant</th>

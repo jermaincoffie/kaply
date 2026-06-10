@@ -75,7 +75,35 @@
             </span>
             <a href="{{ route('admin.afspraken') }}" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Alle →</a>
         </div>
-        <table class="w-full text-sm">
+        {{-- Mobiel: cards --}}
+        <div class="sm:hidden divide-y divide-gray-50 dark:divide-neutral-700">
+            @forelse($recente_afspraken as $afspraak)
+            @php
+                $badgeM = match($afspraak->status) {
+                    'gepland'     => 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                    'voltooid'    => 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                    'geannuleerd' => 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400',
+                    'no_show'     => 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                    default       => 'bg-gray-100 text-gray-500',
+                };
+            @endphp
+            <div class="px-4 py-3 flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ str($afspraak->klant?->name ?? '—')->title() }}</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5 truncate">{{ str($afspraak->kapper?->salon_naam ?? '—')->title() }}</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $afspraak->datum->format('d-m-Y') }} · {{ $afspraak->start_tijd }}</p>
+                </div>
+                <span class="inline-flex flex-shrink-0 px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badgeM }}">
+                    {{ ucfirst(str_replace('_', ' ', $afspraak->status)) }}
+                </span>
+            </div>
+            @empty
+            <div class="px-4 py-10 text-center text-sm text-gray-400 dark:text-neutral-500">Nog geen afspraken</div>
+            @endforelse
+        </div>
+
+        {{-- Desktop: tabel --}}
+        <table class="hidden sm:table w-full text-sm">
             <thead>
                 <tr class="border-b border-gray-100 dark:border-neutral-700">
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Klant</th>
