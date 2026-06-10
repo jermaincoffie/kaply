@@ -108,7 +108,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @forelse($kappers as $kapper)
             <a href="{{ route('kapper.profiel', $kapper->slug) }}"
-               class="group flex flex-col bg-gradient-to-b from-blue-200 to-white dark:from-neutral-700 dark:to-neutral-800 border border-blue-100 dark:border-neutral-700 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-300 dark:hover:border-neutral-500 transition-all duration-150">
+               class="group flex flex-col bg-gradient-to-b from-blue-100 to-white dark:from-neutral-700 dark:to-neutral-800 border border-blue-100 dark:border-neutral-700 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-200 dark:hover:border-neutral-500 transition-all duration-150">
 
                 {{-- Logo / foto --}}
                 <div class="h-36 flex items-center justify-center overflow-hidden @if($kapper->foto) bg-transparent @endif">
