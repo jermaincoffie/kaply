@@ -221,10 +221,10 @@
                 </svg>
             </div>
             <h3 class="text-lg font-bold text-gray-900 dark:text-neutral-100 mb-2">Ben jij kapper?</h3>
-            <p class="text-sm text-gray-500 dark:text-neutral-400 mb-6">Zet je salon online, ontvang boekingen en beheer je agenda op één plek.</p>
+            <p class="text-sm text-gray-500 dark:text-neutral-400 mb-6">Zet je salon online, ontvang boekingen en beheer je agenda op één plek. Vanaf €20 per maand.</p>
             <a href="{{ route('kapper.registreer') }}"
                class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
-                Gratis aanmelden
+                Salon aanmelden
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>
