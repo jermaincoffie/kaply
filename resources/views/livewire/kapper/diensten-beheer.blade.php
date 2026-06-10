@@ -68,7 +68,7 @@
         <div class="sm:hidden divide-y divide-gray-50 dark:divide-neutral-700">
             @forelse($diensten as $dienst)
             <div class="px-4 py-3 {{ $bewerkenId === $dienst->id ? 'bg-blue-50/50 dark:bg-blue-900/10' : '' }}">
-                <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center justify-between gap-3">
                     <div>
                         <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">{{ $dienst->naam }}</p>
                         <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $dienst->duur_minuten }} min · € {{ $dienst->prijs_in_euros }} · no-show: € {{ $dienst->no_show_bedrag_in_euros }}</p>
