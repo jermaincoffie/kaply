@@ -100,7 +100,7 @@
             <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-2">Afspraken {{ now()->isoFormat('MMMM') }}</p>
             <span class="text-2xl font-bold text-gray-900 dark:text-neutral-100">{{ $afspraken_maand }}</span>
         </div>
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
+        <div class="col-span-2 lg:col-span-1 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
             <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-2">Komende</p>
             <span class="text-2xl font-bold text-gray-900 dark:text-neutral-100">{{ $komende_afspraken }}</span>
         </div>
