@@ -29,23 +29,23 @@
 
         <div class="divide-y divide-gray-50 dark:divide-neutral-700">
             @foreach($rooster as $dag => $data)
-            <div class="flex items-center gap-4 px-6 py-3.5">
-                <label class="flex items-center gap-3 w-32 cursor-pointer flex-shrink-0">
+            <div class="px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
+                <label class="flex items-center gap-3 cursor-pointer sm:flex-shrink-0 sm:w-32">
                     <input wire:model.live="rooster.{{ $dag }}.actief" type="checkbox"
                            class="rounded border-gray-300 dark:border-neutral-600 text-blue-600 focus:ring-blue-500 dark:bg-neutral-700">
                     <span class="text-sm font-medium text-gray-700 dark:text-neutral-300">{{ $data['naam'] }}</span>
                 </label>
 
                 @if($data['actief'])
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 ml-7 sm:ml-0">
                     <input wire:model="rooster.{{ $dag }}.start_tijd" type="time"
-                           class="py-1.5 px-2.5 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                           class="py-1.5 px-2 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
                     <span class="text-xs text-gray-400 dark:text-neutral-500">tot</span>
                     <input wire:model="rooster.{{ $dag }}.eind_tijd" type="time"
-                           class="py-1.5 px-2.5 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                           class="py-1.5 px-2 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
                 </div>
                 @else
-                <span class="text-xs text-gray-400 dark:text-neutral-500">Gesloten</span>
+                <span class="text-xs text-gray-400 dark:text-neutral-500 ml-7 sm:ml-0">Gesloten</span>
                 @endif
             </div>
             @endforeach

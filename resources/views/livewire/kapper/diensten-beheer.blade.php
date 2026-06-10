@@ -61,9 +61,35 @@
         </form>
     </div>
 
-    {{-- Tabel --}}
+    {{-- Diensten --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
-        <table class="w-full text-sm">
+
+        {{-- Mobiel: cards --}}
+        <div class="sm:hidden divide-y divide-gray-50 dark:divide-neutral-700">
+            @forelse($diensten as $dienst)
+            <div class="px-4 py-3 {{ $bewerkenId === $dienst->id ? 'bg-blue-50/50 dark:bg-blue-900/10' : '' }}">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">{{ $dienst->naam }}</p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $dienst->duur_minuten }} min · € {{ $dienst->prijs_in_euros }} · no-show: € {{ $dienst->no_show_bedrag_in_euros }}</p>
+                    </div>
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <button wire:click="bewerk({{ $dienst->id }})"
+                                class="text-xs font-medium text-blue-600 dark:text-blue-400">Bewerk</button>
+                        <button @click.prevent="$dispatch('open-confirm', { title: 'Dienst verwijderen', message: 'Weet je zeker dat je \'{{ addslashes($dienst->naam) }}\' wilt verwijderen?', action: () => $wire.verwijder({{ $dienst->id }}) })"
+                                class="text-xs font-medium text-red-500 dark:text-red-400">Verwijder</button>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="px-4 py-12 text-center text-sm text-gray-400 dark:text-neutral-500">
+                Nog geen diensten — voeg er een toe via het formulier hierboven.
+            </div>
+            @endforelse
+        </div>
+
+        {{-- Desktop: tabel --}}
+        <table class="hidden sm:table w-full text-sm">
             <thead>
                 <tr class="border-b border-gray-100 dark:border-neutral-700">
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Naam</th>

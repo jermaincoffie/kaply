@@ -19,7 +19,44 @@
 
     {{-- Tabel --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
-        <table class="w-full text-sm">
+
+        {{-- Mobiel: cards --}}
+        <div class="sm:hidden divide-y divide-gray-50 dark:divide-neutral-700">
+            @forelse($klanten as $klant)
+            <div class="px-4 py-3">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                            <span class="text-blue-700 dark:text-blue-400 font-bold text-xs">{{ mb_strtoupper(mb_substr($klant->name, 0, 1)) }}</span>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ str($klant->name)->title() }}</p>
+                            <p class="text-xs text-gray-400 dark:text-neutral-500 truncate">{{ $klant->email }}</p>
+                            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
+                                {{ $klant->voltooide_afspraken }} voltooid
+                                @if($klant->totaal_afspraken > $klant->voltooide_afspraken)· {{ $klant->totaal_afspraken }} totaal@endif
+                                · lid {{ $klant->created_at->format('d-m-Y') }}
+                            </p>
+                        </div>
+                    </div>
+                    @php $heeftNotitie = $klant->klantNotitie?->notities; @endphp
+                    <button wire:click="openNotitie({{ $klant->id }})"
+                            class="flex-shrink-0 inline-flex items-center gap-1 text-xs font-medium transition-colors {{ $heeftNotitie ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-neutral-500' }}">
+                        <svg class="w-4 h-4" fill="{{ $heeftNotitie ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            @empty
+            <div class="px-4 py-12 text-center text-sm text-gray-400 dark:text-neutral-500">
+                {{ $zoekterm ? 'Geen klanten gevonden' : 'Nog geen klanten' }}
+            </div>
+            @endforelse
+        </div>
+
+        {{-- Desktop: tabel --}}
+        <table class="hidden sm:table w-full text-sm">
             <thead>
                 <tr class="border-b border-gray-100 dark:border-neutral-700">
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Klant</th>

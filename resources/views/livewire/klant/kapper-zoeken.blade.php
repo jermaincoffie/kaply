@@ -7,7 +7,7 @@
     <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[0%] to-white dark:to-neutral-900"></div>
 
     {{-- Hero --}}
-    <div class="relative z-10 py-20 px-4">
+    <div class="relative z-10 py-10 sm:py-20 px-4">
         <div class="text-center mb-10">
             <p class="hero-anim hero-anim-1 text-sm font-medium text-gray-400 dark:text-neutral-500 mb-2 tracking-widest uppercase">Welkom bij</p>
             <h1 class="hero-anim hero-anim-2 text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-6">
@@ -171,7 +171,7 @@
                 </div>
             </a>
             @empty
-            <div class="col-span-3 py-20 text-center">
+            <div class="col-span-full py-20 text-center">
                 <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 flex items-center justify-center mx-auto mb-4">
                     <svg class="w-6 h-6 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
