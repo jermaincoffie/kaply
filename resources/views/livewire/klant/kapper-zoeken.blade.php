@@ -86,13 +86,17 @@
             @endif
 
             @if($steden->count() > 0)
-            <div class="flex flex-wrap justify-center gap-2 mb-7">
-                @foreach($steden as $stad)
-                <button wire:click="filterStad('{{ addslashes($stad) }}')"
-                        class="px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 bg-white dark:bg-neutral-800 hover:border-blue-300 hover:text-blue-600 dark:hover:border-blue-600 dark:hover:text-blue-400 transition-colors">
-                    {{ $stad }}
-                </button>
-                @endforeach
+            <div class="relative mb-7 -mx-4 sm:mx-0">
+                {{-- gradient fade rechts als scroll-hint --}}
+                <div class="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-white dark:from-neutral-900 to-transparent z-10 sm:hidden"></div>
+                <div class="flex gap-2 overflow-x-auto scrollbar-hide px-4 sm:px-0 sm:flex-wrap sm:justify-center">
+                    @foreach($steden as $stad)
+                    <button wire:click="filterStad('{{ addslashes($stad) }}')"
+                            class="flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 bg-white dark:bg-neutral-800 hover:border-blue-300 hover:text-blue-600 dark:hover:border-blue-600 dark:hover:text-blue-400 transition-colors">
+                        {{ $stad }}
+                    </button>
+                    @endforeach
+                </div>
             </div>
             @endif
         @else
