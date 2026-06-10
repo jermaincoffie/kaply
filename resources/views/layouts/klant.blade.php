@@ -109,9 +109,42 @@
     </header>
 
     {{-- Main content --}}
-    <main class="max-w-5xl mx-auto px-4 py-8">
+    <main class="max-w-5xl mx-auto px-4 py-8 pb-24 sm:pb-8">
         {{ $slot }}
     </main>
+
+    {{-- ===== BOTTOM NAV (mobiel only) ===== --}}
+    @php
+        $klantTab = fn($route) => request()->routeIs($route)
+            ? 'text-blue-400'
+            : 'text-neutral-500';
+    @endphp
+    <nav class="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-neutral-900 border-t border-neutral-700"
+         style="padding-bottom: env(safe-area-inset-bottom, 0px)">
+        <div class="flex h-16">
+            <a href="{{ route('home') }}"
+               class="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors {{ $klantTab('home') }}">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+                </svg>
+                <span class="text-[10px] font-medium">Zoeken</span>
+            </a>
+            <a href="{{ route('klant.afspraken') }}"
+               class="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors {{ $klantTab('klant.afspraken') }}">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span class="text-[10px] font-medium">Afspraken</span>
+            </a>
+            <a href="{{ route('klant.account') }}"
+               class="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors {{ $klantTab('klant.account') }}">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span class="text-[10px] font-medium">Account</span>
+            </a>
+        </div>
+    </nav>
 
     <x-confirm-modal />
     @livewireScripts
