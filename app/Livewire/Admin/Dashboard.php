@@ -52,12 +52,15 @@ class Dashboard extends Component
                 ->orderByDesc('datum')->orderByDesc('start_tijd')
                 ->limit(8)
                 ->get(),
-            'populaire_diensten'  => Afspraak::join('diensten', 'afspraken.dienst_id', '=', 'diensten.id')
-                ->selectRaw('diensten.naam, count(*) as aantal, avg(diensten.prijs) as gem_prijs')
-                ->whereIn('afspraken.status', ['voltooid', 'gepland'])
-                ->groupBy('diensten.naam')
-                ->orderByDesc('aantal')
-                ->limit(8)
+            'top_kappers'         => Kapper::withCount([
+                'afspraken as boekingen_maand' => fn($q) => $q
+                    ->whereMonth('datum', now()->month)
+                    ->whereYear('datum', now()->year)
+                    ->whereIn('status', ['gepland', 'voltooid']),
+            ])
+                ->where('actief', true)
+                ->orderByDesc('boekingen_maand')
+                ->limit(6)
                 ->get(),
             'recente_reviews'     => Review::with(['kapper', 'klant'])
                 ->orderByDesc('created_at')

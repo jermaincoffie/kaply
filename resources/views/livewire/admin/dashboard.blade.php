@@ -149,28 +149,28 @@
     {{-- Populairste diensten + Recente reviews --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
 
-        {{-- Populairste diensten --}}
+        {{-- Top kappers --}}
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">
-                <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200">Populairste diensten</h2>
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Platform-breed, voltooide + geplande afspraken</p>
+                <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200">Top kappers</h2>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Meeste boekingen in {{ now()->isoFormat('MMMM') }}</p>
             </div>
-            @if($populaire_diensten->isEmpty())
-            <div class="px-6 py-10 text-center text-sm text-gray-400 dark:text-neutral-500">Geen data</div>
+            @if($top_kappers->isEmpty())
+            <div class="px-6 py-10 text-center text-sm text-gray-400 dark:text-neutral-500">Geen actieve kappers</div>
             @else
+            @php $maxBoekingen = $top_kappers->first()->boekingen_maand ?: 1; @endphp
             <div class="divide-y divide-gray-50 dark:divide-neutral-700">
-                @foreach($populaire_diensten as $idx => $dienst)
-                @php $maxAantal = $populaire_diensten->first()->aantal; @endphp
-                <div class="px-6 py-3 flex items-center gap-4">
+                @foreach($top_kappers as $idx => $kapper)
+                <a href="{{ route('admin.kappers') }}" class="px-6 py-3 flex items-center gap-4 hover:bg-gray-50/50 dark:hover:bg-neutral-700/20 transition-colors">
                     <span class="text-xs font-bold text-gray-300 dark:text-neutral-600 w-4 flex-shrink-0">{{ $idx + 1 }}</span>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $dienst->naam }}</p>
+                        <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $kapper->salon_naam }}</p>
                         <div class="mt-1 h-1 bg-gray-100 dark:bg-neutral-700 rounded-full overflow-hidden">
-                            <div class="h-1 bg-blue-500 rounded-full" style="width: {{ round(($dienst->aantal / $maxAantal) * 100) }}%"></div>
+                            <div class="h-1 bg-blue-500 rounded-full" style="width: {{ $maxBoekingen > 0 ? round(($kapper->boekingen_maand / $maxBoekingen) * 100) : 0 }}%"></div>
                         </div>
                     </div>
-                    <span class="text-sm font-bold text-gray-700 dark:text-neutral-300 flex-shrink-0">{{ $dienst->aantal }}×</span>
-                </div>
+                    <span class="text-sm font-bold text-gray-700 dark:text-neutral-300 flex-shrink-0">{{ $kapper->boekingen_maand }}×</span>
+                </a>
                 @endforeach
             </div>
             @endif
