@@ -5,6 +5,7 @@
     </div>
 
     {{-- Filters --}}
+    @if($heeftAfspraken)
     <div class="flex flex-wrap gap-3 mb-4">
         {{-- Periode tabs --}}
         <div class="flex rounded-lg border border-gray-200 dark:border-neutral-700 overflow-hidden bg-white dark:bg-neutral-800">
@@ -27,6 +28,7 @@
             placeholder="Alle statussen"
         />
     </div>
+    @endif
 
     {{-- Mobile cards --}}
     <div class="sm:hidden space-y-2">

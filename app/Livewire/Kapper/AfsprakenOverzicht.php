@@ -20,6 +20,8 @@ class AfsprakenOverzicht extends Component
     {
         $kapperId = auth()->user()->kapper->id;
 
+        $heeftAfspraken = Afspraak::where('kapper_id', $kapperId)->exists();
+
         $afspraken = Afspraak::where('kapper_id', $kapperId)
             ->when($this->periode === 'aankomend', fn($q) => $q->where('datum', '>=', today())->where('status', 'gepland'))
             ->when($this->periode === 'verleden',  fn($q) => $q->where(fn($q) => $q->where('datum', '<', today())->orWhereIn('status', ['voltooid','geannuleerd','no_show'])))
@@ -29,7 +31,7 @@ class AfsprakenOverzicht extends Component
             ->orderBy('start_tijd')
             ->paginate(15);
 
-        return view('livewire.kapper.afspraken-overzicht', compact('afspraken'))
+        return view('livewire.kapper.afspraken-overzicht', compact('afspraken', 'heeftAfspraken'))
             ->layout('layouts.kapper', ['title' => 'Afspraken']);
     }
 }
