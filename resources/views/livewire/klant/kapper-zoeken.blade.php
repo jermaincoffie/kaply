@@ -1,14 +1,14 @@
 <div class="relative bg-white dark:bg-neutral-900">
     {{-- Aurora: spans volledige hoogte --}}
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-50 will-change-transform animate-aurora"></div>
+        <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-50 will-change-transform animate-aurora motion-reduce:animate-none"></div>
     </div>
     {{-- Fade-to-white overlay: transparant boven, wit onderaan --}}
     <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[0%] to-white dark:to-neutral-900"></div>
 
     {{-- Hero --}}
-    <div class="relative z-10 py-10 sm:py-20 px-4">
-        <div class="text-center mb-10">
+    <div class="relative z-10 py-6 sm:py-20 px-4">
+        <div class="text-center mb-6 sm:mb-10">
             <p class="hero-anim hero-anim-1 text-sm font-medium text-gray-400 dark:text-neutral-500 mb-2 tracking-widest uppercase">Welkom bij</p>
             <h1 class="hero-anim hero-anim-2 text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-6">
                 {{ config('app.name') }}
@@ -139,7 +139,18 @@
                 </div>
                 <p class="text-sm font-semibold text-gray-700 dark:text-neutral-300">Geen kappers gevonden</p>
                 @if($zoekterm)
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">Probeer een andere zoekterm of stad</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1 mb-4">Geen resultaten voor "{{ $zoekterm }}"</p>
+                @if($steden->count() > 0)
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mb-2">Probeer een van deze steden:</p>
+                <div class="flex flex-wrap justify-center gap-2">
+                    @foreach($steden as $stad)
+                    <button wire:click="filterStad('{{ addslashes($stad) }}')"
+                            class="px-3 py-1 rounded-full text-xs font-medium border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 bg-white dark:bg-neutral-800 hover:border-blue-300 hover:text-blue-600 dark:hover:border-blue-600 dark:hover:text-blue-400 transition-colors">
+                        {{ $stad }}
+                    </button>
+                    @endforeach
+                </div>
+                @endif
                 @else
                 <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">Er zijn nog geen kappers geregistreerd</p>
                 @endif
