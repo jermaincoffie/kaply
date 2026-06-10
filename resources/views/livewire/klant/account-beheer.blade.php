@@ -10,7 +10,7 @@
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-6">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mb-4">Persoonlijke gegevens</h2>
             <form wire:submit="opslaanGegevens" class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Voornaam <span class="text-red-500">*</span></label>
                         <input wire:model="voornaam" type="text" placeholder="Jan"

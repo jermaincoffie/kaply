@@ -23,7 +23,7 @@
             @if(count($vrijeslots) === 0)
                 <p class="text-gray-500">Geen beschikbare tijdsloten op deze datum.</p>
             @else
-            <div class="grid grid-cols-4 gap-2">
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                 @foreach($vrijeslots as $slot)
                 <button type="button"
                     wire:click="$set('gekozenTijdslot', '{{ $slot }}')"

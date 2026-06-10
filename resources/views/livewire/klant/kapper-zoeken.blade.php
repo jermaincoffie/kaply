@@ -10,7 +10,7 @@
     <div class="relative z-10 py-20 px-4">
         <div class="text-center mb-10">
             <p class="hero-anim hero-anim-1 text-sm font-medium text-gray-400 dark:text-neutral-500 mb-2 tracking-widest uppercase">Welkom bij</p>
-            <h1 class="hero-anim hero-anim-2 text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-6">
+            <h1 class="hero-anim hero-anim-2 text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-6">
                 {{ config('app.name') }}
             </h1>
             <p class="hero-anim hero-anim-3 text-gray-400 dark:text-neutral-500 text-sm">Bekijk beschikbare tijden en boek direct online</p>

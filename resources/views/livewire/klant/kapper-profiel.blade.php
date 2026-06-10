@@ -168,7 +168,7 @@
             <div wire:loading.delay wire:target="geselecteerdeDatum,selecteerDienst" class="text-xs text-gray-400 dark:text-neutral-500">Beschikbaarheid laden...</div>
 
             @if(count($tijdsloten) > 0)
-            <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                 @foreach($tijdsloten as $slot)
                 <button wire:click="openBoekModal('{{ $slot }}')"
                         class="py-2 px-1 rounded-lg border border-gray-200 dark:border-neutral-700 text-sm font-medium text-gray-700 dark:text-neutral-300 hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-400 transition-colors text-center">
