@@ -28,8 +28,75 @@
         />
     </div>
 
+    {{-- Mobile cards --}}
+    <div class="sm:hidden space-y-2">
+        @php $vorigeDatumMobiel = null; @endphp
+        @forelse($afspraken as $afspraak)
+        @php
+            $dagKeyM   = $afspraak->datum->toDateString();
+            $isNieuwM  = $dagKeyM !== $vorigeDatumMobiel;
+            $vorigeDatumMobiel = $dagKeyM;
+            $dagLabelM = match(true) {
+                $afspraak->datum->isToday()    => 'Vandaag',
+                $afspraak->datum->isTomorrow() => 'Morgen',
+                default => $afspraak->datum->isoFormat('dddd D MMMM'),
+            };
+            $badgeM = match($afspraak->status) {
+                'gepland'     => 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                'voltooid'    => 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                'geannuleerd' => 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400',
+                'no_show'     => 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                default       => 'bg-gray-100 text-gray-500',
+            };
+        @endphp
+
+        @if($isNieuwM)
+        <div class="flex items-center gap-2 pt-3 pb-1 px-1">
+            <span class="text-xs font-semibold text-gray-600 dark:text-neutral-300">{{ $dagLabelM }}</span>
+            @if($afspraak->datum->isToday())
+            <span class="inline-flex px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-600 text-white">Vandaag</span>
+            @endif
+        </div>
+        @endif
+
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
+            <div class="flex items-start justify-between gap-2 mb-2">
+                <div class="min-w-0">
+                    <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">
+                        {{ str($afspraak->klant->name)->title() }}
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-neutral-400 mt-0.5 truncate">
+                        {{ $afspraak->dienst->naam }}
+                        <span class="text-gray-400 dark:text-neutral-500">· €{{ $afspraak->dienst->prijs_in_euros }}</span>
+                    </p>
+                </div>
+                <span class="inline-flex flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-medium {{ $badgeM }}">
+                    {{ ucfirst(str_replace('_', ' ', $afspraak->status)) }}
+                </span>
+            </div>
+            <div class="flex items-center justify-between">
+                <p class="text-xs text-gray-400 dark:text-neutral-500">
+                    {{ $afspraak->start_tijd }} – {{ $afspraak->eind_tijd }}
+                    <span class="mx-1">·</span>
+                    {{ $afspraak->betaalmethode === 'online' ? 'Online' : 'In zaak' }}
+                </p>
+            </div>
+        </div>
+        @empty
+        <div class="py-12 text-center">
+            <p class="text-sm text-gray-400 dark:text-neutral-500">Geen afspraken gevonden</p>
+        </div>
+        @endforelse
+
+        @if($afspraken->hasPages())
+        <div class="py-4">
+            {{ $afspraken->links() }}
+        </div>
+        @endif
+    </div>
+
     {{-- Tabel --}}
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
+    <div class="hidden sm:block bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
         <table class="w-full text-sm">
             <thead>
                 <tr class="border-b border-gray-100 dark:border-neutral-700">
