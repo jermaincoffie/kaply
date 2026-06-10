@@ -63,7 +63,7 @@
     </div>
 
     {{-- Results --}}
-    <div class="relative z-10 max-w-5xl mx-auto px-4 pb-12">
+    <div class="relative z-10 max-w-5xl mx-auto px-4 pb-6">
 
         {{-- Stats + stad chips (alleen zonder zoekterm) --}}
         @if(!$zoekterm)
@@ -104,7 +104,10 @@
         </p>
         @endif
 
-        {{-- Kappers carousel --}}
+    </div>{{-- einde max-w-5xl --}}
+
+    {{-- Carousel full-width --}}
+    <div class="relative z-10 pb-10">
         <div x-data="{
             updateArrows() {
                 const c = this.$refs.carousel;
@@ -117,19 +120,19 @@
 
             {{-- Pijl links --}}
             <button x-show="canLeft" @click="$refs.carousel.scrollBy({ left: -300, behavior: 'smooth' })"
-                    class="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-9 h-9 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-full shadow-sm items-center justify-center text-gray-500 hover:text-gray-800 dark:hover:text-neutral-100 transition-colors">
+                    class="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-full shadow-sm items-center justify-center text-gray-500 hover:text-gray-800 dark:hover:text-neutral-100 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </button>
 
             {{-- Pijl rechts --}}
             <button x-show="canRight" @click="$refs.carousel.scrollBy({ left: 300, behavior: 'smooth' })"
-                    class="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-9 h-9 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-full shadow-sm items-center justify-center text-gray-500 hover:text-gray-800 dark:hover:text-neutral-100 transition-colors">
+                    class="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-full shadow-sm items-center justify-center text-gray-500 hover:text-gray-800 dark:hover:text-neutral-100 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
 
             {{-- Scrollbare rij --}}
             <div x-ref="carousel" @scroll="updateArrows()" x-init="$nextTick(() => updateArrows())"
-                 class="flex gap-4 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 pb-2">
+                 class="flex gap-4 overflow-x-auto scrollbar-hide px-4 sm:px-8 pb-2">
                 @forelse($kappers as $kapper)
                 <a href="{{ route('kapper.profiel', $kapper->slug) }}"
                    class="group flex-shrink-0 w-[260px] sm:w-[280px] flex flex-col bg-gradient-to-b from-indigo-50 to-white dark:from-neutral-700 dark:to-neutral-800 border border-indigo-100 dark:border-neutral-700 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-200 dark:hover:border-neutral-500 transition-all duration-150">
@@ -233,7 +236,7 @@
             </a>
         </div>
         @endif
-    </div>
+    </div>{{-- einde full-width carousel sectie --}}
 
     {{-- Hoe werkt het (alleen zonder zoekterm) --}}
     @if(!$zoekterm)
