@@ -331,7 +331,7 @@ class AgendaOverzicht extends Component
         $kapper = auth()->user()->kapper;
         $onboarding = [
             'beschikbaarheid' => $kapper->beschikbaarheden()->exists(),
-            'diensten'        => $kapper->diensten()->where('actief', true)->exists(),
+            'diensten'        => $kapper->diensten()->exists(),
             'medewerkers'     => $kapper->medewerkers()->where('actief', true)->exists(),
         ];
         $toonOnboarding = !$onboarding['beschikbaarheid'] || !$onboarding['diensten'];
