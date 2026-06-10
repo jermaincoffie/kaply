@@ -81,7 +81,6 @@ class Inloggen extends Component
         Auth::login($user, remember: true);
 
         $redirect = session()->pull('url.intended', route('klant.afspraken'));
-        \Log::info('OTP login redirect', ['email' => $this->email, 'redirect' => $redirect]);
         $this->redirect($redirect, navigate: false);
     }
 
