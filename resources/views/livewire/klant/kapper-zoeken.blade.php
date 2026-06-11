@@ -132,8 +132,10 @@
 
             {{-- Scrollbare rij --}}
             <div x-ref="carousel" @scroll="updateArrows()" x-init="$nextTick(() => updateArrows())"
-                 class="flex gap-4 overflow-x-auto scrollbar-hide px-4 sm:px-8 pb-2">
-                @forelse($kappers as $kapper)
+                 class="overflow-x-auto scrollbar-hide">
+                @if($kappers->isNotEmpty())
+                <div class="flex gap-4 px-4 sm:px-8 pb-2 w-max mx-auto">
+                @foreach($kappers as $kapper)
                 <a href="{{ route('kapper.profiel', $kapper->slug) }}"
                    class="group flex-shrink-0 w-[260px] sm:w-[280px] flex flex-col bg-gradient-to-b from-indigo-50 to-white dark:from-neutral-700 dark:to-neutral-800 border border-indigo-100 dark:border-neutral-700 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-200 dark:hover:border-neutral-500 transition-all duration-150">
 
@@ -195,8 +197,10 @@
                         </div>
                     </div>
                 </a>
-                @empty
-                <div class="w-full py-20 text-center">
+                @endforeach
+                </div>{{-- einde w-max --}}
+                @else
+                <div class="w-full py-20 text-center px-4">
                 <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 flex items-center justify-center mx-auto mb-4">
                     <svg class="w-6 h-6 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
@@ -220,7 +224,7 @@
                 <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">Er zijn nog geen kappers geregistreerd</p>
                 @endif
             </div>
-            @endforelse
+            @endif
             </div>{{-- einde scrollbare rij --}}
         </div>{{-- einde carousel wrapper --}}
 
