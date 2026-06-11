@@ -12,7 +12,10 @@ use App\Livewire\Kapper\KlantenOverzicht as KapperKlanten;
 use App\Livewire\Kapper\MedewerkersBeheer;
 use App\Livewire\Kapper\ProfielBeheer;
 use App\Livewire\Kapper\Registratie as KapperRegistratie;
+use App\Livewire\Kapper\AbonnementBeheer;
 use App\Livewire\Kapper\ReviewsOverzicht as KapperReviews;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Livewire\Klant\AccountBeheer;
 use App\Livewire\Klant\BoekingWizard;
 use App\Livewire\Klant\Inloggen;
@@ -36,6 +39,9 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
     Route::get('/medewerkers', MedewerkersBeheer::class)->name('medewerkers');
     Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
     Route::get('/reviews', KapperReviews::class)->name('reviews');
+    Route::get('/abonnement', AbonnementBeheer::class)->name('abonnement');
+    Route::get('/abonnement/checkout', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');
+    Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
 });
 
 // Publieke kapper profielpagina
@@ -59,6 +65,9 @@ Route::middleware(['klant.auth'])->group(function () {
     Route::get('/mijn-account', AccountBeheer::class)->name('klant.account');
     Route::get('/boeken/{kapperSlug}/{dienstId}', BoekingWizard::class)->name('boeken');
 });
+
+// Stripe webhook (geen auth middleware!)
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook'])->name('cashier.webhook');
 
 // Admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {

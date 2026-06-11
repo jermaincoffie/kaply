@@ -1,0 +1,70 @@
+<h2>Tijdsloten op mobiel — huidig vs voorstel</h2>
+<p class="subtitle">Hoe worden beschikbare tijden getoond op een 390px scherm?</p>
+
+<div class="split">
+
+  <div class="mockup">
+    <div class="mockup-header">Huidig — grid-cols-3 (of 4)</div>
+    <div class="mockup-body" style="background:#111827;padding:16px;font-family:sans-serif;">
+      <div style="font-size:11px;color:#9ca3af;margin-bottom:8px;font-weight:600;">Beschikbare tijden</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:8px;padding:8px 4px;text-align:center;font-size:12px;color:#e5e7eb;">09:00</div>
+        <div style="background:#6366f1;border-radius:8px;padding:8px 4px;text-align:center;font-size:12px;color:#fff;font-weight:600;">09:30</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:8px;padding:8px 4px;text-align:center;font-size:12px;color:#e5e7eb;">10:00</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:8px;padding:8px 4px;text-align:center;font-size:12px;color:#e5e7eb;">10:30</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:8px;padding:8px 4px;text-align:center;font-size:12px;color:#e5e7eb;">11:00</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:8px;padding:8px 4px;text-align:center;font-size:12px;color:#e5e7eb;">11:30</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:8px;padding:8px 4px;text-align:center;font-size:12px;color:#e5e7eb;">13:00</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:8px;padding:8px 4px;text-align:center;font-size:12px;color:#e5e7eb;">14:00</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:8px;padding:8px 4px;text-align:center;font-size:12px;color:#e5e7eb;">14:30</div>
+      </div>
+      <div style="margin-top:10px;font-size:10px;color:#6b7280;">9 tijden zichtbaar, maar knoppen zijn ~95px breed — krap voor vingers</div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Voorstel — horizontale scroll pills</div>
+    <div class="mockup-body" style="background:#111827;padding:16px;font-family:sans-serif;">
+      <div style="font-size:11px;color:#9ca3af;margin-bottom:8px;font-weight:600;">Beschikbare tijden</div>
+      <!-- Horizontale scroll simulatie -->
+      <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;">
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:20px;padding:10px 16px;font-size:12px;color:#e5e7eb;white-space:nowrap;flex-shrink:0;">09:00</div>
+        <div style="background:#6366f1;border-radius:20px;padding:10px 16px;font-size:12px;color:#fff;font-weight:600;white-space:nowrap;flex-shrink:0;">09:30</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:20px;padding:10px 16px;font-size:12px;color:#e5e7eb;white-space:nowrap;flex-shrink:0;">10:00</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:20px;padding:10px 16px;font-size:12px;color:#e5e7eb;white-space:nowrap;flex-shrink:0;">10:30</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:20px;padding:10px 16px;font-size:12px;color:#e5e7eb;white-space:nowrap;flex-shrink:0;">11:00</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:20px;padding:10px 16px;font-size:12px;color:#e5e7eb;white-space:nowrap;flex-shrink:0;">11:30</div>
+        <div style="background:#1f2937;border:1px solid #374151;border-radius:20px;padding:10px 16px;font-size:12px;color:#e5e7eb;white-space:nowrap;flex-shrink:0;">13:00</div>
+      </div>
+      <div style="display:flex;gap:3px;margin-top:6px;justify-content:center;">
+        <div style="width:16px;height:2px;background:#6366f1;border-radius:2px;"></div>
+        <div style="width:6px;height:2px;background:#374151;border-radius:2px;"></div>
+        <div style="width:6px;height:2px;background:#374151;border-radius:2px;"></div>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:#6b7280;">Swipe links/rechts. Grote tap-targets (~44px hoog). Desktop krijgt grid terug.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top:16px;">
+  <h3>Technisch</h3>
+  <p>Op mobiel: <code>flex overflow-x-auto gap-2 snap-x snap-mandatory pb-2</code> met pill-stijl knoppen. Op <code>sm:</code> breakpoint terug naar het huidige grid. Geen JS nodig — pure CSS scroll.</p>
+</div>
+
+<div class="options" style="margin-top:8px;">
+  <div class="option" data-choice="scroll" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Horizontale scroll</h3>
+      <p>Groter, swipeable, moderne app-feel</p>
+    </div>
+  </div>
+  <div class="option" data-choice="grid" onclick="toggleSelect(this)">
+    <div class="letter">✗</div>
+    <div class="content">
+      <h3>Grid houden</h3>
+      <p>Alles in 1 oogopslag, minder swipe</p>
+    </div>
+  </div>
+</div>

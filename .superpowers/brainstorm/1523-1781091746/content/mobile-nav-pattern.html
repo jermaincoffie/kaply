@@ -1,0 +1,129 @@
+<h2>Kapper dashboard — mobiele navigatie</h2>
+<p class="subtitle">Hoe navigeert een kapper op zijn telefoon door het dashboard?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f172a;padding:16px;display:flex;justify-content:center;">
+      <div style="width:200px;height:340px;background:#111827;border-radius:20px;overflow:hidden;position:relative;border:2px solid #1f2937;">
+        <!-- Header met hamburger -->
+        <div style="background:#111827;border-bottom:1px solid #1f2937;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;flex-direction:column;gap:3px;">
+            <div style="width:16px;height:2px;background:#9ca3af;border-radius:2px;"></div>
+            <div style="width:16px;height:2px;background:#9ca3af;border-radius:2px;"></div>
+            <div style="width:16px;height:2px;background:#9ca3af;border-radius:2px;"></div>
+          </div>
+          <div style="font-size:11px;font-weight:600;color:#e5e7eb;">Agenda</div>
+          <div style="width:24px;height:24px;background:#374151;border-radius:50%;"></div>
+        </div>
+        <!-- Slide-out sidebar overlay indicator -->
+        <div style="position:absolute;left:0;top:37px;width:130px;height:303px;background:#1f2937;border-right:1px solid #374151;z-index:10;padding:12px 0;">
+          <div style="padding:8px 12px;background:#374151;border-radius:6px;margin:0 8px 2px;font-size:10px;color:#e5e7eb;font-weight:600;">📅 Agenda</div>
+          <div style="padding:8px 12px;font-size:10px;color:#9ca3af;margin:0 8px 2px;">📋 Afspraken</div>
+          <div style="padding:8px 12px;font-size:10px;color:#9ca3af;margin:0 8px 2px;">✂️ Diensten</div>
+          <div style="padding:8px 12px;font-size:10px;color:#9ca3af;margin:0 8px 2px;">👥 Medewerkers</div>
+          <div style="padding:8px 12px;font-size:10px;color:#9ca3af;margin:0 8px 2px;">⏰ Beschikbaarheid</div>
+          <div style="padding:8px 12px;font-size:10px;color:#9ca3af;margin:0 8px 2px;">⭐ Reviews</div>
+        </div>
+        <!-- Content dimmed -->
+        <div style="position:absolute;right:0;top:37px;width:70px;height:303px;background:rgba(0,0,0,0.5);"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Huidige aanpak: Hamburger + Sidebar</h3>
+      <p>Bestaand patroon. Sidebar schuift in vanuit links. Vertrouwd, maar vereist 2 taps om te navigeren. Overlay blokkeert content.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f172a;padding:16px;display:flex;justify-content:center;">
+      <div style="width:200px;height:340px;background:#111827;border-radius:20px;overflow:hidden;position:relative;border:2px solid #1f2937;">
+        <!-- Header clean -->
+        <div style="background:#111827;border-bottom:1px solid #1f2937;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:11px;font-weight:700;color:#e5e7eb;">kaply</div>
+          <div style="font-size:10px;color:#9ca3af;">Agenda</div>
+          <div style="width:24px;height:24px;background:#374151;border-radius:50%;"></div>
+        </div>
+        <!-- Main content -->
+        <div style="padding:10px;flex:1;height:250px;overflow:hidden;">
+          <div style="background:#1f2937;border-radius:8px;padding:8px;margin-bottom:6px;">
+            <div style="font-size:9px;color:#9ca3af;">Vandaag</div>
+            <div style="font-size:11px;color:#e5e7eb;font-weight:600;">3 afspraken</div>
+          </div>
+          <div style="background:#1f2937;border-radius:8px;padding:8px;margin-bottom:6px;">
+            <div style="height:8px;background:#374151;border-radius:4px;width:80%;margin-bottom:4px;"></div>
+            <div style="height:6px;background:#374151;border-radius:4px;width:60%;"></div>
+          </div>
+          <div style="background:#1f2937;border-radius:8px;padding:8px;">
+            <div style="height:8px;background:#374151;border-radius:4px;width:70%;margin-bottom:4px;"></div>
+            <div style="height:6px;background:#374151;border-radius:4px;width:50%;"></div>
+          </div>
+        </div>
+        <!-- Bottom nav -->
+        <div style="position:absolute;bottom:0;left:0;right:0;background:#1f2937;border-top:1px solid #374151;display:flex;justify-content:space-around;padding:8px 4px 10px;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <div style="font-size:14px;">📅</div>
+            <div style="font-size:7px;color:#6366f1;font-weight:600;">Agenda</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <div style="font-size:14px;">📋</div>
+            <div style="font-size:7px;color:#9ca3af;">Afspraken</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <div style="font-size:14px;">✂️</div>
+            <div style="font-size:7px;color:#9ca3af;">Diensten</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <div style="font-size:14px;">👤</div>
+            <div style="font-size:7px;color:#9ca3af;">Profiel</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Bottom navigation bar</h3>
+      <p>App-gevoel. Navigatie altijd zichtbaar onderaan (4-5 tabs). Directe toegang met 1 tap. Geen overlay, content altijd volledig zichtbaar. Populair patroon (Instagram, apps).</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f172a;padding:16px;display:flex;justify-content:center;">
+      <div style="width:200px;height:340px;background:#111827;border-radius:20px;overflow:hidden;position:relative;border:2px solid #1f2937;">
+        <!-- Header compact -->
+        <div style="background:#111827;border-bottom:1px solid #1f2937;padding:8px 12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-size:11px;font-weight:700;color:#e5e7eb;">kaply</div>
+            <div style="width:24px;height:24px;background:#374151;border-radius:50%;"></div>
+          </div>
+          <!-- Horizontal scroll tabs -->
+          <div style="display:flex;gap:6px;overflow:hidden;">
+            <div style="background:#6366f1;color:#fff;border-radius:20px;padding:4px 10px;font-size:9px;font-weight:600;white-space:nowrap;">📅 Agenda</div>
+            <div style="background:#1f2937;color:#9ca3af;border-radius:20px;padding:4px 10px;font-size:9px;white-space:nowrap;">📋 Afspraken</div>
+            <div style="background:#1f2937;color:#9ca3af;border-radius:20px;padding:4px 10px;font-size:9px;white-space:nowrap;">✂️ Diensten</div>
+            <div style="background:#1f2937;color:#9ca3af;border-radius:20px;padding:4px 10px;font-size:9px;white-space:nowrap;">👥</div>
+          </div>
+        </div>
+        <!-- Content -->
+        <div style="padding:10px;">
+          <div style="background:#1f2937;border-radius:8px;padding:8px;margin-bottom:6px;">
+            <div style="font-size:9px;color:#9ca3af;">Vandaag</div>
+            <div style="font-size:11px;color:#e5e7eb;font-weight:600;">3 afspraken</div>
+          </div>
+          <div style="background:#1f2937;border-radius:8px;padding:8px;margin-bottom:6px;">
+            <div style="height:8px;background:#374151;border-radius:4px;width:80%;margin-bottom:4px;"></div>
+            <div style="height:6px;background:#374151;border-radius:4px;width:60%;"></div>
+          </div>
+          <div style="background:#1f2937;border-radius:8px;padding:8px;">
+            <div style="height:8px;background:#374151;border-radius:4px;width:70%;margin-bottom:4px;"></div>
+            <div style="height:6px;background:#374151;border-radius:4px;width:50%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Horizontale tab-balk (scrollbaar)</h3>
+      <p>Tabs in de header, scrollbaar naar rechts. Compact, geen overlay nodig, content altijd volledig zichtbaar. Minder app-gevoel dan B, maar simpler te implementeren.</p>
+    </div>
+  </div>
+
+</div>

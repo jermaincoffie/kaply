@@ -67,3 +67,16 @@ Gebruik ALTIJD `<x-select>` — nooit een native `<select>` element.
 
 ### Referentie
 Kijk bij twijfel naar `c:\Users\jerma\medisch-systeem\resources\views\admin\tenants\index.blade.php` als tabelvoorbeeld of `resources\views\layouts\admin.blade.php` voor layout.
+
+## Deploy — CSS/Assets
+
+Na **elke** CSS of JS wijziging altijd lokaal builden en committen vóór deploy:
+
+```powershell
+npm run build
+git add public/build/ -f
+git commit -m "chore: rebuild assets"
+git push origin main
+```
+
+`/public/build` staat in `.gitignore` maar moet WEL in git zitten — Hostinger heeft geen Node.js. Zonder build ziet productie oude stijlen.

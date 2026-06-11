@@ -18,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'klant.auth' => \App\Http\Middleware\KlantAuth::class,
         ]);
 
+        $middleware->validateCsrfTokens(except: ['stripe/webhook']);
+
         $middleware->redirectGuestsTo(function (Request $request) {
             if ($request->is('boeken/*', 'mijn-afspraken', 'mijn-account')) {
                 return route('klant.inloggen');

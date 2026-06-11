@@ -1,0 +1,99 @@
+<h2>Kapper bottom nav — welke 4 tabs?</h2>
+<p class="subtitle">De overige items (beschikbaarheid, medewerkers, reviews, klanten) zitten in "Meer". Kies de 4 meest-gebruikte tabs.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f172a;padding:16px;display:flex;justify-content:center;">
+      <div style="width:220px;height:60px;background:#1f2937;border-radius:12px;border-top:1px solid #374151;display:flex;justify-content:space-around;align-items:center;padding:8px 4px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#6366f1" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span style="font-size:8px;color:#6366f1;font-weight:600;">Agenda</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Afspraken</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><path d="M14.121 14.121A3 3 0 1 0 9.88 9.88m9.193 9.193A9 9 0 1 1 4.929 4.929"/><path d="M14.828 14.828A4 4 0 1 0 9.172 9.172"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Diensten</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Profiel</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Meer</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Agenda · Afspraken · Diensten · Profiel · Meer</h3>
+      <p>Meest dagelijks gebruik. Agenda en afspraken zijn de kern. Diensten vaak aangepast. Profiel voor instellingen. Medewerkers/beschikbaarheid/reviews → Meer.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f172a;padding:16px;display:flex;justify-content:center;">
+      <div style="width:220px;height:60px;background:#1f2937;border-radius:12px;border-top:1px solid #374151;display:flex;justify-content:space-around;align-items:center;padding:8px 4px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#6366f1" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span style="font-size:8px;color:#6366f1;font-weight:600;">Agenda</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Afspraken</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Klanten</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Profiel</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Meer</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Agenda · Afspraken · Klanten · Profiel · Meer</h3>
+      <p>Klanten i.p.v. diensten in de hoofd-nav. Handig als de kapper veel klanten beheert. Diensten/medewerkers/beschikbaarheid → Meer.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f172a;padding:16px;display:flex;justify-content:center;">
+      <div style="width:220px;height:60px;background:#1f2937;border-radius:12px;border-top:1px solid #374151;display:flex;justify-content:space-around;align-items:center;padding:8px 4px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#6366f1" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span style="font-size:8px;color:#6366f1;font-weight:600;">Agenda</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Afspraken</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Beheer</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Profiel</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <svg width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+          <span style="font-size:8px;color:#9ca3af;">Meer</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Agenda · Afspraken · Beheer · Profiel · Meer</h3>
+      <p>"Beheer" bundelt diensten + medewerkers + beschikbaarheid in één tab. Minder items maar abstracter — gebruiker moet weten wat "Beheer" inhoudt.</p>
+    </div>
+  </div>
+
+</div>
