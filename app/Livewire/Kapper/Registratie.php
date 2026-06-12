@@ -45,7 +45,16 @@ class Registratie extends Component
 
     public function volgende(): void
     {
-        $this->validate($this->stapEenRules());
+        $this->validate($this->stapEenRules(), [
+            'name.required'      => 'Naam is verplicht.',
+            'name.max'           => 'Naam mag maximaal 255 tekens zijn.',
+            'email.required'     => 'E-mailadres is verplicht.',
+            'email.email'        => 'Voer een geldig e-mailadres in.',
+            'email.unique'       => 'Dit e-mailadres is al geregistreerd.',
+            'password.required'  => 'Wachtwoord is verplicht.',
+            'password.min'       => 'Wachtwoord moet minimaal 8 tekens zijn.',
+            'password.confirmed' => 'Wachtwoorden komen niet overeen.',
+        ]);
         $this->stap = 2;
     }
 

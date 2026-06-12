@@ -50,28 +50,38 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Naam</label>
                     <input wire:model="name" type="text" autocomplete="name" placeholder="Jan Jansen"
-                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                           class="w-full py-2 px-3 rounded-lg border bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-1 transition-colors
+                                  {{ $errors->has('name') ? 'border-red-400 dark:border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-neutral-700 focus:border-blue-600 focus:ring-blue-600' }}">
                     @error('name') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">E-mailadres</label>
                     <input wire:model="email" type="email" autocomplete="email" placeholder="jan@jouwsalon.nl"
-                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-                    @error('email') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                           class="w-full py-2 px-3 rounded-lg border bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-1 transition-colors
+                                  {{ $errors->has('email') ? 'border-red-400 dark:border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-neutral-700 focus:border-blue-600 focus:ring-blue-600' }}">
+                    @error('email')
+                        <p class="text-xs text-red-500 mt-1">
+                            {{ $message }}
+                            @if(str_contains($message, 'al geregistreerd'))
+                                <a href="{{ route('login') }}" class="underline font-medium">Inloggen?</a>
+                            @endif
+                        </p>
+                    @enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Wachtwoord</label>
                     <input wire:model="password" type="password" autocomplete="new-password" placeholder="Minimaal 8 tekens"
-                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                           class="w-full py-2 px-3 rounded-lg border bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-1 transition-colors
+                                  {{ $errors->has('password') ? 'border-red-400 dark:border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-neutral-700 focus:border-blue-600 focus:ring-blue-600' }}">
                     @error('password') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Wachtwoord bevestigen</label>
                     <input wire:model="password_confirmation" type="password" autocomplete="new-password" placeholder="Herhaal wachtwoord"
-                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                           class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors">
                 </div>
 
                 <button type="submit"
