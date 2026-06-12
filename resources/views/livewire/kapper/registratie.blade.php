@@ -84,10 +84,15 @@
                            class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors">
                 </div>
 
-                <button type="submit"
-                        class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors mt-2 flex items-center justify-center gap-2">
-                    Volgende
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button type="submit" wire:loading.attr="disabled"
+                        class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-semibold rounded-lg transition-colors mt-2 flex items-center justify-center gap-2">
+                    <svg wire:loading class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                    <span wire:loading.remove>Volgende</span>
+                    <span wire:loading>Bezig...</span>
+                    <svg wire:loading.remove class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                     </svg>
                 </button>
@@ -97,8 +102,16 @@
         {{-- ===== STAP 2: Salon ===== --}}
         @elseif($stap === 2)
         <div class="px-6 py-6">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="inline-flex items-center gap-1 text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                    </svg>
+                    Account aangemaakt
+                </span>
+            </div>
             <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100 mb-1">Jouw salon</h1>
-            <p class="text-xs text-gray-400 dark:text-neutral-500 mb-6">Klanten zien deze informatie op jouw profielpagina</p>
+            <p class="text-xs text-gray-400 dark:text-neutral-500 mb-6">Vul je salongegevens in om zichtbaar te worden op Kaply</p>
 
             <form wire:submit="registreer" class="space-y-4">
                 <div>
