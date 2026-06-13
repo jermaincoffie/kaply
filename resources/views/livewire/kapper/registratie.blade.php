@@ -165,19 +165,28 @@
                 </svg>
             </div>
             <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100 mb-2">Account aangemaakt!</h1>
-            <p class="text-sm text-gray-500 dark:text-neutral-400 mb-2">
+            <p class="text-sm text-gray-500 dark:text-neutral-400 mb-1">
                 Je salon <span class="font-medium text-gray-700 dark:text-neutral-300">{{ $salon_naam }}</span> is geregistreerd.
             </p>
-            <p class="text-xs text-gray-400 dark:text-neutral-500 mb-8 max-w-xs mx-auto">
-                Je profiel gaat live zodra een admin je account goedkeurt.
+            <p class="text-xs text-gray-400 dark:text-neutral-500 mb-6 max-w-xs mx-auto">
+                Je hebt een welkomstmail ontvangen. Activeer je abonnement om zichtbaar te worden op Kaply.
             </p>
-            <a href="{{ route('kapper.dashboard') }}"
-               class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors">
-                Naar mijn dashboard
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+
+            {{-- Abonnement CTA --}}
+            <a href="{{ route('kapper.subscription.checkout') }}"
+               class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors mb-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
                 </svg>
+                Abonneer nu · €20/maand
             </a>
+
+            <div>
+                <a href="{{ route('kapper.dashboard') }}"
+                   class="text-xs text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:hover:text-neutral-300 transition-colors">
+                    Later doen → naar dashboard
+                </a>
+            </div>
         </div>
         @endif
 
