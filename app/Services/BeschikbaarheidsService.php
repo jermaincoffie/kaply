@@ -52,7 +52,7 @@ class BeschikbaarheidsService
 
         $geboekteAfspraken = Afspraak::where('kapper_id', $kapper->id)
             ->whereDate('datum', $datum)
-            ->whereIn('status', ['gepland', 'voltooid'])
+            ->whereIn('status', ['gepland', 'voltooid', 'wacht_op_betaling'])
             ->when($medewerkerId, fn($q) => $q->where('medewerker_id', $medewerkerId))
             ->get(['start_tijd', 'eind_tijd']);
 

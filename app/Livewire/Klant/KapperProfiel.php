@@ -113,6 +113,22 @@ class KapperProfiel extends Component
             ->addMinutes($dienst->duur_minuten)
             ->format('H:i');
 
+        if ($this->betaalmethode === 'online') {
+            $afspraak = Afspraak::create([
+                'klant_id'      => auth()->id(),
+                'kapper_id'     => $this->kapper->id,
+                'dienst_id'     => $dienst->id,
+                'medewerker_id' => $this->geselecteerdeMedewerkerId,
+                'datum'         => $this->geselecteerdeDatum,
+                'start_tijd'    => $this->geselecteerdeTijd,
+                'eind_tijd'     => $eind,
+                'status'        => 'wacht_op_betaling',
+                'betaalmethode' => 'online',
+            ]);
+            $this->redirect(route('afspraak.betaling.checkout', ['afspraak_id' => $afspraak->id]));
+            return;
+        }
+
         Afspraak::create([
             'klant_id'      => auth()->id(),
             'kapper_id'     => $this->kapper->id,
