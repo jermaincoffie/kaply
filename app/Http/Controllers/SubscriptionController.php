@@ -15,7 +15,6 @@ class SubscriptionController extends Controller
             ->checkout([
                 'success_url' => route('kapper.abonnement') . '?stripe=success',
                 'cancel_url'  => route('kapper.abonnement') . '?stripe=cancel',
-                'customer_email' => $user->email,
                 'metadata' => ['kapper_id' => $kapper?->id],
             ]);
 
