@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Afspraak;
 use Illuminate\Http\Request;
 use Stripe\Checkout\Session as StripeSession;
+use Stripe\Stripe;
 
 class AfspraakBetaalController extends Controller
 {
     public function checkout(Request $request)
     {
+        Stripe::setApiKey(config('cashier.secret'));
+
         $afspraak = Afspraak::with(['dienst', 'kapper'])->findOrFail($request->afspraak_id);
 
         if ($afspraak->klant_id !== auth()->id()) abort(403);
@@ -54,6 +57,8 @@ class AfspraakBetaalController extends Controller
 
     public function succes(Request $request)
     {
+        Stripe::setApiKey(config('cashier.secret'));
+
         $session = StripeSession::retrieve($request->session_id);
 
         if ($session->payment_status !== 'paid') {
