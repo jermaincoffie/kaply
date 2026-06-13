@@ -6,6 +6,8 @@ use App\Mail\AfspraakGeannuleerdMail;
 use App\Models\Afspraak;
 use App\Models\Review;
 use App\Notifications\AfspraakGeannuleerdNotificatie;
+use App\Services\BeschikbaarheidsService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
@@ -14,6 +16,13 @@ class MijnAfspraken extends Component
     public ?int $reviewAfspraakId = null;
     public int $reviewRating = 0;
     public string $reviewTekst = '';
+
+    // Verzetten
+    public ?int $verzetAfspraakId = null;
+    public string $verzetDatum = '';
+    public array $verzetTijdsloten = [];
+    public string $verzetTijd = '';
+    public bool $verzetGeslaagd = false;
 
     public function annuleer(int $id): void
     {
@@ -29,6 +38,76 @@ class MijnAfspraken extends Component
 
         Mail::to($afspraak->klant->email)->send(new AfspraakGeannuleerdMail($afspraak));
         $afspraak->kapper->user->notify(new AfspraakGeannuleerdNotificatie($afspraak));
+    }
+
+    public function openVerzetten(int $id): void
+    {
+        $this->verzetAfspraakId = $id;
+        $this->verzetDatum = today()->toDateString();
+        $this->verzetTijdsloten = [];
+        $this->verzetTijd = '';
+        $this->verzetGeslaagd = false;
+        $this->laadVerzetTijdsloten();
+    }
+
+    public function updatedVerzetDatum(): void
+    {
+        $this->verzetTijd = '';
+        $this->laadVerzetTijdsloten();
+    }
+
+    private function laadVerzetTijdsloten(): void
+    {
+        if (!$this->verzetAfspraakId || !$this->verzetDatum) {
+            $this->verzetTijdsloten = [];
+            return;
+        }
+
+        $afspraak = Afspraak::with(['kapper', 'dienst'])->find($this->verzetAfspraakId);
+        if (!$afspraak) return;
+
+        $service = new BeschikbaarheidsService();
+        $sluitingsdag = $service->getSluitingsdag($afspraak->kapper, $this->verzetDatum);
+        $this->verzetTijdsloten = $sluitingsdag
+            ? []
+            : $service->getVrijeTijdslots(
+                $afspraak->kapper,
+                $afspraak->dienst,
+                $this->verzetDatum,
+                $afspraak->medewerker_id,
+                $afspraak->id
+            );
+    }
+
+    public function bevestigVerzetten(): void
+    {
+        if (!$this->verzetAfspraakId || !$this->verzetDatum || !$this->verzetTijd) return;
+
+        $afspraak = Afspraak::where('id', $this->verzetAfspraakId)
+            ->where('klant_id', auth()->id())
+            ->where('status', 'gepland')
+            ->with(['dienst', 'kapper'])
+            ->first();
+
+        if (!$afspraak) return;
+
+        $eind = Carbon::parse($this->verzetDatum . ' ' . $this->verzetTijd)
+            ->addMinutes($afspraak->dienst->duur_minuten)
+            ->format('H:i');
+
+        $afspraak->update([
+            'datum'      => $this->verzetDatum,
+            'start_tijd' => $this->verzetTijd,
+            'eind_tijd'  => $eind,
+        ]);
+
+        $this->verzetGeslaagd = true;
+    }
+
+    public function sluitVerzetten(): void
+    {
+        $this->verzetAfspraakId = null;
+        $this->verzetGeslaagd = false;
     }
 
     public function openReview(int $afspraakId): void

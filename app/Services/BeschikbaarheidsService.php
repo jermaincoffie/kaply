@@ -25,7 +25,8 @@ class BeschikbaarheidsService
         Kapper $kapper,
         Dienst $dienst,
         string $datum,
-        ?int $medewerkerId = null
+        ?int $medewerkerId = null,
+        ?int $excludeAfspraakId = null
     ): array {
         $date = Carbon::parse($datum);
         $dagVanWeek = $date->dayOfWeekIso - 1;
@@ -54,6 +55,7 @@ class BeschikbaarheidsService
             ->whereDate('datum', $datum)
             ->whereIn('status', ['gepland', 'voltooid', 'wacht_op_betaling'])
             ->when($medewerkerId, fn($q) => $q->where('medewerker_id', $medewerkerId))
+            ->when($excludeAfspraakId, fn($q) => $q->where('id', '!=', $excludeAfspraakId))
             ->get(['start_tijd', 'eind_tijd']);
 
         $slots = [];

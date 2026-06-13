@@ -26,10 +26,16 @@
                         </p>
                     </div>
                 </div>
-                <button @click.prevent="$dispatch('open-confirm', { title: 'Afspraak annuleren', message: 'Weet je zeker dat je de afspraak op {{ $afspraak->datum->isoFormat('D MMM') }} wilt annuleren?', action: () => $wire.annuleer({{ $afspraak->id }}) })"
-                        class="flex-shrink-0 text-xs font-medium px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                    Annuleer
-                </button>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <button wire:click="openVerzetten({{ $afspraak->id }})"
+                            class="text-xs font-medium px-3 py-1.5 rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                        Verzetten
+                    </button>
+                    <button @click.prevent="$dispatch('open-confirm', { title: 'Afspraak annuleren', message: 'Weet je zeker dat je de afspraak op {{ $afspraak->datum->isoFormat('D MMM') }} wilt annuleren?', action: () => $wire.annuleer({{ $afspraak->id }}) })"
+                            class="text-xs font-medium px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                        Annuleer
+                    </button>
+                </div>
             </div>
             @empty
             <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl px-6 py-10 text-center">
@@ -104,6 +110,94 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+    </div>
+    @endif
+
+    {{-- Verzetten modal --}}
+    @if($verzetAfspraakId)
+    @php $verzetAfspraak = $aankomend->firstWhere('id', $verzetAfspraakId); @endphp
+    <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="absolute inset-0 bg-black/50" wire:click="sluitVerzetten"></div>
+        <div class="relative w-full sm:max-w-sm bg-white dark:bg-neutral-800 sm:rounded-2xl rounded-t-2xl shadow-2xl overflow-hidden">
+            <div class="sm:hidden flex justify-center pt-3 pb-1">
+                <div class="w-10 h-1 bg-gray-200 dark:bg-neutral-600 rounded-full"></div>
+            </div>
+            <div class="px-5 pt-4 pb-6">
+                @if($verzetGeslaagd)
+                <div class="text-center py-4">
+                    <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-1">Afspraak verzet!</h3>
+                    <p class="text-sm text-gray-500 dark:text-neutral-400 mb-5">
+                        {{ \Carbon\Carbon::parse($verzetDatum)->isoFormat('dddd D MMMM') }} om {{ $verzetTijd }}
+                    </p>
+                    <button wire:click="sluitVerzetten" class="w-full py-2.5 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                        Sluiten
+                    </button>
+                </div>
+                @else
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Afspraak verzetten</h3>
+                        @if($verzetAfspraak)
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $verzetAfspraak->kapper->salon_naam }} · {{ $verzetAfspraak->dienst->naam }}</p>
+                        @endif
+                    </div>
+                    <button wire:click="sluitVerzetten" class="text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                {{-- Datum --}}
+                <div class="mb-4 overflow-visible">
+                    <label class="block text-xs font-medium text-gray-500 dark:text-neutral-400 mb-1.5">Nieuwe datum</label>
+                    <x-datepicker
+                        wire-model="verzetDatum"
+                        :value="$verzetDatum"
+                        :date-min="today()->toDateString()"
+                        placeholder="Selecteer datum"
+                    />
+                </div>
+
+                {{-- Tijdsloten --}}
+                <div class="mb-5">
+                    <label class="block text-xs font-medium text-gray-500 dark:text-neutral-400 mb-1.5">Nieuw tijdstip</label>
+                    <div wire:loading.delay wire:target="verzetDatum" class="text-xs text-gray-400 dark:text-neutral-500 py-2">Beschikbaarheid laden...</div>
+                    @if(count($verzetTijdsloten) > 0)
+                    <div class="grid grid-cols-3 gap-1.5 max-h-40 overflow-y-auto">
+                        @foreach($verzetTijdsloten as $slot)
+                        <button wire:click="$set('verzetTijd', '{{ $slot }}')" type="button"
+                                class="py-2 rounded-lg border text-xs font-medium transition-colors
+                                    {{ $verzetTijd === $slot
+                                        ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                                        : 'border-gray-200 dark:border-neutral-700 text-gray-700 dark:text-neutral-300 hover:border-blue-400 hover:bg-blue-50/50' }}">
+                            {{ $slot }}
+                        </button>
+                        @endforeach
+                    </div>
+                    @elseif($verzetDatum)
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 py-2">Geen vrije tijdsloten op deze dag.</p>
+                    @else
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 py-2">Kies eerst een datum.</p>
+                    @endif
+                </div>
+
+                <div class="flex gap-2">
+                    <button wire:click="sluitVerzetten" class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                        Annuleer
+                    </button>
+                    <button wire:click="bevestigVerzetten"
+                            @if(!$verzetTijd) disabled @endif
+                            class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        Bevestigen
+                    </button>
+                </div>
+                @endif
+            </div>
         </div>
     </div>
     @endif
