@@ -40,8 +40,8 @@ class Registratie extends Component
         return [
             'salon_naam' => 'required|string|max:255',
             'stad'       => 'required|string|max:255',
-            'adres'      => 'nullable|string|max:255',
-            'telefoon'   => 'nullable|string|max:20',
+            'adres'      => 'required|string|max:255',
+            'telefoon'   => 'nullable|digits_between:1,10',
         ];
     }
 
@@ -67,7 +67,12 @@ class Registratie extends Component
 
     public function registreer(): void
     {
-        $this->validate($this->stapTweeRules());
+        $this->validate($this->stapTweeRules(), [
+            'salon_naam.required' => 'Saloonnaam is verplicht.',
+            'stad.required'       => 'Stad is verplicht.',
+            'adres.required'      => 'Adres is verplicht.',
+            'telefoon.digits_between' => 'Telefoonnummer mag maximaal 10 cijfers bevatten.',
+        ]);
 
         $user = User::create([
             'name'     => $this->name,

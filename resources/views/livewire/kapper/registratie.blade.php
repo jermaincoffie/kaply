@@ -130,17 +130,17 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Telefoon</label>
-                        <input wire:model="telefoon" type="text" placeholder="0612345678"
+                        <input wire:model="telefoon" type="tel" placeholder="0612345678" maxlength="10"
                                class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                        @error('telefoon') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">
-                        Adres <span class="text-gray-400 dark:text-neutral-500 font-normal">(optioneel)</span>
-                    </label>
-                    <input wire:model="adres" type="text" placeholder="Kalverstraat 12"
+                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Adres</label>
+                    <input wire:model="adres" type="text" placeholder="Kalverstraat 12, Amsterdam"
                            class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    @error('adres') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div class="flex gap-3 pt-2">
