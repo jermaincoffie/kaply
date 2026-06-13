@@ -59,17 +59,68 @@
         </div>
     </div>
 
-    {{-- Galerij --}}
+    {{-- Galerij carousel --}}
     @if($kapper->galerij->isNotEmpty())
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl overflow-hidden mb-5 p-5">
-        <p class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mb-3">Foto's</p>
-        <div class="grid grid-cols-3 gap-2">
-            @foreach($kapper->galerij as $foto)
-            <div class="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-neutral-700">
-                <img src="{{ asset('storage/' . $foto->pad) }}" alt="Galerij" class="w-full h-full object-cover">
-            </div>
-            @endforeach
+    @php $fotoUrls = $kapper->galerij->map(fn($f) => asset('storage/' . $f->pad))->values()->toJson(); @endphp
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl overflow-hidden mb-5"
+         x-data="{
+             fotos: {{ $fotoUrls }},
+             huidig: 0,
+             volgend() { this.huidig = (this.huidig + 1) % this.fotos.length },
+             vorig()  { this.huidig = (this.huidig - 1 + this.fotos.length) % this.fotos.length },
+             startX: null,
+             swipeStart(e) { this.startX = (e.touches ? e.touches[0].clientX : e.clientX) },
+             swipeEnd(e) {
+                 if (this.startX === null) return;
+                 let dx = (e.changedTouches ? e.changedTouches[0].clientX : e.clientX) - this.startX;
+                 if (dx < -40) this.volgend();
+                 else if (dx > 40) this.vorig();
+                 this.startX = null;
+             }
+         }">
+
+        {{-- Foto --}}
+        <div class="relative aspect-video select-none"
+             @mousedown="swipeStart" @mouseup="swipeEnd"
+             @touchstart.passive="swipeStart" @touchend.passive="swipeEnd">
+            <template x-for="(url, i) in fotos" :key="i">
+                <img :src="url" alt="Galerij"
+                     x-show="huidig === i"
+                     x-transition:enter="transition-opacity duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     class="absolute inset-0 w-full h-full object-cover">
+            </template>
+
+            {{-- Pijlen (alleen als >1 foto) --}}
+            <template x-if="fotos.length > 1">
+                <div>
+                    <button @click="vorig" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    <button @click="volgend" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </template>
+
+            {{-- Teller rechtsonder --}}
+            <template x-if="fotos.length > 1">
+                <span class="absolute bottom-2 right-3 text-xs text-white/80 bg-black/40 rounded-full px-2 py-0.5" x-text="(huidig + 1) + ' / ' + fotos.length"></span>
+            </template>
         </div>
+
+        {{-- Dots --}}
+        <template x-if="fotos.length > 1">
+            <div class="flex justify-center gap-1.5 py-3">
+                <template x-for="(_, i) in fotos" :key="i">
+                    <button @click="huidig = i"
+                            class="rounded-full transition-all"
+                            :class="huidig === i ? 'w-4 h-1.5 bg-blue-600' : 'w-1.5 h-1.5 bg-gray-300 dark:bg-neutral-600 hover:bg-gray-400'">
+                    </button>
+                </template>
+            </div>
+        </template>
     </div>
     @endif
 
