@@ -106,4 +106,40 @@
             @endif
         </div>
     </form>
+
+    {{-- Boekingswidget --}}
+    @if(auth()->user()->kapper?->slug)
+    @php
+        $widgetUrl = url('/kapper/' . auth()->user()->kapper->slug . '?embed=1');
+        $iframeCode = '<iframe src="' . $widgetUrl . '" width="420" height="720" frameborder="0" style="border:none; border-radius:16px; box-shadow:0 4px 32px rgba(0,0,0,0.10); max-width:100%;"></iframe>';
+    @endphp
+    <div class="mt-6 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-6"
+         x-data="{ gekopieerd: false }">
+        <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mb-1">Boekingswidget</h2>
+        <p class="text-xs text-gray-400 dark:text-neutral-500 mb-4">Plak deze code in je eigen website zodat klanten daar direct kunnen boeken.</p>
+
+        <div class="relative">
+            <pre class="text-xs text-gray-600 dark:text-neutral-400 bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg p-4 pr-24 overflow-x-auto whitespace-pre-wrap break-all select-all font-mono">{{ $iframeCode }}</pre>
+            <button @click="navigator.clipboard.writeText('{{ addslashes($iframeCode) }}'); gekopieerd = true; setTimeout(() => gekopieerd = false, 2000)"
+                    class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                    :class="gekopieerd ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-200 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300 hover:bg-gray-300 dark:hover:bg-neutral-600'">
+                <svg x-show="!gekopieerd" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                <svg x-show="gekopieerd" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span x-text="gekopieerd ? 'Gekopieerd!' : 'Kopieer'"></span>
+            </button>
+        </div>
+
+        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-3">
+            Of deel je directe boekingspagina:
+            <a href="{{ url('/kapper/' . auth()->user()->kapper->slug) }}" target="_blank"
+               class="text-blue-600 dark:text-blue-400 hover:underline">
+                kaply.nl/kapper/{{ auth()->user()->kapper->slug }}
+            </a>
+        </p>
+    </div>
+    @endif
 </div>

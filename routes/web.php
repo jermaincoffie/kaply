@@ -48,7 +48,7 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
 });
 
 // Publieke kapper profielpagina
-Route::get('/kapper/{slug}', KapperProfiel::class)->name('kapper.profiel');
+Route::get('/kapper/{slug}', KapperProfiel::class)->name('kapper.profiel')->middleware('allow.embed');
 
 // Algemeen dashboard (Jetstream redirect na login)
 Route::middleware(['auth'])->get('/dashboard', function () {

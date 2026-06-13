@@ -187,6 +187,8 @@ class KapperProfiel extends Component
 
         $gemiddeldRating = $reviews->avg('rating');
 
+        $layout = request()->boolean('embed') ? 'layouts.widget' : 'layouts.publiek';
+
         return view('livewire.klant.kapper-profiel', [
             'openingstijden'         => $openingstijden,
             'medewerkers'            => $medewerkers,
@@ -198,6 +200,6 @@ class KapperProfiel extends Component
                 : null,
             'reviews'          => $reviews,
             'gemiddeldRating'  => $gemiddeldRating,
-        ])->layout('layouts.publiek');
+        ])->layout($layout);
     }
 }
