@@ -48,13 +48,14 @@
         </div>
 
         <div class="mt-4">
-            <button wire:click="uploaden" wire:loading.attr="disabled"
+            <button wire:click="uploaden" wire:loading.attr="disabled" wire:target="uploaden,nieuwefotos"
                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-semibold rounded-lg transition-colors inline-flex items-center gap-2">
-                <svg wire:loading wire:target="uploaden" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <svg wire:loading wire:target="uploaden,nieuwefotos" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                 </svg>
-                Uploaden
+                <span wire:loading.remove wire:target="nieuwefotos">Uploaden</span>
+                <span wire:loading wire:target="nieuwefotos">Foto's worden geladen...</span>
             </button>
         </div>
     </div>

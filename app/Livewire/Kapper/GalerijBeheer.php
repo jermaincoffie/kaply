@@ -23,8 +23,11 @@ class GalerijBeheer extends Component
 
     public function uploaden(): void
     {
+        $this->succesmelding = '';
+        $this->resetErrorBag();
+
         if (empty($this->nieuwefotos)) {
-            $this->addError('nieuwefotos', 'Geen foto\'s geselecteerd.');
+            $this->addError('nieuwefotos', 'Geen foto\'s geselecteerd. Wacht tot de foto\'s geladen zijn.');
             return;
         }
 
