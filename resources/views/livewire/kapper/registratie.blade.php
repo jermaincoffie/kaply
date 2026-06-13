@@ -138,7 +138,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Adres</label>
-                    <input wire:model="adres" type="text" placeholder="Kalverstraat 12, Amsterdam"
+                    <input wire:model="adres" type="text" placeholder="Kalverstraat 12"
                            class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
                     @error('adres') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
