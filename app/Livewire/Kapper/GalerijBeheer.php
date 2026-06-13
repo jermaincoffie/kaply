@@ -14,13 +14,6 @@ class GalerijBeheer extends Component
     public array $nieuwefotos = [];
     public string $succesmelding = '';
 
-    protected function rules(): array
-    {
-        return [
-            'nieuwefotos.*' => 'image|max:4096',
-        ];
-    }
-
     public function uploaden(): void
     {
         $this->succesmelding = '';
@@ -31,28 +24,43 @@ class GalerijBeheer extends Component
             return;
         }
 
-        $this->validate();
-
         $kapper = auth()->user()->kapper;
         $aantalBestaand = $kapper->galerij()->count();
+        $volgorde = $aantalBestaand;
+        $geupload = 0;
+        $teGroot = 0;
+        $teVeel = 0;
 
-        if ($aantalBestaand + count($this->nieuwefotos) > 12) {
-            $this->addError('nieuwefotos', 'Maximaal 12 foto\'s toegestaan.');
-            return;
-        }
+        foreach ($this->nieuwefotos as $foto) {
+            if ($volgorde >= 12) {
+                $teVeel++;
+                continue;
+            }
 
-        foreach ($this->nieuwefotos as $i => $foto) {
+            if ($foto->getSize() > 4 * 1024 * 1024) {
+                $teGroot++;
+                continue;
+            }
+
             $pad = $foto->store('galerij', 'public');
             KapperGalerij::create([
                 'kapper_id' => $kapper->id,
                 'pad'       => $pad,
-                'volgorde'  => $aantalBestaand + $i,
+                'volgorde'  => $volgorde,
             ]);
+            $volgorde++;
+            $geupload++;
         }
 
         $this->nieuwefotos = [];
-        $this->succesmelding = 'Foto\'s opgeslagen!';
         $this->dispatch('fotos-geupload');
+
+        $meldingen = [];
+        if ($geupload > 0) $meldingen[] = $geupload . ' foto' . ($geupload > 1 ? '\'s' : '') . ' opgeslagen';
+        if ($teGroot > 0) $meldingen[] = $teGroot . ' foto' . ($teGroot > 1 ? '\'s' : '') . ' overgeslagen (groter dan 4MB)';
+        if ($teVeel > 0) $meldingen[] = $teVeel . ' foto' . ($teVeel > 1 ? '\'s' : '') . ' overgeslagen (max 12 bereikt)';
+
+        $this->succesmelding = implode(' · ', $meldingen) ?: 'Niets geüpload.';
     }
 
     public function verwijderen(int $id): void

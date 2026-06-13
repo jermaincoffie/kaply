@@ -7,11 +7,15 @@
 
     {{-- Succesmelding --}}
     @if($succesmelding)
-    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-xl px-4 py-3 flex items-center gap-2">
-        <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+    <div class="{{ str_contains($succesmelding, 'overgeslagen') ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700' : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700' }} border rounded-xl px-4 py-3 flex items-center gap-2">
+        <svg class="w-4 h-4 flex-shrink-0 {{ str_contains($succesmelding, 'overgeslagen') ? 'text-amber-500' : 'text-green-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            @if(str_contains($succesmelding, 'overgeslagen'))
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z"/>
+            @else
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            @endif
         </svg>
-        <p class="text-sm text-green-700 dark:text-green-300">{{ $succesmelding }}</p>
+        <p class="text-sm {{ str_contains($succesmelding, 'overgeslagen') ? 'text-amber-700 dark:text-amber-300' : 'text-green-700 dark:text-green-300' }}">{{ $succesmelding }}</p>
     </div>
     @endif
 
