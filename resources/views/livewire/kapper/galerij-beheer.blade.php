@@ -5,6 +5,16 @@
         <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Foto's van je salon en werk · max 12 foto's</p>
     </div>
 
+    {{-- Succesmelding --}}
+    @if($succesmelding)
+    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-xl px-4 py-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <p class="text-sm text-green-700 dark:text-green-300">{{ $succesmelding }}</p>
+    </div>
+    @endif
+
     {{-- Upload sectie --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-6">
         <div class="flex items-center justify-between mb-4">
@@ -15,7 +25,7 @@
         @error('nieuwefotos') <p class="text-xs text-red-500 mb-3">{{ $message }}</p> @enderror
         @error('nieuwefotos.*') <p class="text-xs text-red-500 mb-3">{{ $message }}</p> @enderror
 
-        <div x-data="{ previews: [] }">
+        <div x-data="{ previews: [] }" @fotos-geupload.window="previews = []">
             <label class="block border-2 border-dashed border-gray-200 dark:border-neutral-600 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
                 <input type="file" wire:model="nieuwefotos" multiple accept="image/*" class="hidden"
                        x-on:change="previews = Array.from($event.target.files).map(f => URL.createObjectURL(f))">

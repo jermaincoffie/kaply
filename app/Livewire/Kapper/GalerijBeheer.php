@@ -12,6 +12,7 @@ class GalerijBeheer extends Component
     use WithFileUploads;
 
     public array $nieuwefotos = [];
+    public string $succesmelding = '';
 
     protected function rules(): array
     {
@@ -42,6 +43,7 @@ class GalerijBeheer extends Component
         }
 
         $this->nieuwefotos = [];
+        $this->succesmelding = 'Foto\'s opgeslagen!';
         $this->dispatch('fotos-geupload');
     }
 
