@@ -31,13 +31,13 @@
 
     {{-- Logo --}}
     <a href="{{ route('kapper.dashboard') }}"
-       class="flex flex-col items-start justify-center px-4 py-3 border-b border-gray-100 dark:border-neutral-700 flex-shrink-0 hover:opacity-80 transition-opacity">
+       class="flex flex-row items-center gap-2 px-4 py-2 border-b border-gray-100 dark:border-neutral-700 flex-shrink-0 hover:opacity-80 transition-opacity">
         <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-16 w-auto" alt="Kaply">
         <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-16 w-auto" alt="Kaply">
         @if(auth()->user()->kapper?->salon_naam)
-            <div class="text-xs text-gray-500 dark:text-neutral-400 truncate leading-tight mt-0.5">
+            <span class="text-xs text-gray-500 dark:text-neutral-400 truncate leading-tight">
                 {{ auth()->user()->kapper->salon_naam }}
-            </div>
+            </span>
         @endif
     </a>
 
