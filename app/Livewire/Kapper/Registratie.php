@@ -45,6 +45,7 @@ class Registratie extends Component
 
     public function volgende(): void
     {
+        \Log::info('volgende() aangeroepen', ['name' => $this->name, 'email' => $this->email, 'password_len' => strlen($this->password)]);
         $this->validate($this->stapEenRules(), [
             'name.required'      => 'Naam is verplicht.',
             'name.max'           => 'Naam mag maximaal 255 tekens zijn.',
@@ -55,6 +56,7 @@ class Registratie extends Component
             'password.min'       => 'Wachtwoord moet minimaal 8 tekens zijn.',
             'password.confirmed' => 'Wachtwoorden komen niet overeen.',
         ]);
+        \Log::info('volgende() validatie geslaagd, ga naar stap 2');
         $this->stap = 2;
     }
 
