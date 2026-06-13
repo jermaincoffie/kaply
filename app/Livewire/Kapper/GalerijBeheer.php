@@ -23,6 +23,11 @@ class GalerijBeheer extends Component
 
     public function uploaden(): void
     {
+        if (empty($this->nieuwefotos)) {
+            $this->addError('nieuwefotos', 'Geen foto\'s geselecteerd.');
+            return;
+        }
+
         $this->validate();
 
         $kapper = auth()->user()->kapper;
