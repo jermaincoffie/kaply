@@ -30,7 +30,7 @@ class KapperProfiel extends Component
         $this->kapper = Kapper::where('slug', $slug)
             ->where('actief', true)
             ->where('abonnement_status', 'actief')
-            ->with(['diensten', 'beschikbaarheden'])
+            ->with(['diensten', 'beschikbaarheden', 'galerij'])
             ->firstOrFail();
 
         if ($this->kapper->diensten->isNotEmpty()) {

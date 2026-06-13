@@ -10,6 +10,7 @@ use App\Livewire\Kapper\BeschikbaarheidBeheer;
 use App\Livewire\Kapper\DienstenBeheer;
 use App\Livewire\Kapper\KlantenOverzicht as KapperKlanten;
 use App\Livewire\Kapper\MedewerkersBeheer;
+use App\Livewire\Kapper\GalerijBeheer;
 use App\Livewire\Kapper\ProfielBeheer;
 use App\Livewire\Kapper\Registratie as KapperRegistratie;
 use App\Livewire\Kapper\AbonnementBeheer;
@@ -38,6 +39,7 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
     Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
     Route::get('/medewerkers', MedewerkersBeheer::class)->name('medewerkers');
     Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
+    Route::get('/galerij', GalerijBeheer::class)->name('galerij');
     Route::get('/reviews', KapperReviews::class)->name('reviews');
     Route::get('/abonnement', AbonnementBeheer::class)->name('abonnement');
     Route::get('/abonnement/checkout', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');

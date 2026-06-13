@@ -59,6 +59,20 @@
         </div>
     </div>
 
+    {{-- Galerij --}}
+    @if($kapper->galerij->isNotEmpty())
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl overflow-hidden mb-5 p-5">
+        <p class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mb-3">Foto's</p>
+        <div class="grid grid-cols-3 gap-2">
+            @foreach($kapper->galerij as $foto)
+            <div class="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-neutral-700">
+                <img src="{{ asset('storage/' . $foto->pad) }}" alt="Galerij" class="w-full h-full object-cover">
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     {{-- Booking flow --}}
     <div class="space-y-4">
 

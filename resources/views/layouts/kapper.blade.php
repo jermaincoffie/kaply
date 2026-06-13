@@ -68,6 +68,14 @@
             Klanten
         </a>
 
+        {{-- Galerij --}}
+        <a href="{{ route('kapper.galerij') }}" class="{{ $linkClass('kapper.galerij') }}">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 9.75A6.75 6.75 0 019.75 3h4.5A6.75 6.75 0 0121 9.75v4.5A6.75 6.75 0 0114.25 21H9.75A6.75 6.75 0 013 14.25V9.75z"/>
+            </svg>
+            Galerij
+        </a>
+
         {{-- Reviews --}}
         <a href="{{ route('kapper.reviews') }}" class="{{ $linkClass('kapper.reviews') }}">
             <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

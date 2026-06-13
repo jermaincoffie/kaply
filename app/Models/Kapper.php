@@ -25,6 +25,7 @@ class Kapper extends Model
     public function afspraken() { return $this->hasMany(Afspraak::class); }
     public function medewerkers() { return $this->hasMany(Medewerker::class); }
     public function reviews()     { return $this->hasMany(Review::class); }
+    public function galerij()    { return $this->hasMany(KapperGalerij::class)->orderBy('volgorde'); }
 
     public function setSalonNaamAttribute(string $value): void
     {
