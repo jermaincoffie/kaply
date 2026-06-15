@@ -106,6 +106,52 @@
         </div>
     </div>
 
+    {{-- Inzichten deze maand --}}
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+        {{-- Bezettingsgraad --}}
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
+            <div class="flex items-center mb-2">
+                <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Bezetting</p>
+                <x-tooltip position="below-right">Hoeveel procent van je beschikbare werktijd deze maand al gevuld is met afspraken.</x-tooltip>
+            </div>
+            @if($bezettingsgraad !== null)
+            <span class="text-2xl font-bold text-gray-900 dark:text-neutral-100">{{ $bezettingsgraad }}%</span>
+            <div class="mt-2 bg-gray-100 dark:bg-neutral-700 rounded-full h-1.5">
+                <div class="h-1.5 rounded-full {{ $bezettingsgraad >= 80 ? 'bg-green-500' : ($bezettingsgraad >= 50 ? 'bg-blue-500' : 'bg-gray-400') }}"
+                     style="width: {{ $bezettingsgraad }}%"></div>
+            </div>
+            @else
+            <span class="text-lg font-bold text-gray-300 dark:text-neutral-600">—</span>
+            @endif
+        </div>
+
+        {{-- No-show % --}}
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
+            <div class="flex items-center mb-2">
+                <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">No-show</p>
+                <x-tooltip>Percentage van afgeronde afspraken waarbij de klant niet is komen opdagen. Boven 20% is een aandachtspunt.</x-tooltip>
+            </div>
+            @if($no_show_pct !== null)
+            <span class="text-2xl font-bold {{ $no_show_pct >= 20 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-neutral-100' }}">{{ $no_show_pct }}%</span>
+            @else
+            <span class="text-lg font-bold text-gray-300 dark:text-neutral-600">—</span>
+            @endif
+        </div>
+
+        {{-- Drukste uur --}}
+        <div class="col-span-2 sm:col-span-1 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
+            <div class="flex items-center mb-2">
+                <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Drukste tijd</p>
+                <x-tooltip position="below-left">Het uur van de dag met de meeste boekingen deze maand. Handig om piekuren te herkennen.</x-tooltip>
+            </div>
+            @if($druksteUurLabel)
+            <span class="text-lg font-bold text-gray-900 dark:text-neutral-100">{{ $druksteUurLabel }}</span>
+            @else
+            <span class="text-lg font-bold text-gray-300 dark:text-neutral-600">—</span>
+            @endif
+        </div>
+    </div>
+
     {{-- Boeklink banner --}}
     @php $boeklink = url('/kapper/' . auth()->user()->kapper->slug); @endphp
     <div class="flex items-center justify-between bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl px-4 py-3 mb-4"

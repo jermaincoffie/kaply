@@ -119,7 +119,7 @@
     @php $verzetAfspraak = $aankomend->firstWhere('id', $verzetAfspraakId); @endphp
     <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="absolute inset-0 bg-black/50" wire:click="sluitVerzetten"></div>
-        <div class="relative w-full sm:max-w-sm bg-white dark:bg-neutral-800 sm:rounded-2xl rounded-t-2xl shadow-2xl overflow-hidden">
+        <div class="relative w-full sm:max-w-sm bg-white dark:bg-neutral-800 sm:rounded-2xl rounded-t-2xl shadow-2xl">
             <div class="sm:hidden flex justify-center pt-3 pb-1">
                 <div class="w-10 h-1 bg-gray-200 dark:bg-neutral-600 rounded-full"></div>
             </div>
@@ -153,7 +153,7 @@
                 </div>
 
                 {{-- Datum --}}
-                <div class="mb-4 overflow-visible">
+                <div class="mb-4">
                     <label class="block text-xs font-medium text-gray-500 dark:text-neutral-400 mb-1.5">Nieuwe datum</label>
                     <x-datepicker
                         wire-model="verzetDatum"

@@ -298,6 +298,55 @@ class AgendaOverzicht extends Component
             ->where('status', 'voltooid')
             ->sum(fn($a) => $a->dienst->prijs ?? 0);
 
+        // No-show %
+        $afgerond_maand = Afspraak::where('kapper_id', $kapper_id)
+            ->whereMonth('datum', now()->month)
+            ->whereYear('datum', now()->year)
+            ->whereIn('status', ['voltooid', 'no_show'])
+            ->count();
+        $no_shows_maand = Afspraak::where('kapper_id', $kapper_id)
+            ->whereMonth('datum', now()->month)
+            ->whereYear('datum', now()->year)
+            ->where('status', 'no_show')
+            ->count();
+        $no_show_pct = $afgerond_maand > 0 ? round($no_shows_maand / $afgerond_maand * 100) : null;
+
+        // Bezettingsgraad
+        $beschikbaarheden = auth()->user()->kapper->beschikbaarheden()->get();
+        $beschikbareMinuten = 0;
+        for ($d = 1; $d <= now()->daysInMonth; $d++) {
+            $dag = Carbon::create(now()->year, now()->month, $d);
+            $dow = ($dag->dayOfWeek + 6) % 7;
+            $b = $beschikbaarheden->firstWhere('dag_van_week', $dow);
+            if ($b) {
+                $beschikbareMinuten += Carbon::parse($b->start_tijd)->diffInMinutes(Carbon::parse($b->eind_tijd));
+            }
+        }
+        $geboekteMinuten = Afspraak::where('afspraken.kapper_id', $kapper_id)
+            ->whereMonth('afspraken.datum', now()->month)
+            ->whereYear('afspraken.datum', now()->year)
+            ->whereIn('afspraken.status', ['gepland', 'voltooid'])
+            ->join('diensten', 'afspraken.dienst_id', '=', 'diensten.id')
+            ->sum('diensten.duur_minuten');
+        $bezettingsgraad = $beschikbareMinuten > 0
+            ? min(100, round($geboekteMinuten / $beschikbareMinuten * 100))
+            : null;
+
+        // Drukste uur deze maand
+        $druksteUur = Afspraak::where('kapper_id', $kapper_id)
+            ->whereMonth('datum', now()->month)
+            ->whereYear('datum', now()->year)
+            ->whereIn('status', ['gepland', 'voltooid'])
+            ->get()
+            ->groupBy(fn($a) => (int) substr($a->start_tijd, 0, 2))
+            ->map->count()
+            ->sortDesc()
+            ->keys()
+            ->first();
+        $druksteUurLabel = $druksteUur !== null
+            ? str_pad($druksteUur, 2, '0', STR_PAD_LEFT) . ':00 – ' . str_pad($druksteUur + 1, 2, '0', STR_PAD_LEFT) . ':00'
+            : null;
+
         $blokkeringen = Blokkering::where('kapper_id', $kapper_id)
             ->whereBetween('datum', [$weekStartDate->toDateString(), $weekEndDate->toDateString()])
             ->orderBy('start_tijd')
@@ -342,7 +391,8 @@ class AgendaOverzicht extends Component
             'eigenDiensten', 'zoekKlanten', 'mobielAfspraken',
             'vandaagAfspraken', 'volgendeAfspraak', 'omzet_vandaag',
             'blokkeringenPerDag', 'mobielBlokkeringen', 'geselecteerdeblokkering',
-            'onboarding', 'toonOnboarding'
+            'onboarding', 'toonOnboarding',
+            'no_show_pct', 'bezettingsgraad', 'druksteUurLabel'
         ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }

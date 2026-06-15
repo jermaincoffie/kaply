@@ -51,9 +51,8 @@
             // Fallback: native change + input events
             ['change', 'input'].forEach(evt => el.addEventListener(evt, () => parseAndSync(el.value)));
 
-            if (window.HSDatepicker) {
-                new window.HSDatepicker(el);
-            }
+            // Preline 4 exporteert HSDatepicker niet — gebruik autoInit
+            if (window.HSStaticMethods) window.HSStaticMethods.autoInit(['datepicker']);
         "
     >
         {{-- Desktop: Preline datepicker --}}

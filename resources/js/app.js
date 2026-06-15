@@ -1,16 +1,19 @@
 import './bootstrap';
 import { Calendar } from 'vanilla-calendar-pro';
+import _ from 'lodash';
 
+// Preline datepicker gebruikt _ (lodash) globaal in constructor
+window._ = _;
 // Preline datepicker checkt window.VanillaCalendarPro
 window.VanillaCalendarPro = Calendar;
 
 const preline = await import('preline');
-window.HSStaticMethods = preline.HSStaticMethods;
+// Niet overschrijven — preline pre-bundle zet window.HSStaticMethods al correct
+// met juiste closure naar VanillaCalendarPro. Overschrijven breekt autoInit(['datepicker']).
 
-// HSDatepicker global beschikbaar voor x-datepicker component
-if (preline.HSDatepicker) window.HSDatepicker = preline.HSDatepicker;
-
-const initPreline = () => preline.HSStaticMethods.autoInit();
+const initPreline = () => {
+    if (window.HSStaticMethods) window.HSStaticMethods.autoInit();
+};
 
 if (document.readyState === 'complete') {
     initPreline();
