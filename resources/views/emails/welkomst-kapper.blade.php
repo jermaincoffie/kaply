@@ -28,12 +28,12 @@
     </div>
     <div class="body">
         <p>Hoi {{ $user->name }},</p>
-        <p>Je account is aangemaakt. Om je salon zichtbaar te maken op Kaply en online boekingen te ontvangen, zijn er nog twee stappen:</p>
+        <p>Je account is aangemaakt en je <strong>gratis proefperiode van 14 dagen</strong> staat klaar. Om je salon zichtbaar te maken op Kaply, zijn er twee stappen:</p>
 
         <div class="steps">
             <div class="step">
                 <div class="step-num">1</div>
-                <div class="step-text"><strong>Activeer je abonnement</strong> – €20 per maand, betaal veilig via Stripe (iDEAL, creditcard of SEPA).</div>
+                <div class="step-text"><strong>Start je gratis proefperiode</strong> – 14 dagen gratis, daarna €20 per maand. Geen creditcard nodig om te starten.</div>
             </div>
             <div class="step">
                 <div class="step-num">2</div>
@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <a href="{{ route('kapper.subscription.checkout') }}" class="btn">Abonneer nu · €20/maand</a>
+        <a href="{{ route('kapper.subscription.checkout') }}" class="btn">Start gratis proefperiode</a>
     </div>
     <div class="footer">
         Kaply · Online boekingsplatform voor kappers<br>

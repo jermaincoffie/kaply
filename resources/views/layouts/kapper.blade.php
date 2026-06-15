@@ -284,6 +284,36 @@
 {{-- ===== MAIN CONTENT ===== --}}
 <main class="lg:ml-64 min-h-screen pb-16 lg:pb-0">
     <div class="p-4 sm:p-6">
+        @php
+            $trialSub   = auth()->user()->subscription('default');
+            $inTrial    = $trialSub?->onTrial() ?? false;
+            $trialDagen = $inTrial ? max(0, (int) now()->diffInDays($trialSub->trial_ends_at)) : null;
+            $bannerKleur = match(true) {
+                $trialDagen !== null && $trialDagen <= 3 => 'bg-red-50 border-red-200 text-red-800 dark:bg-red-950/30 dark:border-red-800 dark:text-red-300',
+                $trialDagen !== null && $trialDagen <= 7 => 'bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-300',
+                default                                  => 'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-950/30 dark:border-blue-800 dark:text-blue-300',
+            };
+        @endphp
+        @if($inTrial && $trialDagen !== null)
+        <div class="mb-4 flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border text-sm {{ $bannerKleur }}">
+            <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                @if($trialDagen === 0)
+                    Je gratis proefperiode verloopt <strong class="mx-1">vandaag</strong> — activeer nu om door te gaan.
+                @elseif($trialDagen === 1)
+                    Je gratis proefperiode verloopt <strong class="mx-1">morgen</strong>.
+                @else
+                    Je gratis proefperiode verloopt over <strong class="mx-1">{{ $trialDagen }} dagen</strong>.
+                @endif
+            </div>
+            <a href="{{ route('kapper.abonnement') }}" class="flex-shrink-0 font-semibold underline hover:no-underline whitespace-nowrap">
+                Abonneer nu
+            </a>
+        </div>
+        @endif
+
         @if(!auth()->user()->kapper?->actief)
         <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
             <div class="w-16 h-16 rounded-2xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-5">

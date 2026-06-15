@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('herinneringen:stuur')->everyFifteenMinutes();
+Schedule::command('kaply:trial-opvolging')->dailyAt('09:00');

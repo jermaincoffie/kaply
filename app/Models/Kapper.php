@@ -14,11 +14,14 @@ class Kapper extends Model
         'user_id', 'salon_naam', 'slug', 'adres', 'stad',
         'telefoon', 'bio', 'foto', 'stripe_customer_id',
         'abonnement_status', 'actief', 'buffer_minuten', 'onboarding_voltooid', 'ical_token',
+        'trial_dag3_verstuurd', 'trial_dag10_verstuurd',
     ];
 
     protected $casts = [
-        'actief'              => 'boolean',
-        'onboarding_voltooid' => 'boolean',
+        'actief'                  => 'boolean',
+        'onboarding_voltooid'     => 'boolean',
+        'trial_dag3_verstuurd'    => 'boolean',
+        'trial_dag10_verstuurd'   => 'boolean',
     ];
 
     public function user() { return $this->belongsTo(User::class); }
