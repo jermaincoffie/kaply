@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Afspraak;
 use App\Models\Beschikbaarheid;
 use App\Models\Dienst;
 use App\Models\Kapper;
@@ -102,7 +103,8 @@ class DemoKapperSeeder extends Seeder
             }
         }
 
-        // Reviews
+        // Reviews — vereisen een gekoppelde afspraak (afspraak_id NOT NULL)
+        $eerstedienst = $kapper->diensten()->first();
         foreach ([
             ['naam' => 'Kevin de Vries',    'rating' => 5, 'tekst' => 'Top kapper! Al jaren mijn vaste plek. Marco weet precies wat ik wil zonder dat ik het hoef uit te leggen.'],
             ['naam' => 'Thomas Brouwer',    'rating' => 5, 'tekst' => 'Geweldige fade, scherpe lijn en relaxte sfeer. Ben hier voor het eerst maar kom zeker terug.'],
@@ -115,12 +117,23 @@ class DemoKapperSeeder extends Seeder
                 'password' => Hash::make(str()->random(20)),
                 'role'     => 'klant',
             ]);
+            $afspraak = Afspraak::create([
+                'klant_id'      => $klant->id,
+                'kapper_id'     => $kapper->id,
+                'dienst_id'     => $eerstedienst->id,
+                'datum'         => now()->subDays(($idx + 1) * 14)->toDateString(),
+                'start_tijd'    => '10:00',
+                'eind_tijd'     => '10:30',
+                'status'        => 'voltooid',
+                'betaalmethode' => 'in_zaak',
+            ]);
             Review::create([
-                'kapper_id' => $kapper->id,
-                'klant_id'  => $klant->id,
-                'rating'    => $r['rating'],
-                'tekst'     => $r['tekst'],
-                'zichtbaar' => true,
+                'kapper_id'  => $kapper->id,
+                'klant_id'   => $klant->id,
+                'afspraak_id' => $afspraak->id,
+                'rating'     => $r['rating'],
+                'tekst'      => $r['tekst'],
+                'zichtbaar'  => true,
             ]);
         }
     }
