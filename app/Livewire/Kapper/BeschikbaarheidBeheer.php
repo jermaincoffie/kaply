@@ -4,6 +4,7 @@ namespace App\Livewire\Kapper;
 
 use App\Models\Beschikbaarheid;
 use App\Models\Sluitingsdag;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class BeschikbaarheidBeheer extends Component
@@ -13,12 +14,19 @@ class BeschikbaarheidBeheer extends Component
     public string $sluitingsDatum = '';
     public string $sluitingsDatumTot = '';
     public string $sluitingsReden = '';
+    public string $icalUrl = '';
 
     protected array $dagNamen = ['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag','Zondag'];
 
     public function mount(): void
     {
         $kapper = auth()->user()->kapper;
+
+        if (!$kapper->ical_token) {
+            $kapper->update(['ical_token' => Str::random(40)]);
+        }
+        $this->icalUrl = route('kapper.ical', $kapper->ical_token);
+
         $this->bufferMinuten = (int) ($kapper->buffer_minuten ?? 0);
         $bestaand = $kapper->beschikbaarheden()->get()->keyBy('dag_van_week');
 

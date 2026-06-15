@@ -18,6 +18,7 @@ use App\Livewire\Kapper\KortingscodesBeheer;
 use App\Livewire\Kapper\OnboardingWizard;
 use App\Livewire\Kapper\ReviewsOverzicht as KapperReviews;
 use App\Http\Controllers\AfspraakBetaalController;
+use App\Http\Controllers\IcalController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Livewire\Klant\AccountBeheer;
@@ -55,6 +56,9 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
         Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
     });
 });
+
+// iCal feed (publiek via geheim token)
+Route::get('/kalender/{token}.ics', [IcalController::class, 'feed'])->name('kapper.ical');
 
 // Publieke kapper profielpagina
 Route::get('/kapper/{slug}', KapperProfiel::class)->name('kapper.profiel')->middleware('allow.embed');

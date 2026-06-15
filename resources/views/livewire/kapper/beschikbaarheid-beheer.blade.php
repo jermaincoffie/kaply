@@ -68,6 +68,86 @@
         </div>
     </form>
 
+    {{-- Kalender sync --}}
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl mb-6" x-data="{ gekopieerd: false }">
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex items-center gap-3">
+            <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
+                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200">Kalender synchroniseren</h2>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Bekijk afspraken in Google Calendar of iPhone</p>
+            </div>
+        </div>
+
+        <div class="px-6 py-5 space-y-4">
+            {{-- URL kopiëren --}}
+            <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-neutral-400 mb-2">Je persoonlijke kalender-link</p>
+                <div class="flex items-center gap-2">
+                    <input type="text" readonly value="{{ $icalUrl }}"
+                           class="flex-1 min-w-0 py-2 px-3 bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-xs text-gray-600 dark:text-neutral-400 font-mono focus:outline-none cursor-text select-all">
+                    <button @click="navigator.clipboard.writeText('{{ $icalUrl }}'); gekopieerd = true; setTimeout(() => gekopieerd = false, 2000)"
+                            class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors"
+                            :class="gekopieerd ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300 hover:bg-gray-200 dark:hover:bg-neutral-600'">
+                        <svg x-show="!gekopieerd" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                        </svg>
+                        <svg x-show="gekopieerd" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span x-text="gekopieerd ? 'Gekopieerd!' : 'Kopieer'"></span>
+                    </button>
+                </div>
+            </div>
+
+            {{-- Instructies --}}
+            <div class="grid sm:grid-cols-2 gap-3">
+                <div class="rounded-xl border border-gray-100 dark:border-neutral-700 p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none">
+                            <rect width="24" height="24" rx="5" fill="#4285F4"/>
+                            <path d="M17 8H7a1 1 0 00-1 1v8a1 1 0 001 1h10a1 1 0 001-1V9a1 1 0 00-1-1z" fill="white"/>
+                            <path d="M9 7V5M15 7V5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M6 11h12" stroke="#4285F4" stroke-width="1"/>
+                        </svg>
+                        <span class="text-xs font-semibold text-gray-700 dark:text-neutral-200">Google Calendar</span>
+                    </div>
+                    <ol class="space-y-1 text-xs text-gray-500 dark:text-neutral-400 list-decimal list-inside">
+                        <li>Open Google Calendar</li>
+                        <li>Klik <span class="font-medium text-gray-700 dark:text-neutral-300">+ Andere agenda's</span></li>
+                        <li>Kies <span class="font-medium text-gray-700 dark:text-neutral-300">Via URL</span></li>
+                        <li>Plak de link hierboven</li>
+                    </ol>
+                </div>
+
+                <div class="rounded-xl border border-gray-100 dark:border-neutral-700 p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none">
+                            <rect width="24" height="24" rx="5" fill="#1C1C1E"/>
+                            <rect x="4" y="6" width="16" height="14" rx="2" fill="white"/>
+                            <path d="M8 5V7M16 5V7" stroke="#1C1C1E" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M4 10h16" stroke="#E5E5EA" stroke-width="1"/>
+                        </svg>
+                        <span class="text-xs font-semibold text-gray-700 dark:text-neutral-200">iPhone Agenda</span>
+                    </div>
+                    <ol class="space-y-1 text-xs text-gray-500 dark:text-neutral-400 list-decimal list-inside">
+                        <li>Ga naar <span class="font-medium text-gray-700 dark:text-neutral-300">Instellingen → Agenda</span></li>
+                        <li>Tik op <span class="font-medium text-gray-700 dark:text-neutral-300">Accounts → Voeg account toe</span></li>
+                        <li>Kies <span class="font-medium text-gray-700 dark:text-neutral-300">Overige → Voeg abo. agenda toe</span></li>
+                        <li>Plak de link hierboven</li>
+                    </ol>
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-400 dark:text-neutral-500">
+                Houd deze link privé. Iedereen met de link kan je afspraken zien.
+            </p>
+        </div>
+    </div>
+
     {{-- Sluitingsdagen --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">

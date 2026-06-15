@@ -13,7 +13,7 @@ class Kapper extends Model
     protected $fillable = [
         'user_id', 'salon_naam', 'slug', 'adres', 'stad',
         'telefoon', 'bio', 'foto', 'stripe_customer_id',
-        'abonnement_status', 'actief', 'buffer_minuten', 'onboarding_voltooid',
+        'abonnement_status', 'actief', 'buffer_minuten', 'onboarding_voltooid', 'ical_token',
     ];
 
     protected $casts = [
