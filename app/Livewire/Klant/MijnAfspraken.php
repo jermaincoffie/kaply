@@ -3,9 +3,11 @@
 namespace App\Livewire\Klant;
 
 use App\Mail\AfspraakGeannuleerdMail;
+use App\Mail\AfspraakVerzetKapperMail;
 use App\Models\Afspraak;
 use App\Models\Review;
 use App\Notifications\AfspraakGeannuleerdNotificatie;
+use App\Notifications\AfspraakVerzetNotificatie;
 use App\Services\BeschikbaarheidsService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -86,10 +88,13 @@ class MijnAfspraken extends Component
         $afspraak = Afspraak::where('id', $this->verzetAfspraakId)
             ->where('klant_id', auth()->id())
             ->where('status', 'gepland')
-            ->with(['dienst', 'kapper'])
+            ->with(['dienst', 'kapper', 'klant'])
             ->first();
 
         if (!$afspraak) return;
+
+        $oudeDatum = $afspraak->datum->format('Y-m-d');
+        $oudeTijd  = $afspraak->start_tijd;
 
         $eind = Carbon::parse($this->verzetDatum . ' ' . $this->verzetTijd)
             ->addMinutes($afspraak->dienst->duur_minuten)
@@ -100,6 +105,15 @@ class MijnAfspraken extends Component
             'start_tijd' => $this->verzetTijd,
             'eind_tijd'  => $eind,
         ]);
+
+        $afspraak->refresh();
+
+        Mail::to($afspraak->kapper->user->email)
+            ->send(new AfspraakVerzetKapperMail($afspraak, $oudeDatum, $oudeTijd));
+
+        $afspraak->kapper->user->notify(
+            new AfspraakVerzetNotificatie($afspraak, $oudeDatum, $oudeTijd)
+        );
 
         $this->verzetGeslaagd = true;
     }

@@ -32,14 +32,21 @@
             @foreach($notificaties as $notificatie)
             @php
                 $data = $notificatie->data;
-                $isNieuw = $data['type'] === 'nieuwe_afspraak';
+                $type = $data['type'] ?? '';
+                $isNieuw   = $type === 'nieuwe_afspraak';
+                $isVerzet  = $type === 'afspraak_verzet';
+                $isGean    = $type === 'afspraak_geannuleerd';
             @endphp
             <div class="px-4 py-3 flex items-start gap-3 {{ $notificatie->read_at ? 'opacity-60' : '' }}">
                 <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5
-                    {{ $isNieuw ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30' }}">
+                    {{ $isNieuw ? 'bg-green-100 dark:bg-green-900/30' : ($isVerzet ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-red-100 dark:bg-red-900/30') }}">
                     @if($isNieuw)
                     <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    @elseif($isVerzet)
+                    <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                     </svg>
                     @else
                     <svg class="w-4 h-4 text-red-500 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -49,14 +56,23 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">
-                        {{ $isNieuw ? 'Nieuwe afspraak' : 'Afspraak geannuleerd' }}
+                        @if($isNieuw) Nieuwe afspraak
+                        @elseif($isVerzet) Afspraak verzet
+                        @else Afspraak geannuleerd
+                        @endif
                     </p>
                     <p class="text-xs text-gray-500 dark:text-neutral-400 truncate">
                         {{ $data['klant_naam'] }} · {{ $data['dienst_naam'] }}
                     </p>
+                    @if($isVerzet)
+                    <p class="text-xs text-gray-400 dark:text-neutral-500">
+                        {{ $data['oude_datum'] }} {{ $data['oude_tijd'] }} → {{ $data['datum'] }} {{ $data['start_tijd'] }}
+                    </p>
+                    @else
                     <p class="text-xs text-gray-400 dark:text-neutral-500">
                         {{ $data['datum'] }} om {{ $data['start_tijd'] }}
                     </p>
+                    @endif
                 </div>
                 <span class="text-[10px] text-gray-300 dark:text-neutral-600 flex-shrink-0 mt-1">
                     {{ $notificatie->created_at->diffForHumans(short: true) }}
