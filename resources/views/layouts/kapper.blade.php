@@ -55,7 +55,7 @@
         {{-- Afspraken --}}
         <a href="{{ route('kapper.afspraken') }}" class="{{ $linkClass('kapper.afspraken') }}">
             <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
             </svg>
             Afspraken
         </a>
@@ -68,41 +68,47 @@
             Klanten
         </a>
 
-        {{-- Galerij --}}
-        <a href="{{ route('kapper.galerij') }}" class="{{ $linkClass('kapper.galerij') }}">
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 9.75A6.75 6.75 0 019.75 3h4.5A6.75 6.75 0 0121 9.75v4.5A6.75 6.75 0 0114.25 21H9.75A6.75 6.75 0 013 14.25V9.75z"/>
-            </svg>
-            Galerij
-        </a>
-
-        {{-- Reviews --}}
-        <a href="{{ route('kapper.reviews') }}" class="{{ $linkClass('kapper.reviews') }}">
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-            </svg>
-            Reviews
-        </a>
-
-        {{-- Kortingscodes --}}
-        <a href="{{ route('kapper.kortingscodes') }}" class="{{ $linkClass('kapper.kortingscodes') }}">
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-            </svg>
-            Kortingscodes
-        </a>
-
-        {{-- Abonnement --}}
-        <a href="{{ route('kapper.abonnement') }}" class="{{ $linkClass('kapper.abonnement') }}">
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
-            </svg>
-            Abonnement
-        </a>
+        {{-- Marketing dropdown --}}
+        @php
+            $marketingActief = request()->routeIs('kapper.galerij') || request()->routeIs('kapper.reviews') || request()->routeIs('kapper.kortingscodes');
+        @endphp
+        <div x-data="{ open: {{ $marketingActief ? 'true' : 'false' }} }">
+            <button @click="open = !open"
+                    class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors
+                        {{ $marketingActief ? 'bg-gray-100 dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 font-medium' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
+                </svg>
+                <span class="flex-1 text-left">Marketing</span>
+                <svg class="w-3.5 h-3.5 flex-shrink-0 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="mt-0.5 ml-4 pl-3 border-l-2 border-gray-100 dark:border-neutral-700 space-y-0.5">
+                <a href="{{ route('kapper.galerij') }}" class="{{ $linkClass('kapper.galerij') }}">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 9.75A6.75 6.75 0 019.75 3h4.5A6.75 6.75 0 0121 9.75v4.5A6.75 6.75 0 0114.25 21H9.75A6.75 6.75 0 013 14.25V9.75z"/>
+                    </svg>
+                    Galerij
+                </a>
+                <a href="{{ route('kapper.reviews') }}" class="{{ $linkClass('kapper.reviews') }}">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                    </svg>
+                    Reviews
+                </a>
+                <a href="{{ route('kapper.kortingscodes') }}" class="{{ $linkClass('kapper.kortingscodes') }}">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                    Kortingscodes
+                </a>
+            </div>
+        </div>
 
         {{-- Instellingen dropdown --}}
         @php
-            $instellingenActief = request()->routeIs('kapper.diensten') || request()->routeIs('kapper.beschikbaarheid') || request()->routeIs('kapper.medewerkers') || request()->routeIs('kapper.profiel-beheer');
+            $instellingenActief = request()->routeIs('kapper.diensten') || request()->routeIs('kapper.beschikbaarheid') || request()->routeIs('kapper.medewerkers') || request()->routeIs('kapper.profiel-beheer') || request()->routeIs('kapper.abonnement');
         @endphp
         <div x-data="{ open: {{ $instellingenActief ? 'true' : 'false' }} }">
             <button @click="open = !open"
@@ -116,7 +122,6 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                 </svg>
             </button>
-
             <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="mt-0.5 ml-4 pl-3 border-l-2 border-gray-100 dark:border-neutral-700 space-y-0.5">
                 <a href="{{ route('kapper.diensten') }}" class="{{ $linkClass('kapper.diensten') }}">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -141,6 +146,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
                     Profiel
+                </a>
+                <a href="{{ route('kapper.abonnement') }}" class="{{ $linkClass('kapper.abonnement') }}">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
+                    </svg>
+                    Abonnement
                 </a>
             </div>
         </div>
@@ -311,7 +322,7 @@
          class="fixed inset-0 bg-black/50 z-30"
          style="display:none"></div>
 
-    {{-- Beheer sheet --}}
+    {{-- Instellingen sheet --}}
     <div x-show="beheerSheet"
          x-transition:enter="transition transform ease-out duration-300"
          x-transition:enter-start="translate-y-full"
@@ -322,20 +333,13 @@
          class="fixed bottom-16 inset-x-0 bg-neutral-800 border-t border-neutral-700 rounded-t-2xl p-4 z-40"
          style="display:none">
         <div class="w-8 h-1 bg-neutral-600 rounded-full mx-auto mb-4"></div>
-        <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide px-1 mb-2">Beheer</p>
+        <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide px-1 mb-2">Instellingen</p>
         <a href="{{ route('kapper.diensten') }}" @click="beheerSheet=false"
            class="flex items-center gap-3 py-3 px-4 rounded-xl {{ request()->routeIs('kapper.diensten') ? 'bg-neutral-700 text-neutral-100' : 'text-neutral-200 hover:bg-neutral-700' }} transition-colors">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
             </svg>
             <span class="text-sm font-medium">Diensten</span>
-        </a>
-        <a href="{{ route('kapper.medewerkers') }}" @click="beheerSheet=false"
-           class="flex items-center gap-3 py-3 px-4 rounded-xl {{ request()->routeIs('kapper.medewerkers') ? 'bg-neutral-700 text-neutral-100' : 'text-neutral-200 hover:bg-neutral-700' }} transition-colors">
-            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-            <span class="text-sm font-medium">Medewerkers</span>
         </a>
         <a href="{{ route('kapper.beschikbaarheid') }}" @click="beheerSheet=false"
            class="flex items-center gap-3 py-3 px-4 rounded-xl {{ request()->routeIs('kapper.beschikbaarheid') ? 'bg-neutral-700 text-neutral-100' : 'text-neutral-200 hover:bg-neutral-700' }} transition-colors">
@@ -344,9 +348,30 @@
             </svg>
             <span class="text-sm font-medium">Beschikbaarheid</span>
         </a>
+        <a href="{{ route('kapper.medewerkers') }}" @click="beheerSheet=false"
+           class="flex items-center gap-3 py-3 px-4 rounded-xl {{ request()->routeIs('kapper.medewerkers') ? 'bg-neutral-700 text-neutral-100' : 'text-neutral-200 hover:bg-neutral-700' }} transition-colors">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span class="text-sm font-medium">Medewerkers</span>
+        </a>
+        <a href="{{ route('kapper.profiel-beheer') }}" @click="beheerSheet=false"
+           class="flex items-center gap-3 py-3 px-4 rounded-xl {{ request()->routeIs('kapper.profiel-beheer') ? 'bg-neutral-700 text-neutral-100' : 'text-neutral-200 hover:bg-neutral-700' }} transition-colors">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            <span class="text-sm font-medium">Profiel</span>
+        </a>
+        <a href="{{ route('kapper.abonnement') }}" @click="beheerSheet=false"
+           class="flex items-center gap-3 py-3 px-4 rounded-xl {{ request()->routeIs('kapper.abonnement') ? 'bg-neutral-700 text-neutral-100' : 'text-neutral-200 hover:bg-neutral-700' }} transition-colors">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
+            </svg>
+            <span class="text-sm font-medium">Abonnement</span>
+        </a>
     </div>
 
-    {{-- Meer sheet --}}
+    {{-- Marketing sheet --}}
     <div x-show="meerSheet"
          x-transition:enter="transition transform ease-out duration-300"
          x-transition:enter-start="translate-y-full"
@@ -357,13 +382,13 @@
          class="fixed bottom-16 inset-x-0 bg-neutral-800 border-t border-neutral-700 rounded-t-2xl p-4 z-40"
          style="display:none">
         <div class="w-8 h-1 bg-neutral-600 rounded-full mx-auto mb-4"></div>
-        <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide px-1 mb-2">Meer</p>
-        <a href="{{ route('kapper.klanten') }}" @click="meerSheet=false"
-           class="flex items-center gap-3 py-3 px-4 rounded-xl {{ request()->routeIs('kapper.klanten') ? 'bg-neutral-700 text-neutral-100' : 'text-neutral-200 hover:bg-neutral-700' }} transition-colors">
+        <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide px-1 mb-2">Marketing</p>
+        <a href="{{ route('kapper.galerij') }}" @click="meerSheet=false"
+           class="flex items-center gap-3 py-3 px-4 rounded-xl {{ request()->routeIs('kapper.galerij') ? 'bg-neutral-700 text-neutral-100' : 'text-neutral-200 hover:bg-neutral-700' }} transition-colors">
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 9.75A6.75 6.75 0 019.75 3h4.5A6.75 6.75 0 0121 9.75v4.5A6.75 6.75 0 0114.25 21H9.75A6.75 6.75 0 013 14.25V9.75z"/>
             </svg>
-            <span class="text-sm font-medium">Klanten</span>
+            <span class="text-sm font-medium">Galerij</span>
         </a>
         <a href="{{ route('kapper.reviews') }}" @click="meerSheet=false"
            class="flex items-center gap-3 py-3 px-4 rounded-xl {{ request()->routeIs('kapper.reviews') ? 'bg-neutral-700 text-neutral-100' : 'text-neutral-200 hover:bg-neutral-700' }} transition-colors">
@@ -397,26 +422,26 @@
             </svg>
             <span class="text-[10px] font-medium">Afspraken</span>
         </a>
+        <a href="{{ route('kapper.klanten') }}"
+           class="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors {{ $tabActief('kapper.klanten') }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span class="text-[10px] font-medium">Klanten</span>
+        </a>
         <button @click="beheerSheet = !beheerSheet; meerSheet = false"
-                class="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors {{ $tabActief(['kapper.diensten', 'kapper.medewerkers', 'kapper.beschikbaarheid']) }}">
+                class="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors {{ $tabActief(['kapper.diensten', 'kapper.medewerkers', 'kapper.beschikbaarheid', 'kapper.profiel-beheer', 'kapper.abonnement']) }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
-            <span class="text-[10px] font-medium">Beheer</span>
+            <span class="text-[10px] font-medium">Instellingen</span>
         </button>
-        <a href="{{ route('kapper.profiel-beheer') }}"
-           class="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors {{ $tabActief('kapper.profiel-beheer') }}">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-            </svg>
-            <span class="text-[10px] font-medium">Profiel</span>
-        </a>
         <button @click="meerSheet = !meerSheet; beheerSheet = false"
-                class="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors {{ $tabActief(['kapper.klanten', 'kapper.reviews']) }}">
+                class="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors {{ $tabActief(['kapper.galerij', 'kapper.reviews', 'kapper.kortingscodes']) }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <circle cx="5" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="19" cy="12" r="1" fill="currentColor"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
             </svg>
-            <span class="text-[10px] font-medium">Meer</span>
+            <span class="text-[10px] font-medium">Marketing</span>
         </button>
     </div>
 </nav>
