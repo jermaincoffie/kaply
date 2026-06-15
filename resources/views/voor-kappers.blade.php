@@ -106,7 +106,7 @@
                 ['3', 'Deel je link & ontvang boekingen', 'Deel jouw Kaply-link via Instagram, WhatsApp of je eigen site. Klanten boeken direct online.', 'M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z'],
             ] as [$nr, $titel, $tekst, $icon])
             <div class="relative text-center">
-                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm font-bold mb-4 shadow-lg shadow-blue-500/50 mx-auto">{{ $nr }}</div>
+                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm font-bold mb-4 mx-auto" style="box-shadow: 0 0 24px rgba(59,130,246,0.55), 0 4px 12px rgba(59,130,246,0.3)">{{ $nr }}</div>
                 <h3 class="text-base font-bold text-gray-900 mb-2">{{ $titel }}</h3>
                 <p class="text-sm text-gray-500 leading-relaxed">{{ $tekst }}</p>
             </div>
@@ -134,7 +134,7 @@
                 ['Google & Apple Calendar', 'Synchroniseer je afspraken automatisch met je telefoonkalender.', 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
                 ['Medewerkers', 'Meerdere medewerkers in één salon, met eigen agenda.', 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'],
                 ['Kortingscodes', 'Maak kortingscodes aan voor acties en vaste klanten.', 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z'],
-                ['Eigen profielpagina', 'Jouw salon op kaply.nl met foto\'s, diensten, reviews en directe boekknop.', 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064'],
+                ['Eigen profielpagina', 'Jouw salon op kaply.nl met foto\'s, diensten, reviews en directe boekknop.', 'M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z'],
             ] as [$titel, $tekst, $icon])
             <div class="bg-white border border-gray-100 rounded-xl p-5 hover:border-blue-100 hover:shadow-sm transition-all">
                 <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center mb-3">
