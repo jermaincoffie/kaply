@@ -42,7 +42,7 @@ $arrowDir = str_starts_with($position, 'below')
           x-transition:leave="transition ease-in duration-75"
           x-transition:leave-start="opacity-100 scale-100"
           x-transition:leave-end="opacity-0 scale-95"
-          class="absolute z-[999] {{ $vPos }} {{ $hPos }} w-72 bg-gray-900 dark:bg-neutral-950 text-white text-xs rounded-xl px-3 py-2.5 shadow-xl pointer-events-none leading-relaxed font-normal normal-case tracking-normal whitespace-normal"
+          class="absolute z-[999] {{ $vPos }} {{ $hPos }} w-56 sm:w-72 bg-gray-900 dark:bg-neutral-950 text-white text-xs rounded-xl px-3 py-2.5 shadow-xl pointer-events-none leading-relaxed font-normal normal-case tracking-normal whitespace-normal"
           style="display: none;">
         {{ $slot }}
         <span class="absolute {{ $arrowPos }} {{ $arrowDir }} border-4 border-transparent"></span>

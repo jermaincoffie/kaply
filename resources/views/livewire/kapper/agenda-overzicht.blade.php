@@ -91,7 +91,7 @@
     @endif
 
     {{-- Stats (tabbed) --}}
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl mb-6 overflow-hidden"
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl mb-6"
          x-data="{ tab: 'vandaag' }">
         {{-- Tab headers --}}
         <div class="flex border-b border-gray-100 dark:border-neutral-700">
