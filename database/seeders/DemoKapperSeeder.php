@@ -12,7 +12,6 @@ use App\Models\Review;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class DemoKapperSeeder extends Seeder
@@ -84,24 +83,18 @@ class DemoKapperSeeder extends Seeder
             ]);
         }
 
-        // Galerij — download stock foto's via picsum
-        Storage::disk('public')->makeDirectory('demo/galerij');
-        $seeds = ['barbershop', 'salon2', 'haircut', 'barber4'];
-        foreach ($seeds as $i => $seed) {
-            try {
-                $response = Http::timeout(10)->get("https://picsum.photos/seed/{$seed}/800/600");
-                if ($response->successful()) {
-                    $pad = "demo/galerij/{$seed}.jpg";
-                    Storage::disk('public')->put($pad, $response->body());
-                    KapperGalerij::create([
-                        'kapper_id' => $kapper->id,
-                        'pad'       => $pad,
-                        'volgorde'  => $i + 1,
-                    ]);
-                }
-            } catch (\Exception) {
-                // Sla over als download mislukt
-            }
+        // Galerij — gebruik directe picsum URLs (geen storage nodig)
+        foreach ([
+            'https://picsum.photos/seed/barbershop/800/600',
+            'https://picsum.photos/seed/salon2/800/600',
+            'https://picsum.photos/seed/haircut/800/600',
+            'https://picsum.photos/seed/barber4/800/600',
+        ] as $i => $url) {
+            KapperGalerij::create([
+                'kapper_id' => $kapper->id,
+                'pad'       => $url,
+                'volgorde'  => $i + 1,
+            ]);
         }
 
         // Reviews — vereisen een gekoppelde afspraak (afspraak_id NOT NULL)

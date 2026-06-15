@@ -182,7 +182,7 @@
 
         {{-- ===== GALERIJ — mobiel: 3e, desktop: kolom 1-2 rij 2 ===== --}}
         @if($kapper->galerij->isNotEmpty())
-        @php $fotoUrls = $kapper->galerij->pluck('pad')->map(fn($p) => asset('storage/' . $p))->values(); @endphp
+        @php $fotoUrls = $kapper->galerij->pluck('pad')->map(fn($p) => str_starts_with($p, 'http') ? $p : asset('storage/' . $p))->values(); @endphp
         <div class="order-3 lg:col-span-2 lg:row-start-2"
              x-data="{
                 fotos: {{ $fotoUrls->toJson() }},
@@ -207,7 +207,7 @@
                     @foreach($kapper->galerij as $i => $foto)
                     <button @click="open({{ $i }})" type="button"
                             class="flex-shrink-0 w-48 h-48 rounded-xl overflow-hidden group snap-start">
-                        <img src="{{ asset('storage/' . $foto->pad) }}" alt="Galerij"
+                        <img src="{{ str_starts_with($foto->pad, 'http') ? $foto->pad : asset('storage/' . $foto->pad) }}" alt="Galerij"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     </button>
                     @endforeach
