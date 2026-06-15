@@ -210,7 +210,7 @@
                 ['Kan ik opzeggen wanneer ik wil?', 'Ja. Je abonnement is maandelijks opzegbaar. Je hebt altijd toegang tot het einde van je betaalperiode.'],
                 ['Werkt het ook met meerdere medewerkers?', 'Ja. Je kunt medewerkers toevoegen aan je salon, elk met hun eigen agenda en beschikbaarheid.'],
                 ['Betalen klanten online of in de zaak?', 'Beide. Jij bepaalt per dienst of klanten online vooruitbetalen of in de zaak afrekenen.'],
-            ] as [$i => [$vraag, $antwoord]])
+            ] as $i => [$vraag, $antwoord])
             <div class="bg-white border border-gray-100 rounded-xl overflow-hidden">
                 <button @click="open = open === {{ $i }} ? null : {{ $i }}"
                         class="w-full flex items-center justify-between px-5 py-4 text-left text-sm font-semibold text-gray-900 hover:bg-gray-50 transition-colors">
