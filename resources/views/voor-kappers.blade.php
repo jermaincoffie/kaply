@@ -63,7 +63,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                 </svg>
             </a>
-            <a href="{{ route('home') }}"
+            <a href="{{ route('kapper.profiel', 'demo-salon') }}" target="_blank"
                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white/10 text-white text-base font-medium hover:bg-white/20 transition-all">
                 Bekijk voorbeeldprofiel
             </a>

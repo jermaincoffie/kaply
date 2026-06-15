@@ -103,6 +103,36 @@
     </div>
     @endif
 
+    {{-- Deel je link --}}
+    @if(auth()->user()->kapper?->slug)
+    <div x-data="{ gekopieerd: false }"
+         class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-4 mb-6 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+            <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                </svg>
+            </div>
+            <div class="min-w-0">
+                <p class="text-xs font-semibold text-blue-800 dark:text-blue-300">Jouw boekingslink</p>
+                <p class="text-xs text-blue-600 dark:text-blue-400 truncate">kaply.nl/kapper/{{ auth()->user()->kapper->slug }}</p>
+            </div>
+        </div>
+        <button type="button"
+                @click="navigator.clipboard.writeText('https://kaply.nl/kapper/{{ auth()->user()->kapper->slug }}'); gekopieerd = true; setTimeout(() => gekopieerd = false, 2000)"
+                class="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                :class="gekopieerd ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-blue-600 text-white hover:bg-blue-700'">
+            <svg x-show="!gekopieerd" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <svg x-show="gekopieerd" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span x-text="gekopieerd ? 'Gekopieerd!' : 'Kopieer'"></span>
+        </button>
+    </div>
+    @endif
+
     {{-- Stats (tabbed) --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl mb-6"
          x-data="{ tab: 'vandaag' }">
