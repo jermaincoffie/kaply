@@ -10,6 +10,7 @@ use App\Models\Kortingscode;
 use App\Notifications\NieuweAfspraakNotificatie;
 use App\Services\BeschikbaarheidsService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
@@ -79,34 +80,53 @@ class BoekingWizard extends Component
             'betaalmethode'   => 'required|in:online,in_zaak',
         ]);
 
-        $vrijeslots = (new BeschikbaarheidsService())->getVrijeTijdslots(
-            $this->kapper, $this->dienst, $this->gekozenDatum
-        );
-        if (!in_array($this->gekozenTijdslot, $vrijeslots)) {
-            $this->addError('gekozenTijdslot', 'Dit tijdslot is zojuist bezet geraakt. Kies een ander tijdstip.');
-            return;
-        }
+        $afspraak = DB::transaction(function () {
+            // Hercheck slot binnen transaction om double-booking te voorkomen
+            $vrijeslots = (new BeschikbaarheidsService())->getVrijeTijdslots(
+                $this->kapper, $this->dienst, $this->gekozenDatum
+            );
+            if (!in_array($this->gekozenTijdslot, $vrijeslots)) {
+                $this->addError('gekozenTijdslot', 'Dit tijdslot is zojuist bezet geraakt. Kies een ander tijdstip.');
+                return null;
+            }
 
-        $eind = Carbon::parse("{$this->gekozenDatum} {$this->gekozenTijdslot}")
-            ->addMinutes($this->dienst->duur_minuten)
-            ->format('H:i');
+            // Hercheck kortingscode geldigheid + max gebruik binnen transaction
+            if ($this->toegepasdeCodeId) {
+                $code = Kortingscode::lockForUpdate()->find($this->toegepasdeCodeId);
+                if (!$code || !$code->isGeldig()) {
+                    $this->kortingBedrag  = 0;
+                    $this->toegepasdeCodeId = null;
+                    $this->kortingLabel   = '';
+                    $this->addError('kortingscodeInput', 'Kortingscode is niet meer geldig.');
+                    return null;
+                }
+            }
 
-        $afspraak = Afspraak::create([
-            'klant_id'        => auth()->id(),
-            'kapper_id'       => $this->kapper->id,
-            'dienst_id'       => $this->dienst->id,
-            'datum'           => $this->gekozenDatum,
-            'start_tijd'      => $this->gekozenTijdslot,
-            'eind_tijd'       => $eind,
-            'status'          => 'gepland',
-            'betaalmethode'   => $this->betaalmethode,
-            'kortingscode_id' => $this->toegepasdeCodeId,
-            'korting_bedrag'  => $this->kortingBedrag > 0 ? $this->kortingBedrag : null,
-        ]);
+            $eind = Carbon::parse("{$this->gekozenDatum} {$this->gekozenTijdslot}")
+                ->addMinutes($this->dienst->duur_minuten)
+                ->format('H:i');
 
-        if ($this->toegepasdeCodeId) {
-            Kortingscode::where('id', $this->toegepasdeCodeId)->increment('gebruik_teller');
-        }
+            $afspraak = Afspraak::create([
+                'klant_id'        => auth()->id(),
+                'kapper_id'       => $this->kapper->id,
+                'dienst_id'       => $this->dienst->id,
+                'datum'           => $this->gekozenDatum,
+                'start_tijd'      => $this->gekozenTijdslot,
+                'eind_tijd'       => $eind,
+                'status'          => 'gepland',
+                'betaalmethode'   => $this->betaalmethode,
+                'kortingscode_id' => $this->toegepasdeCodeId,
+                'korting_bedrag'  => $this->kortingBedrag > 0 ? $this->kortingBedrag : null,
+            ]);
+
+            if ($this->toegepasdeCodeId) {
+                Kortingscode::where('id', $this->toegepasdeCodeId)->increment('gebruik_teller');
+            }
+
+            return $afspraak;
+        });
+
+        if (!$afspraak) return;
 
         $afspraak->load(['kapper', 'dienst', 'klant']);
 

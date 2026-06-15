@@ -9,27 +9,25 @@ class KappersOverzicht extends Component
 {
     public function goedkeuren(int $id): void
     {
-        Kapper::find($id)->update(['actief' => true, 'abonnement_status' => 'actief']);
+        Kapper::findOrFail($id)->update(['actief' => true, 'abonnement_status' => 'actief']);
     }
 
     public function afwijzen(int $id): void
     {
-        $kapper = Kapper::with('user')->find($id);
-        if ($kapper) {
-            $user = $kapper->user;
-            $kapper->delete();
-            $user?->delete();
-        }
+        $kapper = Kapper::with('user')->findOrFail($id);
+        $user = $kapper->user;
+        $kapper->delete();
+        $user?->delete();
     }
 
     public function activeer(int $id): void
     {
-        Kapper::find($id)->update(['actief' => true, 'abonnement_status' => 'actief']);
+        Kapper::findOrFail($id)->update(['actief' => true, 'abonnement_status' => 'actief']);
     }
 
     public function deactiveer(int $id): void
     {
-        Kapper::find($id)->update(['actief' => false, 'abonnement_status' => 'gepauzeerd']);
+        Kapper::findOrFail($id)->update(['actief' => false, 'abonnement_status' => 'gepauzeerd']);
     }
 
     public function render()

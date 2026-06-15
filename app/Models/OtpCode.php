@@ -15,6 +15,6 @@ class OtpCode extends Model
 
     public function isGeldig(): bool
     {
-        return $this->used_at === null && $this->expires_at->isFuture();
+        return $this->used_at === null && ($this->expires_at?->isFuture() ?? false);
     }
 }
