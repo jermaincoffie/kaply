@@ -90,65 +90,71 @@
     </div>
     @endif
 
-    {{-- Stats --}}
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-2">Omzet {{ now()->isoFormat('MMMM') }}</p>
-            <span class="text-2xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($omzet_maand / 100, 0, ',', '.') }}</span>
-        </div>
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-2">Afspraken {{ now()->isoFormat('MMMM') }}</p>
-            <span class="text-2xl font-bold text-gray-900 dark:text-neutral-100">{{ $afspraken_maand }}</span>
-        </div>
-        <div class="col-span-2 lg:col-span-1 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
-            <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-2">Komende</p>
-            <span class="text-2xl font-bold text-gray-900 dark:text-neutral-100">{{ $komende_afspraken }}</span>
-        </div>
-    </div>
-
-    {{-- Inzichten deze maand --}}
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-        {{-- Bezettingsgraad --}}
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
-            <div class="flex items-center mb-2">
-                <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Bezetting</p>
-                <x-tooltip position="below-right">Hoeveel procent van je beschikbare werktijd deze maand al gevuld is met afspraken.</x-tooltip>
-            </div>
-            @if($bezettingsgraad !== null)
-            <span class="text-2xl font-bold text-gray-900 dark:text-neutral-100">{{ $bezettingsgraad }}%</span>
-            <div class="mt-2 bg-gray-100 dark:bg-neutral-700 rounded-full h-1.5">
-                <div class="h-1.5 rounded-full {{ $bezettingsgraad >= 80 ? 'bg-green-500' : ($bezettingsgraad >= 50 ? 'bg-blue-500' : 'bg-gray-400') }}"
-                     style="width: {{ $bezettingsgraad }}%"></div>
-            </div>
-            @else
-            <span class="text-lg font-bold text-gray-300 dark:text-neutral-600">—</span>
-            @endif
+    {{-- Stats (tabbed) --}}
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl mb-6 overflow-hidden"
+         x-data="{ tab: 'vandaag' }">
+        {{-- Tab headers --}}
+        <div class="flex border-b border-gray-100 dark:border-neutral-700">
+            <button type="button" @click="tab = 'vandaag'"
+                    :class="tab === 'vandaag' ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/10' : 'text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:hover:text-neutral-300'"
+                    class="flex-1 px-4 py-2.5 text-sm font-medium transition-colors">
+                Vandaag
+            </button>
+            <button type="button" @click="tab = 'maand'"
+                    :class="tab === 'maand' ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/10' : 'text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:hover:text-neutral-300'"
+                    class="flex-1 px-4 py-2.5 text-sm font-medium transition-colors capitalize">
+                {{ now()->isoFormat('MMMM') }}
+            </button>
         </div>
 
-        {{-- No-show % --}}
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
-            <div class="flex items-center mb-2">
-                <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">No-show</p>
-                <x-tooltip>Percentage van afgeronde afspraken waarbij de klant niet is komen opdagen. Boven 20% is een aandachtspunt.</x-tooltip>
+        {{-- Vandaag --}}
+        <div x-show="tab === 'vandaag'" class="grid grid-cols-3 divide-x divide-gray-100 dark:divide-neutral-700">
+            <div class="p-4">
+                <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-1.5">Omzet</p>
+                <span class="text-xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($omzet_vandaag / 100, 0, ',', '.') }}</span>
             </div>
-            @if($no_show_pct !== null)
-            <span class="text-2xl font-bold {{ $no_show_pct >= 20 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-neutral-100' }}">{{ $no_show_pct }}%</span>
-            @else
-            <span class="text-lg font-bold text-gray-300 dark:text-neutral-600">—</span>
-            @endif
+            <div class="p-4">
+                <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-1.5">Afspraken</p>
+                <span class="text-xl font-bold text-gray-900 dark:text-neutral-100">{{ $vandaagAfspraken->count() }}</span>
+            </div>
+            <div class="p-4">
+                <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-1.5">Komende</p>
+                <span class="text-xl font-bold text-gray-900 dark:text-neutral-100">{{ $komende_afspraken }}</span>
+            </div>
         </div>
 
-        {{-- Drukste uur --}}
-        <div class="col-span-2 sm:col-span-1 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
-            <div class="flex items-center mb-2">
-                <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Drukste tijd</p>
-                <x-tooltip position="below-left">Het uur van de dag met de meeste boekingen deze maand. Handig om piekuren te herkennen.</x-tooltip>
+        {{-- Maand --}}
+        <div x-show="tab === 'maand'" style="display:none" class="grid grid-cols-3 divide-x divide-gray-100 dark:divide-neutral-700">
+            <div class="p-4">
+                <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-1.5">Omzet</p>
+                <span class="text-xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($omzet_maand / 100, 0, ',', '.') }}</span>
             </div>
-            @if($druksteUurLabel)
-            <span class="text-lg font-bold text-gray-900 dark:text-neutral-100">{{ $druksteUurLabel }}</span>
-            @else
-            <span class="text-lg font-bold text-gray-300 dark:text-neutral-600">—</span>
-            @endif
+            <div class="p-4">
+                <div class="flex items-center mb-1.5">
+                    <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Bezetting</p>
+                    <x-tooltip position="below-right">Hoeveel procent van je beschikbare werktijd deze maand al gevuld is met afspraken.</x-tooltip>
+                </div>
+                @if($bezettingsgraad !== null)
+                <span class="text-xl font-bold text-gray-900 dark:text-neutral-100">{{ $bezettingsgraad }}%</span>
+                <div class="mt-2 bg-gray-100 dark:bg-neutral-700 rounded-full h-1">
+                    <div class="h-1 rounded-full {{ $bezettingsgraad >= 80 ? 'bg-green-500' : ($bezettingsgraad >= 50 ? 'bg-blue-500' : 'bg-gray-400') }}"
+                         style="width: {{ $bezettingsgraad }}%"></div>
+                </div>
+                @else
+                <span class="text-xl font-bold text-gray-300 dark:text-neutral-600">—</span>
+                @endif
+            </div>
+            <div class="p-4">
+                <div class="flex items-center mb-1.5">
+                    <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">No-show</p>
+                    <x-tooltip position="below-left">Percentage van afgeronde afspraken waarbij de klant niet is komen opdagen. Boven 20% is een aandachtspunt.</x-tooltip>
+                </div>
+                @if($no_show_pct !== null)
+                <span class="text-xl font-bold {{ $no_show_pct >= 20 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-neutral-100' }}">{{ $no_show_pct }}%</span>
+                @else
+                <span class="text-xl font-bold text-gray-300 dark:text-neutral-600">—</span>
+                @endif
+            </div>
         </div>
     </div>
 
