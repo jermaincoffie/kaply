@@ -14,9 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'role'          => \App\Http\Middleware\CheckRole::class,
-            'klant.auth'    => \App\Http\Middleware\KlantAuth::class,
-            'allow.embed'   => \App\Http\Middleware\AllowEmbedding::class,
+            'role'        => \App\Http\Middleware\CheckRole::class,
+            'klant.auth'  => \App\Http\Middleware\KlantAuth::class,
+            'allow.embed' => \App\Http\Middleware\AllowEmbedding::class,
+            'onboarding'  => \App\Http\Middleware\EnsureOnboardingComplete::class,
         ]);
 
         $middleware->validateCsrfTokens(except: ['stripe/webhook']);

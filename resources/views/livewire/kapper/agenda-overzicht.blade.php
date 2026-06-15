@@ -1,4 +1,17 @@
 <div>
+    {{-- Welkomstbanner na onboarding --}}
+    @if(session('onboarding_klaar'))
+    <div class="flex items-center gap-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-5 py-4 rounded-xl mb-6">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <div>
+            <p class="text-sm font-semibold">Jouw salon is live! 🎉</p>
+            <p class="text-xs mt-0.5 text-green-600 dark:text-green-500">Klanten kunnen nu afspraken boeken bij {{ auth()->user()->kapper?->salon_naam }}.</p>
+        </div>
+    </div>
+    @endif
+
     {{-- Onboarding checklist --}}
     @if($toonOnboarding)
     <div class="bg-white dark:bg-neutral-800 border border-blue-200 dark:border-blue-800 rounded-xl p-5 mb-6">

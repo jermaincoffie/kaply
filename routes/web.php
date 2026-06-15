@@ -15,6 +15,7 @@ use App\Livewire\Kapper\ProfielBeheer;
 use App\Livewire\Kapper\Registratie as KapperRegistratie;
 use App\Livewire\Kapper\AbonnementBeheer;
 use App\Livewire\Kapper\KortingscodesBeheer;
+use App\Livewire\Kapper\OnboardingWizard;
 use App\Livewire\Kapper\ReviewsOverzicht as KapperReviews;
 use App\Http\Controllers\AfspraakBetaalController;
 use App\Http\Controllers\SubscriptionController;
@@ -34,19 +35,25 @@ Route::get('/kapper/registreer', KapperRegistratie::class)->name('kapper.registr
 
 // Kapper dashboard (MOET vóór /kapper/{slug} staan — anders vangt slug 'dashboard' af)
 Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->group(function () {
-    Route::get('/dashboard', AgendaOverzicht::class)->name('dashboard');
-    Route::get('/afspraken', KapperAfspraken::class)->name('afspraken');
-    Route::get('/klanten', KapperKlanten::class)->name('klanten');
-    Route::get('/diensten', DienstenBeheer::class)->name('diensten');
-    Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
-    Route::get('/medewerkers', MedewerkersBeheer::class)->name('medewerkers');
-    Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
-    Route::get('/galerij', GalerijBeheer::class)->name('galerij');
-    Route::get('/reviews', KapperReviews::class)->name('reviews');
-    Route::get('/kortingscodes', KortingscodesBeheer::class)->name('kortingscodes');
-    Route::get('/abonnement', AbonnementBeheer::class)->name('abonnement');
-    Route::get('/abonnement/checkout', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');
-    Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
+    // Onboarding — geen onboarding-check (anders redirect loop)
+    Route::get('/onboarding', OnboardingWizard::class)->name('onboarding');
+
+    // Alle overige kapper routes — redirect naar onboarding als niet voltooid
+    Route::middleware(['onboarding'])->group(function () {
+        Route::get('/dashboard', AgendaOverzicht::class)->name('dashboard');
+        Route::get('/afspraken', KapperAfspraken::class)->name('afspraken');
+        Route::get('/klanten', KapperKlanten::class)->name('klanten');
+        Route::get('/diensten', DienstenBeheer::class)->name('diensten');
+        Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
+        Route::get('/medewerkers', MedewerkersBeheer::class)->name('medewerkers');
+        Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
+        Route::get('/galerij', GalerijBeheer::class)->name('galerij');
+        Route::get('/reviews', KapperReviews::class)->name('reviews');
+        Route::get('/kortingscodes', KortingscodesBeheer::class)->name('kortingscodes');
+        Route::get('/abonnement', AbonnementBeheer::class)->name('abonnement');
+        Route::get('/abonnement/checkout', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');
+        Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
+    });
 });
 
 // Publieke kapper profielpagina

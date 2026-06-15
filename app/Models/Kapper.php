@@ -13,10 +13,13 @@ class Kapper extends Model
     protected $fillable = [
         'user_id', 'salon_naam', 'slug', 'adres', 'stad',
         'telefoon', 'bio', 'foto', 'stripe_customer_id',
-        'abonnement_status', 'actief', 'buffer_minuten',
+        'abonnement_status', 'actief', 'buffer_minuten', 'onboarding_voltooid',
     ];
 
-    protected $casts = ['actief' => 'boolean'];
+    protected $casts = [
+        'actief'              => 'boolean',
+        'onboarding_voltooid' => 'boolean',
+    ];
 
     public function user() { return $this->belongsTo(User::class); }
     public function diensten() { return $this->hasMany(Dienst::class); }
