@@ -41,19 +41,24 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
 
     // Alle overige kapper routes — redirect naar onboarding als niet voltooid
     Route::middleware(['onboarding'])->group(function () {
-        Route::get('/dashboard', AgendaOverzicht::class)->name('dashboard');
-        Route::get('/afspraken', KapperAfspraken::class)->name('afspraken');
-        Route::get('/klanten', KapperKlanten::class)->name('klanten');
-        Route::get('/diensten', DienstenBeheer::class)->name('diensten');
-        Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
-        Route::get('/medewerkers', MedewerkersBeheer::class)->name('medewerkers');
-        Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
-        Route::get('/galerij', GalerijBeheer::class)->name('galerij');
-        Route::get('/reviews', KapperReviews::class)->name('reviews');
-        Route::get('/kortingscodes', KortingscodesBeheer::class)->name('kortingscodes');
+        // Abonnement routes — geen abonnement-check (anders redirect loop)
         Route::get('/abonnement', AbonnementBeheer::class)->name('abonnement');
         Route::get('/abonnement/checkout', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');
         Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
+
+        // Overige routes — vereisen actief abonnement
+        Route::middleware(['abonnement'])->group(function () {
+            Route::get('/dashboard', AgendaOverzicht::class)->name('dashboard');
+            Route::get('/afspraken', KapperAfspraken::class)->name('afspraken');
+            Route::get('/klanten', KapperKlanten::class)->name('klanten');
+            Route::get('/diensten', DienstenBeheer::class)->name('diensten');
+            Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
+            Route::get('/medewerkers', MedewerkersBeheer::class)->name('medewerkers');
+            Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
+            Route::get('/galerij', GalerijBeheer::class)->name('galerij');
+            Route::get('/reviews', KapperReviews::class)->name('reviews');
+            Route::get('/kortingscodes', KortingscodesBeheer::class)->name('kortingscodes');
+        });
     });
 });
 

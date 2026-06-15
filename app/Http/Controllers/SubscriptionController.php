@@ -12,6 +12,7 @@ class SubscriptionController extends Controller
         $kapper = $user->kapper;
 
         $session = $user->newSubscription('default', env('STRIPE_PRICE_MONTHLY'))
+            ->trialDays(14)
             ->checkout([
                 'success_url' => route('kapper.abonnement') . '?stripe=success',
                 'cancel_url'  => route('kapper.abonnement') . '?stripe=cancel',

@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'klant.auth'  => \App\Http\Middleware\KlantAuth::class,
             'allow.embed' => \App\Http\Middleware\AllowEmbedding::class,
             'onboarding'  => \App\Http\Middleware\EnsureOnboardingComplete::class,
+            'abonnement'  => \App\Http\Middleware\EnsureAbonnementActief::class,
         ]);
 
         $middleware->validateCsrfTokens(except: ['stripe/webhook']);
