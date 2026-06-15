@@ -147,7 +147,7 @@
             <div class="p-4">
                 <div class="flex items-center mb-1.5">
                     <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">No-show</p>
-                    <x-tooltip position="below-left">Percentage van afgeronde afspraken waarbij de klant niet is komen opdagen. Boven 20% is een aandachtspunt.</x-tooltip>
+                    <x-tooltip position="below-right">Percentage van afgeronde afspraken waarbij de klant niet is komen opdagen. Boven 20% is een aandachtspunt.</x-tooltip>
                 </div>
                 @if($no_show_pct !== null)
                 <span class="text-xl font-bold {{ $no_show_pct >= 20 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-neutral-100' }}">{{ $no_show_pct }}%</span>
