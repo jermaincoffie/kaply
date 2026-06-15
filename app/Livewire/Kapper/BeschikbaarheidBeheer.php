@@ -9,6 +9,7 @@ use Livewire\Component;
 class BeschikbaarheidBeheer extends Component
 {
     public array $rooster = [];
+    public int $bufferMinuten = 0;
     public string $sluitingsDatum = '';
     public string $sluitingsDatumTot = '';
     public string $sluitingsReden = '';
@@ -18,6 +19,7 @@ class BeschikbaarheidBeheer extends Component
     public function mount(): void
     {
         $kapper = auth()->user()->kapper;
+        $this->bufferMinuten = (int) ($kapper->buffer_minuten ?? 0);
         $bestaand = $kapper->beschikbaarheden()->get()->keyBy('dag_van_week');
 
         for ($dag = 0; $dag <= 6; $dag++) {
@@ -32,7 +34,10 @@ class BeschikbaarheidBeheer extends Component
 
     public function opslaan(): void
     {
+        $this->validate(['bufferMinuten' => 'integer|min:0|max:60']);
+
         $kapper = auth()->user()->kapper;
+        $kapper->update(['buffer_minuten' => $this->bufferMinuten]);
         $kapper->beschikbaarheden()->delete();
 
         foreach ($this->rooster as $dag => $data) {

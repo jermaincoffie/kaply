@@ -58,6 +58,8 @@ class BeschikbaarheidsService
             ->when($excludeAfspraakId, fn($q) => $q->where('id', '!=', $excludeAfspraakId))
             ->get(['start_tijd', 'eind_tijd']);
 
+        $bufferMinuten = (int) ($kapper->buffer_minuten ?? 0);
+
         $slots = [];
         $current = Carbon::parse("{$datum} {$beschikbaarheid->start_tijd}");
         $eind    = Carbon::parse("{$datum} {$beschikbaarheid->eind_tijd}");
@@ -66,8 +68,11 @@ class BeschikbaarheidsService
             $slotStart = $current->format('H:i');
             $slotEind  = $current->copy()->addMinutes($dienst->duur_minuten)->format('H:i');
 
-            $bezettingen = $geboekteAfspraken->filter(function ($afspraak) use ($slotStart, $slotEind) {
-                return $afspraak->start_tijd < $slotEind && $afspraak->eind_tijd > $slotStart;
+            $bezettingen = $geboekteAfspraken->filter(function ($afspraak) use ($slotStart, $slotEind, $bufferMinuten, $datum) {
+                $effectiefEind = $bufferMinuten > 0
+                    ? Carbon::parse("{$datum} {$afspraak->eind_tijd}")->addMinutes($bufferMinuten)->format('H:i')
+                    : (string) $afspraak->eind_tijd;
+                return $afspraak->start_tijd < $slotEind && $effectiefEind > $slotStart;
             })->count();
 
             $maxCapaciteit = $medewerkerId ? 1 : $capaciteit;

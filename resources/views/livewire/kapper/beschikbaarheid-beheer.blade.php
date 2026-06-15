@@ -27,6 +27,25 @@
             </button>
         </div>
 
+        {{-- Buffer tijd --}}
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <div class="flex items-center gap-1">
+                    <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">Buffer tijd</p>
+                    <x-tooltip>Vrije tijd die automatisch na elke afspraak wordt gereserveerd. Klanten kunnen in die periode niet boeken.</x-tooltip>
+                </div>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Pauze na elke afspraak</p>
+            </div>
+            <select wire:model="bufferMinuten"
+                    class="py-1.5 px-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                <option value="0">Geen buffer</option>
+                <option value="5">5 minuten</option>
+                <option value="10">10 minuten</option>
+                <option value="15">15 minuten</option>
+                <option value="30">30 minuten</option>
+            </select>
+        </div>
+
         <div class="divide-y divide-gray-50 dark:divide-neutral-700">
             @foreach($rooster as $dag => $data)
             <div class="px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
