@@ -32,6 +32,7 @@ class DemoKapperSeeder extends Seeder
             $bestaand->delete();
         }
         Storage::disk('public')->deleteDirectory('demo/galerij');
+        User::where('email', 'like', 'demo-klant-%@kaply.nl')->delete();
 
         $user = User::create([
             'name'     => 'Marco van den Berg',
