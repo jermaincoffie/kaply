@@ -105,8 +105,8 @@
                 ['2', 'Stel je profiel in', 'Voeg een profielfoto, beschrijving en fotos van je werk toe. Klanten zien direct wie jij bent.', 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z'],
                 ['3', 'Deel je link & ontvang boekingen', 'Deel jouw Kaply-link via Instagram, WhatsApp of je eigen site. Klanten boeken direct online.', 'M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z'],
             ] as [$nr, $titel, $tekst, $icon])
-            <div class="relative text-center sm:text-left">
-                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm font-bold mb-4 shadow-lg shadow-blue-500/50 mx-auto sm:mx-0">{{ $nr }}</div>
+            <div class="relative text-center">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm font-bold mb-4 shadow-lg shadow-blue-500/50 mx-auto">{{ $nr }}</div>
                 <h3 class="text-base font-bold text-gray-900 mb-2">{{ $titel }}</h3>
                 <p class="text-sm text-gray-500 leading-relaxed">{{ $tekst }}</p>
             </div>
