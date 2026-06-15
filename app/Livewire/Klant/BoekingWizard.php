@@ -6,6 +6,7 @@ use App\Mail\AfspraakBevestigingMail;
 use App\Models\Afspraak;
 use App\Models\Dienst;
 use App\Models\Kapper;
+use App\Models\Kortingscode;
 use App\Notifications\NieuweAfspraakNotificatie;
 use App\Services\BeschikbaarheidsService;
 use Carbon\Carbon;
@@ -16,9 +17,15 @@ class BoekingWizard extends Component
 {
     public Kapper $kapper;
     public Dienst $dienst;
-    public string $gekozenDatum = '';
+    public string $gekozenDatum    = '';
     public string $gekozenTijdslot = '';
-    public string $betaalmethode = 'in_zaak';
+    public string $betaalmethode   = 'in_zaak';
+
+    public string $kortingscodeInput    = '';
+    public ?int   $toegepasdeCodeId     = null;
+    public int    $kortingBedrag        = 0;
+    public string $kortingLabel         = '';
+    public string $kortingFout          = '';
 
     public function mount(string $kapperSlug, int $dienstId): void
     {
@@ -27,15 +34,51 @@ class BoekingWizard extends Component
         $this->gekozenDatum = Carbon::now()->addDay()->toDateString();
     }
 
+    public function kortingscodeToepassen(): void
+    {
+        $this->kortingFout    = '';
+        $this->kortingBedrag  = 0;
+        $this->toegepasdeCodeId = null;
+        $this->kortingLabel   = '';
+
+        $invoer = trim($this->kortingscodeInput);
+        if ($invoer === '') {
+            $this->kortingFout = 'Voer een code in.';
+            return;
+        }
+
+        $code = Kortingscode::where('kapper_id', $this->kapper->id)
+            ->whereRaw('UPPER(code) = ?', [strtoupper($invoer)])
+            ->first();
+
+        if (!$code || !$code->isGeldig()) {
+            $this->kortingFout = 'Deze code is ongeldig of niet meer actief.';
+            return;
+        }
+
+        $this->toegepasdeCodeId = $code->id;
+        $this->kortingBedrag    = $code->berekenKorting($this->dienst->prijs);
+        $this->kortingLabel     = $code->label;
+        $this->kortingscodeInput = strtoupper($invoer);
+    }
+
+    public function kortingscodeVerwijderen(): void
+    {
+        $this->kortingscodeInput = '';
+        $this->toegepasdeCodeId  = null;
+        $this->kortingBedrag     = 0;
+        $this->kortingLabel      = '';
+        $this->kortingFout       = '';
+    }
+
     public function bevestig(): void
     {
         $this->validate([
-            'gekozenDatum' => 'required|date|after_or_equal:today',
+            'gekozenDatum'    => 'required|date|after_or_equal:today',
             'gekozenTijdslot' => 'required|string',
-            'betaalmethode' => 'required|in:online,in_zaak',
+            'betaalmethode'   => 'required|in:online,in_zaak',
         ]);
 
-        // Re-validate slot is still free (TOCTOU guard)
         $vrijeslots = (new BeschikbaarheidsService())->getVrijeTijdslots(
             $this->kapper, $this->dienst, $this->gekozenDatum
         );
@@ -48,16 +91,22 @@ class BoekingWizard extends Component
             ->addMinutes($this->dienst->duur_minuten)
             ->format('H:i');
 
-        Afspraak::create([
-            'klant_id' => auth()->id(),
-            'kapper_id' => $this->kapper->id,
-            'dienst_id' => $this->dienst->id,
-            'datum' => $this->gekozenDatum,
-            'start_tijd' => $this->gekozenTijdslot,
-            'eind_tijd' => $eind,
-            'status' => 'gepland',
-            'betaalmethode' => $this->betaalmethode,
+        $afspraak = Afspraak::create([
+            'klant_id'        => auth()->id(),
+            'kapper_id'       => $this->kapper->id,
+            'dienst_id'       => $this->dienst->id,
+            'datum'           => $this->gekozenDatum,
+            'start_tijd'      => $this->gekozenTijdslot,
+            'eind_tijd'       => $eind,
+            'status'          => 'gepland',
+            'betaalmethode'   => $this->betaalmethode,
+            'kortingscode_id' => $this->toegepasdeCodeId,
+            'korting_bedrag'  => $this->kortingBedrag > 0 ? $this->kortingBedrag : null,
         ]);
+
+        if ($this->toegepasdeCodeId) {
+            Kortingscode::where('id', $this->toegepasdeCodeId)->increment('gebruik_teller');
+        }
 
         $afspraak->load(['kapper', 'dienst', 'klant']);
 
@@ -74,6 +123,9 @@ class BoekingWizard extends Component
             ? (new BeschikbaarheidsService())->getVrijeTijdslots($this->kapper, $this->dienst, $this->gekozenDatum)
             : [];
 
-        return view('livewire.klant.boeking-wizard', compact('vrijeslots'))->layout('layouts.publiek');
+        $teBetalenCenten = max(0, $this->dienst->prijs - $this->kortingBedrag);
+
+        return view('livewire.klant.boeking-wizard', compact('vrijeslots', 'teBetalenCenten'))
+            ->layout('layouts.publiek');
     }
 }

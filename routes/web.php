@@ -14,6 +14,7 @@ use App\Livewire\Kapper\GalerijBeheer;
 use App\Livewire\Kapper\ProfielBeheer;
 use App\Livewire\Kapper\Registratie as KapperRegistratie;
 use App\Livewire\Kapper\AbonnementBeheer;
+use App\Livewire\Kapper\KortingscodesBeheer;
 use App\Livewire\Kapper\ReviewsOverzicht as KapperReviews;
 use App\Http\Controllers\AfspraakBetaalController;
 use App\Http\Controllers\SubscriptionController;
@@ -42,6 +43,7 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
     Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
     Route::get('/galerij', GalerijBeheer::class)->name('galerij');
     Route::get('/reviews', KapperReviews::class)->name('reviews');
+    Route::get('/kortingscodes', KortingscodesBeheer::class)->name('kortingscodes');
     Route::get('/abonnement', AbonnementBeheer::class)->name('abonnement');
     Route::get('/abonnement/checkout', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');
     Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');

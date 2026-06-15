@@ -10,7 +10,7 @@ $hPos = match($position) {
     default       => 'left-1/2 -translate-x-1/2',
 };
 
-$vPos = str_starts_with($position, 'below') ? 'top-5' : 'bottom-6';
+$vPos = str_starts_with($position, 'below') ? 'top-6' : 'bottom-6';
 
 $arrowPos = match($position) {
     'right'       => 'right-2',
