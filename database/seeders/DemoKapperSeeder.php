@@ -83,12 +83,12 @@ class DemoKapperSeeder extends Seeder
             ]);
         }
 
-        // Galerij — gebruik directe picsum URLs (geen storage nodig)
+        // Galerij — Unsplash foto's van kapsels/kapperzaken
         foreach ([
-            'https://picsum.photos/seed/barbershop/800/600',
-            'https://picsum.photos/seed/salon2/800/600',
-            'https://picsum.photos/seed/haircut/800/600',
-            'https://picsum.photos/seed/barber4/800/600',
+            'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=800&h=600&fit=crop',
+            'https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=800&h=600&fit=crop',
         ] as $i => $url) {
             KapperGalerij::create([
                 'kapper_id' => $kapper->id,
