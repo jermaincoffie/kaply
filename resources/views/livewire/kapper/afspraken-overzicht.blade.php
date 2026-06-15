@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ filterOpen: false }">
     <div class="mb-6">
         <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100">Afspraken</h1>
         <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Overzicht van al je afspraken</p>
@@ -6,8 +6,37 @@
 
     {{-- Filters --}}
     @if($heeftAfspraken)
-    <div class="flex flex-wrap gap-3 mb-4">
-        {{-- Periode tabs --}}
+
+    {{-- Mobiel: tabs + filterknop --}}
+    <div class="sm:hidden flex items-center gap-2 mb-4">
+        <div class="flex flex-1 rounded-lg border border-gray-200 dark:border-neutral-700 overflow-hidden bg-white dark:bg-neutral-800">
+            @foreach(['aankomend' => 'Aankomend', 'verleden' => 'Verleden', 'alles' => 'Alles'] as $val => $label)
+            <button wire:click="$set('periode', '{{ $val }}')"
+                    class="flex-1 px-2 py-1.5 text-sm font-medium transition-colors
+                        {{ $periode === $val
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700' }}">
+                {{ $label }}
+            </button>
+            @endforeach
+        </div>
+
+        <button @click="filterOpen = true"
+                class="relative flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg border transition-colors
+                    {{ $filterStatus
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                        : 'border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-500 dark:text-neutral-400' }}">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
+            </svg>
+            @if($filterStatus)
+            <span class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-blue-600"></span>
+            @endif
+        </button>
+    </div>
+
+    {{-- Desktop: tabs + select --}}
+    <div class="hidden sm:flex flex-wrap gap-3 mb-4">
         <div class="flex rounded-lg border border-gray-200 dark:border-neutral-700 overflow-hidden bg-white dark:bg-neutral-800">
             @foreach(['aankomend' => 'Aankomend', 'verleden' => 'Verleden', 'alles' => 'Alles'] as $val => $label)
             <button wire:click="$set('periode', '{{ $val }}')"
@@ -19,8 +48,6 @@
             </button>
             @endforeach
         </div>
-
-        {{-- Status filter --}}
         <x-select
             wire-target="filterStatus"
             :current="$filterStatus"
@@ -28,6 +55,53 @@
             placeholder="Alle statussen"
         />
     </div>
+
+    {{-- Bottom sheet (mobiel) --}}
+    <div x-show="filterOpen"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 sm:hidden"
+         style="display: none;">
+        <div class="absolute inset-0 bg-black/40" @click="filterOpen = false"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-white dark:bg-neutral-800 rounded-t-2xl pb-safe"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="translate-y-full"
+             x-transition:enter-end="translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="translate-y-0"
+             x-transition:leave-end="translate-y-full">
+            <div class="flex items-center justify-between px-5 pt-5 pb-3">
+                <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Filter op status</h3>
+                <button @click="filterOpen = false" class="text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:hover:text-neutral-300">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="px-3 pb-6 space-y-1">
+                @foreach(['' => 'Alle statussen', 'gepland' => 'Gepland', 'voltooid' => 'Voltooid', 'geannuleerd' => 'Geannuleerd', 'no_show' => 'No-show'] as $val => $label)
+                <button wire:click="$set('filterStatus', '{{ $val }}')" @click="filterOpen = false"
+                        class="w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-medium transition-colors
+                            {{ $filterStatus === $val
+                                ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                                : 'text-gray-700 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-neutral-700' }}">
+                    {{ $label }}
+                    @if($filterStatus === $val)
+                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    @endif
+                </button>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
     @endif
 
     {{-- Mobile cards --}}
