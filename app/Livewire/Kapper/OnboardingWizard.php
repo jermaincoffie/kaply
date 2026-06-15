@@ -3,25 +3,45 @@
 namespace App\Livewire\Kapper;
 
 use App\Models\Beschikbaarheid;
+use App\Models\KapperGalerij;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class OnboardingWizard extends Component
 {
+    use WithFileUploads;
+
     public int $stap = 1;
 
-    // Stap 2: dienst
+    // Stap 2: profiel + locatie
+    public string $salonNaam = '';
+    public string $stad      = '';
+    public string $adres     = '';
+    public string $bio       = '';
+
+    // Stap 3: dienst
     public string $dienstNaam  = '';
     public string $dienstDuur  = '30';
     public string $dienstPrijs = '';
 
-    // Stap 3: beschikbaarheid
-    public array $rooster      = [];
+    // Stap 4: beschikbaarheid
+    public array $rooster       = [];
     public int   $bufferMinuten = 0;
+
+    // Stap 5: media (optioneel)
+    public $foto             = null;
+    public array $galerijFotos = [];
 
     protected array $dagNamen = ['Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag','Zondag'];
 
     public function mount(): void
     {
+        $kapper = auth()->user()->kapper;
+        $this->salonNaam = $kapper->salon_naam ?? '';
+        $this->stad      = $kapper->stad ?? '';
+        $this->adres     = $kapper->adres ?? '';
+        $this->bio       = $kapper->bio ?? '';
+
         for ($dag = 0; $dag <= 6; $dag++) {
             $this->rooster[$dag] = [
                 'naam'       => $this->dagNamen[$dag],
@@ -30,6 +50,31 @@ class OnboardingWizard extends Component
                 'eind_tijd'  => '17:00',
             ];
         }
+    }
+
+    public function naarStap(int $stap): void
+    {
+        if ($stap === 3) {
+            $this->validate([
+                'salonNaam' => 'required|string|max:255',
+                'stad'      => 'required|string|max:255',
+                'adres'     => 'nullable|string|max:255',
+                'bio'       => 'nullable|string|max:1000',
+            ]);
+            auth()->user()->kapper->update([
+                'salon_naam' => $this->salonNaam,
+                'stad'       => $this->stad,
+                'adres'      => $this->adres ?: null,
+                'bio'        => $this->bio ?: null,
+            ]);
+        }
+
+        if ($stap === 4 && auth()->user()->kapper->diensten()->count() === 0) {
+            $this->addError('dienst', 'Voeg minstens één dienst toe om door te gaan.');
+            return;
+        }
+
+        $this->stap = $stap;
     }
 
     public function dienstToevoegen(): void
@@ -41,9 +86,9 @@ class OnboardingWizard extends Component
         ]);
 
         auth()->user()->kapper->diensten()->create([
-            'naam'          => $this->dienstNaam,
-            'duur_minuten'  => (int) $this->dienstDuur,
-            'prijs'         => (int) round((float) str_replace(',', '.', $this->dienstPrijs) * 100),
+            'naam'         => $this->dienstNaam,
+            'duur_minuten' => (int) $this->dienstDuur,
+            'prijs'        => (int) round((float) str_replace(',', '.', $this->dienstPrijs) * 100),
         ]);
 
         $this->reset(['dienstNaam', 'dienstPrijs']);
@@ -55,16 +100,45 @@ class OnboardingWizard extends Component
         auth()->user()->kapper->diensten()->where('id', $id)->delete();
     }
 
-    public function naarStap(int $stap): void
+    public function afrondenMetMedia(): void
     {
-        if ($stap === 3 && auth()->user()->kapper->diensten()->count() === 0) {
-            $this->addError('dienst', 'Voeg minstens één dienst toe om door te gaan.');
-            return;
+        $this->validate([
+            'foto'           => 'nullable|image|max:2048',
+            'galerijFotos'   => 'nullable|array',
+            'galerijFotos.*' => 'image|max:4096',
+        ]);
+
+        $kapper = auth()->user()->kapper;
+
+        if ($this->foto) {
+            $pad = $this->foto->store('kapper-fotos', 'public');
+            $kapper->update(['foto' => $pad]);
+            $this->foto = null;
         }
-        $this->stap = $stap;
+
+        if (!empty($this->galerijFotos)) {
+            $volgorde = $kapper->galerij()->count();
+            foreach ($this->galerijFotos as $gFoto) {
+                if ($volgorde >= 12) break;
+                $pad = $gFoto->store('galerij', 'public');
+                KapperGalerij::create([
+                    'kapper_id' => $kapper->id,
+                    'pad'       => $pad,
+                    'volgorde'  => $volgorde,
+                ]);
+                $volgorde++;
+            }
+        }
+
+        $this->voltooien();
     }
 
     public function afronden(): void
+    {
+        $this->voltooien();
+    }
+
+    private function voltooien(): void
     {
         $kapper = auth()->user()->kapper;
         $kapper->beschikbaarheden()->delete();

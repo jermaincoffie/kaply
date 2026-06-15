@@ -19,8 +19,8 @@
     <div class="min-h-screen flex flex-col">
         {{-- Header --}}
         <div class="flex items-center justify-center pt-8 pb-6">
-            <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-10 w-auto" alt="Kaply">
-            <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-10 w-auto" alt="Kaply">
+            <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-16 w-auto" alt="Kaply">
+            <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-16 w-auto" alt="Kaply">
         </div>
 
         {{-- Content --}}

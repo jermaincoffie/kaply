@@ -147,8 +147,25 @@
 
     </nav>
 
-    {{-- Onderin: Uitloggen --}}
-    <div class="px-3 pb-4 pt-2 border-t border-gray-100 dark:border-neutral-700 flex-shrink-0">
+    {{-- Onderin: Setup wizard + Uitloggen --}}
+    <div class="px-3 pb-4 pt-2 border-t border-gray-100 dark:border-neutral-700 flex-shrink-0 space-y-0.5">
+        @php $onboardingKlaar = auth()->user()->kapper?->onboarding_voltooid; @endphp
+        <a href="{{ route('kapper.onboarding') }}"
+           class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ $onboardingKlaar ? 'text-gray-500 dark:text-neutral-500 hover:bg-gray-100 dark:hover:bg-neutral-700 hover:text-gray-700 dark:hover:text-neutral-300' : 'text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-950/30' }}">
+            @if($onboardingKlaar)
+                <svg class="w-4 h-4 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            @else
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+            @endif
+            Setup wizard
+            @if(!$onboardingKlaar)
+            <span class="ml-auto w-2 h-2 rounded-full bg-orange-500 flex-shrink-0"></span>
+            @endif
+        </a>
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit"
