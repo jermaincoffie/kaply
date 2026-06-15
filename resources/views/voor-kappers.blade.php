@@ -69,7 +69,7 @@
             </a>
         </div>
 
-        <p class="text-gray-500 text-xs mt-4">14 dagen gratis · daarna €20/maand · elke maand opzegbaar</p>
+        <p class="text-gray-500 text-xs mt-4">14 dagen gratis · daarna €25/maand · elke maand opzegbaar</p>
     </div>
 </section>
 
@@ -163,7 +163,7 @@
             <div class="absolute top-0 right-0 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
             <div class="flex items-end gap-2 mb-2">
-                <span class="text-5xl font-extrabold">€20</span>
+                <span class="text-5xl font-extrabold">€25</span>
                 <span class="text-gray-400 mb-2">/maand</span>
             </div>
             <p class="text-blue-400 text-sm font-semibold mb-6">14 dagen gratis proberen</p>
@@ -205,7 +205,7 @@
 
         <div class="space-y-2">
             @foreach([
-                ['Moet ik betalen om te starten?', 'Nee. Je start met een gratis proefperiode van 14 dagen. Geen creditcard nodig. Daarna kies je zelf of je doorgaat voor €20/maand.'],
+                ['Moet ik betalen om te starten?', 'Nee. Je start met een gratis proefperiode van 14 dagen. Geen creditcard nodig. Daarna kies je zelf of je doorgaat voor €25/maand.'],
                 ['Hoe lang duurt het instellen?', 'Gemiddeld 15 minuten. Je vult je profiel in, voegt je diensten toe en stelt je beschikbaarheid in. Daarna deel je je link en ontvang je boekingen.'],
                 ['Moet mijn klant een account aanmaken?', 'Klanten loggen in via een eenmalige code die ze per e-mail ontvangen. Geen wachtwoord, geen gedoe — gewoon code invullen en boeken.'],
                 ['Kan ik opzeggen wanneer ik wil?', 'Ja. Je abonnement is maandelijks opzegbaar. Je hebt altijd toegang tot het einde van je betaalperiode.'],

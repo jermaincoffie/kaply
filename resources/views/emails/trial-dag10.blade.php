@@ -44,7 +44,7 @@
         <p>Je gratis proefperiode loopt over 4 dagen af. Activeer nu je abonnement om {{ $kapper->salon_naam }} online te houden en nieuwe klanten te blijven ontvangen.</p>
 
         <div class="price-box">
-            <div class="price">€20<span style="font-size:16px;font-weight:400;color:#6b7280">/maand</span></div>
+            <div class="price">€25<span style="font-size:16px;font-weight:400;color:#6b7280">/maand</span></div>
             <div class="note">Elke maand opzegbaar · geen commissie per boeking</div>
         </div>
 

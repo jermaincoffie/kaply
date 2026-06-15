@@ -48,7 +48,7 @@
                             Nog <span class="font-semibold text-blue-600 dark:text-blue-400">{{ $trialDagenOver }} dagen</span> gratis proberen.
                         @endif
                     </p>
-                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">Na de proefperiode: €20/maand · geen automatische afschrijving zonder betaling</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">Na de proefperiode: €25/maand · geen automatische afschrijving zonder betaling</p>
                 </div>
             </div>
 
@@ -58,7 +58,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
                     </svg>
-                    Activeer abonnement · €20/maand
+                    Activeer abonnement · €25/maand
                 </a>
                 <p class="text-xs text-gray-400 dark:text-neutral-500">Betaal veilig via Stripe · iDEAL, creditcard of SEPA</p>
             </div>
@@ -78,7 +78,7 @@
                             Actief
                         </span>
                     </div>
-                    <p class="text-sm text-gray-500 dark:text-neutral-400">€20 per maand · automatisch verlengd</p>
+                    <p class="text-sm text-gray-500 dark:text-neutral-400">€25 per maand · automatisch verlengd</p>
                     @if($gepauzeerd && $eindDatum)
                     <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">
                         Opgezegd · loopt door tot {{ $eindDatum->format('d M Y') }}
@@ -146,7 +146,7 @@
                     </svg>
                     Start gratis proefperiode · 14 dagen
                 </a>
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2">Daarna €20/maand · geen automatische afschrijving zonder betaling · betaal via iDEAL, creditcard of SEPA</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2">Daarna €25/maand · geen automatische afschrijving zonder betaling · betaal via iDEAL, creditcard of SEPA</p>
             </div>
         @endif
     </div>

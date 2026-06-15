@@ -11,7 +11,7 @@
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
             <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
                 MRR
-                <x-tooltip>Monthly Recurring Revenue — actieve abonnees × €20 per maand.</x-tooltip>
+                <x-tooltip>Monthly Recurring Revenue — actieve abonnees × €25 per maand.</x-tooltip>
             </p>
             <p class="text-3xl font-bold text-gray-900 dark:text-neutral-100 mb-1">€ {{ number_format($mrr / 100, 0, ',', '.') }}</p>
             <p class="text-xs text-gray-400 dark:text-neutral-500">

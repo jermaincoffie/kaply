@@ -11,7 +11,7 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
-    const ABONNEMENT_PRIJS = 2000; // €20 in centen
+    const ABONNEMENT_PRIJS = 2500; // €25 in centen
 
     public function toggleReviewZichtbaar(int $id): void
     {

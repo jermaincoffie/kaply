@@ -12,6 +12,10 @@ class EnsureAbonnementActief
         $user = auth()->user();
         $kapper = $user?->kapper;
 
+        if ($user?->role === 'admin') {
+            return $next($request);
+        }
+
         if (!$kapper) {
             return redirect()->route('kapper.abonnement');
         }

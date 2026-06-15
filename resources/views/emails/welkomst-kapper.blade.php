@@ -33,7 +33,7 @@
         <div class="steps">
             <div class="step">
                 <div class="step-num">1</div>
-                <div class="step-text"><strong>Start je gratis proefperiode</strong> – 14 dagen gratis, daarna €20 per maand. Geen creditcard nodig om te starten.</div>
+                <div class="step-text"><strong>Start je gratis proefperiode</strong> – 14 dagen gratis, daarna €25 per maand. Geen creditcard nodig om te starten.</div>
             </div>
             <div class="step">
                 <div class="step-num">2</div>
