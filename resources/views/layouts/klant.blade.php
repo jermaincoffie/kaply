@@ -194,6 +194,7 @@
         });
     </script>
     <x-cookie-banner />
+    <x-pwa-install-banner />
 </body>
 </html>
 

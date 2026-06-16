@@ -94,6 +94,8 @@
     </main>
 
     <x-confirm-modal />
+    <x-cookie-banner />
+    <x-pwa-install-banner />
     @livewireScripts
     @stack('scripts')
 
