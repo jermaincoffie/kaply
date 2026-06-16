@@ -258,12 +258,14 @@
         <img src="{{ asset('images/kaply-logo-dark.png') }}" class="h-16 w-auto opacity-70" alt="Kaply">
         <div class="flex items-center gap-6 text-xs text-gray-500">
             <a href="{{ route('home') }}" class="hover:text-gray-300 transition-colors">Kappers zoeken</a>
-            <a href="{{ route('login') }}" class="hover:text-gray-300 transition-colors">Inloggen</a>
+            <a href="{{ route('privacy') }}" class="hover:text-gray-300 transition-colors">Privacy</a>
+            <a href="{{ route('voorwaarden') }}" class="hover:text-gray-300 transition-colors">Voorwaarden</a>
             <a href="{{ route('kapper.registreer') }}" class="hover:text-gray-300 transition-colors">Registreren</a>
         </div>
         <p class="text-xs text-gray-600">© {{ date('Y') }} Kaply</p>
     </div>
 </footer>
 
+<x-cookie-banner />
 </body>
 </html>

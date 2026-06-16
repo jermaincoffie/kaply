@@ -32,6 +32,8 @@ use Illuminate\Support\Facades\Route;
 // Publiek
 Route::get('/', KapperZoeken::class)->name('home');
 Route::get('/voor-kappers', fn() => view('voor-kappers'))->name('voor-kappers');
+Route::get('/privacy', fn() => view('legal.privacy'))->name('privacy');
+Route::get('/algemene-voorwaarden', fn() => view('legal.voorwaarden'))->name('voorwaarden');
 Route::get('/inloggen', Inloggen::class)->name('klant.inloggen')->middleware('guest');
 Route::get('/kapper/registreer', KapperRegistratie::class)->name('kapper.registreer');
 
