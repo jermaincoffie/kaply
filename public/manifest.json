@@ -10,16 +10,22 @@
     "lang": "nl",
     "icons": [
         {
-            "src": "/images/PWA-icon.png",
+            "src": "/images/PWA-icon-192.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
         },
         {
-            "src": "/images/PWA-icon.png",
+            "src": "/images/PWA-icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
+        },
+        {
+            "src": "/images/PWA-icon-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
         }
     ]
 }
