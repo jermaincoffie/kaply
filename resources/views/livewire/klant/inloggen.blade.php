@@ -3,8 +3,8 @@
 
         {{-- Logo --}}
         <div class="text-center mb-8">
-            <img src="{{ asset('images/kaply-logo-light.png') }}" class="h-10 w-auto mx-auto dark:hidden" alt="Kaply">
-            <img src="{{ asset('images/kaply-logo-dark.png') }}" class="h-10 w-auto mx-auto hidden dark:block" alt="Kaply">
+            <img src="{{ asset('images/kaply-logo-light.png') }}" class="h-16 w-auto mx-auto dark:hidden" alt="Kaply">
+            <img src="{{ asset('images/kaply-logo-dark.png') }}" class="h-16 w-auto mx-auto hidden dark:block" alt="Kaply">
         </div>
 
         <div class="bg-white dark:bg-neutral-800 rounded-2xl border border-gray-200 dark:border-neutral-700 shadow-sm p-8">
