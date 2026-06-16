@@ -2,8 +2,8 @@
 
     {{-- Logo --}}
     <a href="{{ route('home') }}" class="mb-8 hover:opacity-80 transition-opacity">
-        <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-10 w-auto" alt="Kaply">
-        <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-10 w-auto" alt="Kaply">
+        <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-16 w-auto" alt="Kaply">
+        <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-16 w-auto" alt="Kaply">
     </a>
 
     {{-- Card --}}
