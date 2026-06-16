@@ -14,6 +14,10 @@
                     class="text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-colors">
                 Installeer
             </button>
+            <button x-show="isIos" @click="delenIos()"
+                    class="text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-colors">
+                Delen
+            </button>
             <button @click="sluiten()"
                     class="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">
                 Sluiten
@@ -55,6 +59,13 @@ function pwaBanner() {
             this.deferredPrompt = null;
             this.tonen = false;
             if (outcome === 'accepted') localStorage.setItem('kaply_pwa_gesloten', '1');
+        },
+        async delenIos() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({ title: 'Kaply', url: window.location.href });
+                } catch(e) {}
+            }
         },
         sluiten() {
             this.tonen = false;
