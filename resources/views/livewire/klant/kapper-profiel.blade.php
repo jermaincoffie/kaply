@@ -172,9 +172,17 @@
                 @endif
 
                 @guest
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-3">
-                    <a href="{{ route('klant.inloggen') }}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Inloggen</a> om te boeken
-                </p>
+                <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl">
+                    <p class="text-xs text-gray-600 dark:text-neutral-300 font-medium mb-1">Geen account nodig</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mb-2">Vul je e-mailadres in en ontvang een eenmalige code — klaar.</p>
+                    <a href="{{ route('klant.inloggen') }}"
+                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        Doorgaan met e-mail
+                    </a>
+                </div>
                 @endguest
             </div>
 
