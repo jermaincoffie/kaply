@@ -5,7 +5,7 @@
         <div class="flex-1 min-w-0">
             <p class="text-sm font-semibold text-white">Voeg Kaply toe aan je scherm</p>
             <p x-show="isIos" class="text-xs text-neutral-200 mt-0.5">
-                Tik <svg class="inline w-3.5 h-3.5 mb-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2v13M7 7l5-5 5 5M3 18h18v3H3z"/></svg> en kies "Zet op beginscherm"
+                Tik op het deel-icoon <svg class="inline w-3.5 h-3.5 mb-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2v13M7 7l5-5 5 5M3 18h18v3H3z"/></svg> onderaan Safari, scroll omlaag en kies "Zet op beginscherm"
             </p>
             <p x-show="!isIos" class="text-xs text-neutral-200 mt-0.5">Installeer de app voor snelle toegang</p>
         </div>
@@ -13,10 +13,6 @@
             <button x-show="!isIos" @click="installeren()"
                     class="text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-colors">
                 Installeer
-            </button>
-            <button x-show="isIos" @click="delenIos()"
-                    class="text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-colors">
-                Delen
             </button>
             <button @click="sluiten()"
                     class="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">
@@ -59,13 +55,6 @@ function pwaBanner() {
             this.deferredPrompt = null;
             this.tonen = false;
             if (outcome === 'accepted') localStorage.setItem('kaply_pwa_gesloten', '1');
-        },
-        async delenIos() {
-            if (navigator.share) {
-                try {
-                    await navigator.share({ title: 'Kaply', url: window.location.href });
-                } catch(e) {}
-            }
         },
         sluiten() {
             this.tonen = false;
