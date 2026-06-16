@@ -172,6 +172,7 @@
                 @endif
 
                 @guest
+                @if($geselecteerdeTijd)
                 <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl">
                     <p class="text-xs text-gray-600 dark:text-neutral-300 font-medium mb-1">Geen account nodig</p>
                     <p class="text-xs text-gray-400 dark:text-neutral-500 mb-2">Vul je e-mailadres in en ontvang een eenmalige code — klaar.</p>
@@ -183,6 +184,7 @@
                         Doorgaan met e-mail
                     </a>
                 </div>
+                @endif
                 @endguest
             </div>
 
