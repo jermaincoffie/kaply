@@ -5,7 +5,7 @@
         <div class="flex-1 min-w-0">
             <p class="text-sm font-semibold text-white">Voeg Kaply toe aan je scherm</p>
             <p x-show="isIos" class="text-xs text-neutral-200 mt-0.5">
-                Tik <svg class="inline w-3.5 h-3.5 mb-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2v13M7 7l5-5 5 5M3 18h18v3H3z"/></svg> en kies <strong>"Zet op beginscherm"</strong>
+                Tik <svg class="inline w-3.5 h-3.5 mb-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2v13M7 7l5-5 5 5M3 18h18v3H3z"/></svg> en kies "Zet op beginscherm"
             </p>
             <p x-show="!isIos" class="text-xs text-neutral-300 mt-0.5">Installeer de app voor snelle toegang</p>
         </div>
