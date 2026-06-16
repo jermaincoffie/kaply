@@ -20,7 +20,7 @@
                 <div class="flex items-start gap-5">
                     {{-- Avatar --}}
                     @if($kapper->foto)
-                    <img src="{{ asset('storage/' . $kapper->foto) }}" alt="{{ $kapper->salon_naam }}"
+                    <img src="{{ asset('public/storage/' . $kapper->foto) }}" alt="{{ $kapper->salon_naam }}"
                          class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover flex-shrink-0 border border-gray-100 dark:border-neutral-700">
                     @else
                     @php
@@ -121,7 +121,7 @@
                                     ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
                                     : 'border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:border-gray-300 dark:hover:border-neutral-600' }}">
                         @if($mw->foto)
-                        <img src="{{ asset('storage/' . $mw->foto) }}" class="w-5 h-5 rounded-full object-cover flex-shrink-0">
+                        <img src="{{ asset('public/storage/' . $mw->foto) }}" class="w-5 h-5 rounded-full object-cover flex-shrink-0">
                         @else
                         <div class="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
                             <span class="text-[10px] font-bold text-blue-700 dark:text-blue-400">{{ mb_strtoupper(mb_substr($mw->naam, 0, 1)) }}</span>
@@ -192,7 +192,7 @@
 
         {{-- ===== GALERIJ — mobiel: 3e, desktop: kolom 1-2 rij 2 ===== --}}
         @if($kapper->galerij->isNotEmpty())
-        @php $fotoUrls = $kapper->galerij->pluck('pad')->map(fn($p) => str_starts_with($p, 'http') ? $p : asset('storage/' . $p))->values(); @endphp
+        @php $fotoUrls = $kapper->galerij->pluck('pad')->map(fn($p) => str_starts_with($p, 'http') ? $p : asset('public/storage/' . $p))->values(); @endphp
         <div class="order-3 lg:col-span-2 lg:row-start-2"
              x-data="{
                 fotos: {{ $fotoUrls->toJson() }},
@@ -217,7 +217,7 @@
                     @foreach($kapper->galerij as $i => $foto)
                     <button @click="open({{ $i }})" type="button"
                             class="flex-shrink-0 w-48 h-48 rounded-xl overflow-hidden group snap-start">
-                        <img src="{{ str_starts_with($foto->pad, 'http') ? $foto->pad : asset('storage/' . $foto->pad) }}" alt="Galerij"
+                        <img src="{{ str_starts_with($foto->pad, 'http') ? $foto->pad : asset('public/storage/' . $foto->pad) }}" alt="Galerij"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     </button>
                     @endforeach

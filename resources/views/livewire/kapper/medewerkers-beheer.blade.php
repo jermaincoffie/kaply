@@ -71,7 +71,7 @@
         <div class="flex items-center gap-3 px-4 sm:px-5 py-3.5 {{ !$loop->last ? 'border-b border-gray-100 dark:border-neutral-700' : '' }}">
             {{-- Avatar --}}
             @if($medewerker->foto)
-            <img src="{{ asset('storage/' . $medewerker->foto) }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0">
+            <img src="{{ asset('public/storage/' . $medewerker->foto) }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0">
             @else
             <div class="w-9 h-9 rounded-full bg-gray-100 dark:bg-neutral-700 border border-gray-200 dark:border-neutral-600 flex items-center justify-center flex-shrink-0">
                 <svg class="w-5 h-5 text-gray-400 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">

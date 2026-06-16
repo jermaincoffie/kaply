@@ -142,7 +142,7 @@
                     {{-- Logo / foto --}}
                     <div class="h-36 flex items-center justify-center overflow-hidden @if($kapper->foto) bg-transparent @endif">
                         @if($kapper->foto)
-                        <img src="{{ asset('storage/' . $kapper->foto) }}"
+                        <img src="{{ asset('public/storage/' . $kapper->foto) }}"
                              alt="{{ $kapper->salon_naam }}"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         @else
