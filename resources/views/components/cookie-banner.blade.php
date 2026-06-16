@@ -7,7 +7,7 @@
      x-transition:leave-start="opacity-100 translate-y-0"
      x-transition:leave-end="opacity-0 translate-y-4"
      style="display:none"
-     class="fixed bottom-4 left-4 right-4 z-50 max-w-xl mx-auto">
+     class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-xl px-4">
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl shadow-xl p-4 sm:p-5">
         <div class="flex items-start gap-3">
             <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
