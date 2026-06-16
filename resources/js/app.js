@@ -1,4 +1,10 @@
 import './bootstrap';
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js');
+    });
+}
 import { Calendar } from 'vanilla-calendar-pro';
 import _ from 'lodash';
 

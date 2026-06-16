@@ -1,0 +1,25 @@
+{
+    "name": "Kaply",
+    "short_name": "Kaply",
+    "description": "Online kapper boekingsplatform",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "theme_color": "#1e1e22",
+    "background_color": "#1e1e22",
+    "lang": "nl",
+    "icons": [
+        {
+            "src": "/images/PWA-icon.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/images/PWA-icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

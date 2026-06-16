@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geen verbinding – Kaply</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1e1e22; color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+        .wrap { text-align: center; max-width: 320px; }
+        img { width: 80px; height: 80px; border-radius: 20px; margin-bottom: 24px; }
+        h1 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        p { font-size: 14px; color: #9ca3af; line-height: 1.6; margin-bottom: 24px; }
+        button { background: #2563eb; color: #fff; border: none; padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        button:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <img src="/images/PWA-icon.png" alt="Kaply">
+        <h1>Geen verbinding</h1>
+        <p>Controleer je internetverbinding en probeer het opnieuw.</p>
+        <button onclick="window.location.reload()">Opnieuw proberen</button>
+    </div>
+</body>
+</html>
