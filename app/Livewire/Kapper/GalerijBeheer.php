@@ -24,6 +24,10 @@ class GalerijBeheer extends Component
             return;
         }
 
+        $this->validate([
+            'nieuwefotos.*' => 'image|mimes:jpeg,jpg,png,webp|max:4096',
+        ]);
+
         $kapper = auth()->user()->kapper;
         $aantalBestaand = $kapper->galerij()->count();
         $volgorde = $aantalBestaand;
