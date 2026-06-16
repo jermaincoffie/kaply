@@ -3,15 +3,16 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Afspraak;
-use App\Models\Dienst;
 use App\Models\Kapper;
 use App\Models\Review;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
     const ABONNEMENT_PRIJS = 2500; // €25 in centen
+    const TRIAL_DAGEN = 14;
 
     public function toggleReviewZichtbaar(int $id): void
     {
@@ -21,38 +22,70 @@ class Dashboard extends Component
 
     public function render()
     {
-        $abonnees_actief    = Kapper::where('abonnement_status', 'actief')->count();
-        $abonnees_gepauzeerd = Kapper::where('abonnement_status', 'gepauzeerd')->count();
-        $kappers_totaal     = Kapper::count();
-        $mrr                = $abonnees_actief * self::ABONNEMENT_PRIJS;
-        $prognose_mrr       = $kappers_totaal * self::ABONNEMENT_PRIJS;
+        $abonnees_actief = Kapper::where('abonnement_status', 'actief')->count();
+        $kappers_totaal  = Kapper::count();
+        $mrr             = $abonnees_actief * self::ABONNEMENT_PRIJS;
+        $prognose_mrr    = $kappers_totaal * self::ABONNEMENT_PRIJS;
 
-        $abonnement_status = Kapper::select('abonnement_status', \DB::raw('count(*) as aantal'))
-            ->groupBy('abonnement_status')
+        // MRR trend: nieuwe actieve abonnees deze maand vs vorige maand
+        $nieuwe_actief_deze_maand = DB::table('subscriptions')
+            ->where('stripe_status', 'active')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+        $nieuwe_actief_vorige_maand = DB::table('subscriptions')
+            ->where('stripe_status', 'active')
+            ->whereMonth('created_at', now()->subMonth()->month)
+            ->whereYear('created_at', now()->subMonth()->year)
+            ->count();
+        $mrr_verschil = ($nieuwe_actief_deze_maand - $nieuwe_actief_vorige_maand) * self::ABONNEMENT_PRIJS;
+
+        // Trial kappers: onboarding voltooid, geen abonnement, aangemeld ≤ 14 dagen geleden
+        $trial_kappers = Kapper::with('user')
+            ->where('abonnement_status', 'geen')
+            ->where('onboarding_voltooid', true)
+            ->where('created_at', '>=', now()->subDays(self::TRIAL_DAGEN))
+            ->orderBy('created_at')
             ->get()
-            ->keyBy('abonnement_status');
+            ->map(function ($k) {
+                $k->dagen_resterend = max(0, self::TRIAL_DAGEN - (int) now()->diffInDays($k->created_at));
+                return $k;
+            });
+
+        // Conversieratio: actieve abonnees / alle kappers die onboarding voltooid hebben
+        $totaal_onboarded = Kapper::where('onboarding_voltooid', true)->count();
+        $conversieratio   = $totaal_onboarded > 0 ? round(($abonnees_actief / $totaal_onboarded) * 100) : 0;
 
         $nieuw_aangemeld = Kapper::where('actief', false)
             ->where('abonnement_status', 'geen')
             ->count();
 
+        // Recente aanmeldingen: nieuwste kappers die onboarding voltooid hebben
+        $recente_aanmeldingen = Kapper::with('user')
+            ->where('onboarding_voltooid', true)
+            ->orderByDesc('created_at')
+            ->limit(6)
+            ->get();
+
         return view('livewire.admin.dashboard', [
-            'kappers_actief'      => Kapper::where('actief', true)->count(),
-            'kappers_totaal'      => $kappers_totaal,
-            'nieuw_aangemeld'     => $nieuw_aangemeld,
-            'afspraken_vandaag'   => Afspraak::whereDate('datum', today())->count(),
-            'afspraken_week'      => Afspraak::whereBetween('datum', [today()->startOfWeek(), today()->endOfWeek()])->count(),
-            'klanten_totaal'      => User::where('role', 'klant')->count(),
-            'abonnees_actief'     => $abonnees_actief,
-            'abonnees_gepauzeerd' => $abonnees_gepauzeerd,
-            'mrr'                 => $mrr,
-            'prognose_mrr'        => $prognose_mrr,
-            'abonnement_status'   => $abonnement_status,
-            'recente_afspraken'   => Afspraak::with(['kapper', 'dienst', 'klant'])
+            'kappers_totaal'          => $kappers_totaal,
+            'nieuw_aangemeld'         => $nieuw_aangemeld,
+            'afspraken_vandaag'       => Afspraak::whereDate('datum', today())->count(),
+            'afspraken_week'          => Afspraak::whereBetween('datum', [today()->startOfWeek(), today()->endOfWeek()])->count(),
+            'klanten_totaal'          => User::where('role', 'klant')->count(),
+            'abonnees_actief'         => $abonnees_actief,
+            'mrr'                     => $mrr,
+            'prognose_mrr'            => $prognose_mrr,
+            'mrr_verschil'            => $mrr_verschil,
+            'trial_kappers'           => $trial_kappers,
+            'trial_count'             => $trial_kappers->count(),
+            'conversieratio'          => $conversieratio,
+            'recente_aanmeldingen'    => $recente_aanmeldingen,
+            'recente_afspraken'       => Afspraak::with(['kapper', 'dienst', 'klant'])
                 ->orderByDesc('datum')->orderByDesc('start_tijd')
                 ->limit(8)
                 ->get(),
-            'top_kappers'         => Kapper::withCount([
+            'top_kappers'             => Kapper::withCount([
                 'afspraken as boekingen_maand' => fn($q) => $q
                     ->whereMonth('datum', now()->month)
                     ->whereYear('datum', now()->year)
@@ -62,7 +95,7 @@ class Dashboard extends Component
                 ->orderByDesc('boekingen_maand')
                 ->limit(6)
                 ->get(),
-            'recente_reviews'     => Review::with(['kapper', 'klant'])
+            'recente_reviews'         => Review::with(['kapper', 'klant'])
                 ->orderByDesc('created_at')
                 ->limit(5)
                 ->get(),

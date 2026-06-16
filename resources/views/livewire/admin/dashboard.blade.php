@@ -14,10 +14,16 @@
                 <x-tooltip>Monthly Recurring Revenue — actieve abonnees × €25 per maand.</x-tooltip>
             </p>
             <p class="text-3xl font-bold text-gray-900 dark:text-neutral-100 mb-1">€ {{ number_format($mrr / 100, 0, ',', '.') }}</p>
-            <p class="text-xs text-gray-400 dark:text-neutral-500">
-                Prognose
-                <x-tooltip position="below">Als alle {{ $kappers_totaal }} geregistreerde kappers betaalden: € {{ number_format($prognose_mrr / 100, 0, ',', '.') }} / maand.</x-tooltip>
-                <span class="font-medium text-gray-500 dark:text-neutral-400">€ {{ number_format($prognose_mrr / 100, 0, ',', '.') }}</span>
+            <p class="text-xs mt-1">
+                @if($mrr_verschil > 0)
+                    <span class="text-green-600 dark:text-green-400 font-semibold">+€ {{ number_format($mrr_verschil / 100, 0, ',', '.') }}</span>
+                    <span class="text-gray-400 dark:text-neutral-500"> nieuwe abonnees deze maand</span>
+                @elseif($mrr_verschil < 0)
+                    <span class="text-red-500 dark:text-red-400 font-semibold">−€ {{ number_format(abs($mrr_verschil) / 100, 0, ',', '.') }}</span>
+                    <span class="text-gray-400 dark:text-neutral-500"> vs vorige maand</span>
+                @else
+                    <span class="text-gray-400 dark:text-neutral-500">Prognose <span class="font-medium text-gray-500 dark:text-neutral-400">€ {{ number_format($prognose_mrr / 100, 0, ',', '.') }}</span></span>
+                @endif
             </p>
         </div>
 
@@ -47,23 +53,25 @@
             @endif
         </div>
 
-        {{-- Gepauzeerd --}}
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5">
+        {{-- Trial --}}
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5 {{ $trial_count > 0 ? 'ring-2 ring-blue-400 dark:ring-blue-600' : '' }}">
             <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
-                Gepauzeerd
-                <x-tooltip position="right">Kappers met verlopen abonnement — niet zichtbaar voor klanten.</x-tooltip>
+                Trial
+                <x-tooltip position="right">Kappers in gratis proefperiode (14 dagen). Conversieratio = % dat betaald abonnement kiest.</x-tooltip>
             </p>
-            <p class="text-3xl font-bold mb-1 {{ $abonnees_gepauzeerd > 0 ? 'text-amber-500' : 'text-gray-900 dark:text-neutral-100' }}">{{ $abonnees_gepauzeerd }}</p>
-            <p class="text-xs text-gray-400 dark:text-neutral-500">kappers inactief</p>
+            <p class="text-3xl font-bold mb-1 {{ $trial_count > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-neutral-100' }}">{{ $trial_count }}</p>
+            <p class="text-xs text-gray-400 dark:text-neutral-500">
+                <span class="font-medium {{ $conversieratio >= 50 ? 'text-green-600 dark:text-green-400' : ($conversieratio >= 20 ? 'text-amber-500' : 'text-red-500') }}">{{ $conversieratio }}%</span>
+                conversie tot nu toe
+            </p>
         </div>
 
     </div>
 
     {{-- Recente afspraken --}}
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden mb-4">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex flex-wrap items-center gap-4">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mr-auto">Recente afspraken</h2>
-            {{-- Inline stats --}}
             <span class="text-xs text-gray-400 dark:text-neutral-500">
                 Vandaag: <span class="font-semibold text-gray-600 dark:text-neutral-300">{{ $afspraken_vandaag }}</span>
             </span>
@@ -146,8 +154,89 @@
         </table>
     </div>
 
-    {{-- Populairste diensten + Recente reviews --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+    {{-- Trial kappers + Recente aanmeldingen --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+
+        {{-- Trial kappers --}}
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex items-center justify-between">
+                <div>
+                    <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200">Trial kappers</h2>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Gratis proefperiode — 14 dagen</p>
+                </div>
+                @if($trial_count > 0)
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                    {{ $trial_count }} actief
+                </span>
+                @endif
+            </div>
+            @if($trial_kappers->isEmpty())
+            <div class="px-6 py-10 text-center text-sm text-gray-400 dark:text-neutral-500">Geen kappers in trial</div>
+            @else
+            <div class="divide-y divide-gray-50 dark:divide-neutral-700">
+                @foreach($trial_kappers as $kapper)
+                @php
+                    $urgentie = $kapper->dagen_resterend <= 2
+                        ? 'text-red-600 dark:text-red-400'
+                        : ($kapper->dagen_resterend <= 5 ? 'text-amber-500' : 'text-blue-600 dark:text-blue-400');
+                    $barPct = round((14 - $kapper->dagen_resterend) / 14 * 100);
+                @endphp
+                <div class="px-6 py-3">
+                    <div class="flex items-center justify-between mb-1">
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $kapper->salon_naam }}</p>
+                            <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $kapper->stad }} · {{ $kapper->user?->email }}</p>
+                        </div>
+                        <span class="text-xs font-semibold {{ $urgentie }} ml-3 flex-shrink-0">
+                            {{ $kapper->dagen_resterend }}d over
+                        </span>
+                    </div>
+                    <div class="h-1 bg-gray-100 dark:bg-neutral-700 rounded-full overflow-hidden mt-2">
+                        <div class="h-1 rounded-full {{ $kapper->dagen_resterend <= 2 ? 'bg-red-400' : ($kapper->dagen_resterend <= 5 ? 'bg-amber-400' : 'bg-blue-500') }}"
+                             style="width: {{ $barPct }}%"></div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @endif
+        </div>
+
+        {{-- Recente aanmeldingen --}}
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">
+                <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200">Recente aanmeldingen</h2>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Nieuwste kappers die onboarding voltooid hebben</p>
+            </div>
+            @if($recente_aanmeldingen->isEmpty())
+            <div class="px-6 py-10 text-center text-sm text-gray-400 dark:text-neutral-500">Nog geen aanmeldingen</div>
+            @else
+            <div class="divide-y divide-gray-50 dark:divide-neutral-700">
+                @foreach($recente_aanmeldingen as $kapper)
+                <div class="px-6 py-3 flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center flex-shrink-0">
+                        <span class="text-xs font-bold text-white">{{ strtoupper(substr($kapper->salon_naam, 0, 1)) }}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $kapper->salon_naam }}</p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $kapper->stad }} · {{ $kapper->created_at->diffForHumans() }}</p>
+                    </div>
+                    @if($kapper->abonnement_status === 'actief')
+                    <span class="inline-flex flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400">Betaald</span>
+                    @elseif($kapper->created_at->gt(now()->subDays(14)))
+                    <span class="inline-flex flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Trial</span>
+                    @else
+                    <span class="inline-flex flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400">Verlopen</span>
+                    @endif
+                </div>
+                @endforeach
+            </div>
+            @endif
+        </div>
+
+    </div>
+
+    {{-- Top kappers + Recente reviews --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {{-- Top kappers --}}
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
