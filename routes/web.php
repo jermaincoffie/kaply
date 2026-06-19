@@ -113,6 +113,35 @@ Route::middleware(['klant.auth'])->group(function () {
 // Stripe webhook (geen auth middleware!)
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook'])->name('cashier.webhook');
 
+// ──────────────────────────────────────────────────────────────────────────────
+// Stripe Connect Demo — Sample integration (no auth required for demo purposes)
+// In production, protect the manage/onboard routes with auth middleware.
+// ──────────────────────────────────────────────────────────────────────────────
+Route::prefix('stripe-demo')->name('stripe-demo.')->group(function () {
+    // Dashboard: create connected accounts
+    Route::get('/', [\App\Http\Controllers\StripeConnectDemoController::class, 'dashboard'])->name('dashboard');
+    Route::post('/account', [\App\Http\Controllers\StripeConnectDemoController::class, 'createAccount'])->name('create-account');
+
+    // Onboarding: show status and create account links
+    Route::get('/onboard/{accountId}', [\App\Http\Controllers\StripeConnectDemoController::class, 'onboard'])->name('onboard');
+    Route::post('/onboard/{accountId}/link', [\App\Http\Controllers\StripeConnectDemoController::class, 'createAccountLink'])->name('create-account-link');
+
+    // Manage: products + subscription
+    Route::get('/manage/{accountId}', [\App\Http\Controllers\StripeConnectDemoController::class, 'manage'])->name('manage');
+    Route::post('/manage/{accountId}/product', [\App\Http\Controllers\StripeConnectDemoController::class, 'createProduct'])->name('create-product');
+    Route::post('/manage/{accountId}/subscribe', [\App\Http\Controllers\StripeConnectDemoController::class, 'subscribe'])->name('subscribe');
+    Route::get('/manage/{accountId}/portal', [\App\Http\Controllers\StripeConnectDemoController::class, 'billingPortal'])->name('billing-portal');
+
+    // Storefront + checkout (customer-facing)
+    Route::get('/store/{accountId}', [\App\Http\Controllers\StripeConnectDemoController::class, 'store'])->name('store');
+    Route::post('/checkout/{accountId}/{priceId}', [\App\Http\Controllers\StripeConnectDemoController::class, 'checkout'])->name('checkout');
+    Route::get('/success', [\App\Http\Controllers\StripeConnectDemoController::class, 'success'])->name('success');
+
+    // Webhooks — excluded from CSRF in bootstrap/app.php (see below)
+    Route::post('/webhook/connect', [\App\Http\Controllers\StripeConnectDemoWebhookController::class, 'handleConnect'])->name('webhook.connect');
+    Route::post('/webhook/subscriptions', [\App\Http\Controllers\StripeConnectDemoWebhookController::class, 'handleSubscriptions'])->name('webhook.subscriptions');
+});
+
 // Admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');

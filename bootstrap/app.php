@@ -23,7 +23,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'abonnement'  => \App\Http\Middleware\EnsureAbonnementActief::class,
         ]);
 
-        $middleware->validateCsrfTokens(except: ['stripe/webhook']);
+        $middleware->validateCsrfTokens(except: [
+            'stripe/webhook',
+            'stripe-demo/webhook/*', // Demo Connect + Subscription webhooks
+        ]);
 
         $middleware->redirectGuestsTo(function (Request $request) {
             if ($request->is('boeken/*', 'mijn-afspraken', 'mijn-account')) {
