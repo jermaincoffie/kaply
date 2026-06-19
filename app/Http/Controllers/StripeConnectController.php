@@ -16,33 +16,42 @@ class StripeConnectController extends Controller
 
         $kapper = auth()->user()->kapper;
 
-        if (!$kapper->stripe_connect_id) {
-            $account = Account::create([
-                'type'         => 'express',
-                'country'      => 'NL',
-                'email'        => auth()->user()->email,
-                'capabilities' => [
-                    'card_payments' => ['requested' => true],
-                    'transfers'     => ['requested' => true],
-                ],
-                'metadata' => ['kapper_id' => $kapper->id],
+        try {
+            if (!$kapper->stripe_connect_id) {
+                $account = Account::create([
+                    'type'         => 'express',
+                    'country'      => 'NL',
+                    'email'        => auth()->user()->email,
+                    'capabilities' => [
+                        'card_payments' => ['requested' => true],
+                        'transfers'     => ['requested' => true],
+                    ],
+                    'metadata' => ['kapper_id' => $kapper->id],
+                ]);
+
+                $kapper->update(['stripe_connect_id' => $account->id]);
+                $kapper->refresh();
+            }
+
+            $from = $request->get('from') ?? session('stripe_connect_from', 'profiel');
+            session(['stripe_connect_from' => $from]);
+
+            $accountLink = AccountLink::create([
+                'account'     => $kapper->stripe_connect_id,
+                'refresh_url' => route('kapper.stripe.refresh'),
+                'return_url'  => route('kapper.stripe.return'),
+                'type'        => 'account_onboarding',
             ]);
 
-            $kapper->update(['stripe_connect_id' => $account->id]);
-            $kapper->refresh();
+            return redirect($accountLink->url);
+
+        } catch (\Stripe\Exception\InvalidRequestException $e) {
+            session()->flash('error', 'Stripe Connect is nog niet geactiveerd voor dit platform. Neem contact op met de beheerder.');
+            return redirect()->route('kapper.profiel-beheer');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Er is iets misgegaan met Stripe. Probeer het later opnieuw.');
+            return redirect()->route('kapper.profiel-beheer');
         }
-
-        $from = $request->get('from') ?? session('stripe_connect_from', 'profiel');
-        session(['stripe_connect_from' => $from]);
-
-        $accountLink = AccountLink::create([
-            'account'     => $kapper->stripe_connect_id,
-            'refresh_url' => route('kapper.stripe.refresh'),
-            'return_url'  => route('kapper.stripe.return'),
-            'type'        => 'account_onboarding',
-        ]);
-
-        return redirect($accountLink->url);
     }
 
     public function return(Request $request)
