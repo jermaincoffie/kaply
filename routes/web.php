@@ -2,6 +2,8 @@
 
 use App\Livewire\Admin\AfsprakenOverzicht as AdminAfspraken;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\FacturatieOverzicht as AdminFacturatie;
+use App\Livewire\Kapper\FacturatieOverzicht as KapperFacturatie;
 use App\Livewire\Admin\KappersOverzicht;
 use App\Livewire\Admin\KlantenOverzicht as AdminKlanten;
 use App\Livewire\Kapper\AfsprakenOverzicht as KapperAfspraken;
@@ -20,6 +22,7 @@ use App\Livewire\Kapper\ReviewsOverzicht as KapperReviews;
 use App\Http\Controllers\AfspraakBetaalController;
 use App\Http\Controllers\IcalController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\StripeConnectController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Livewire\Klant\AccountBeheer;
 use App\Livewire\Klant\BoekingWizard;
@@ -32,6 +35,7 @@ use Illuminate\Support\Facades\Route;
 // Publiek
 Route::get('/', KapperZoeken::class)->name('home');
 Route::get('/voor-kappers', fn() => view('voor-kappers'))->name('voor-kappers');
+Route::get('/prijzen', fn() => view('prijzen'))->name('prijzen');
 Route::get('/privacy', fn() => view('legal.privacy'))->name('privacy');
 Route::get('/algemene-voorwaarden', fn() => view('legal.voorwaarden'))->name('voorwaarden');
 Route::get('/inloggen', Inloggen::class)->name('klant.inloggen')->middleware('guest');
@@ -44,10 +48,17 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
 
     // Alle overige kapper routes — redirect naar onboarding als niet voltooid
     Route::middleware(['onboarding'])->group(function () {
+        // Stripe Connect — geen abonnement-check nodig
+        Route::get('/stripe/koppelen', [StripeConnectController::class, 'onboard'])->name('stripe.onboard');
+        Route::get('/stripe/return',   [StripeConnectController::class, 'return'])->name('stripe.return');
+        Route::get('/stripe/refresh',  [StripeConnectController::class, 'refresh'])->name('stripe.refresh');
+        Route::get('/stripe/dashboard',[StripeConnectController::class, 'dashboard'])->name('stripe.dashboard');
+
         // Abonnement routes — geen abonnement-check (anders redirect loop)
         Route::get('/abonnement', AbonnementBeheer::class)->name('abonnement');
         Route::get('/abonnement/checkout', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');
         Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
+        Route::get('/facturatie', KapperFacturatie::class)->name('facturatie');
 
         // Overige routes — vereisen actief abonnement
         Route::middleware(['abonnement'])->group(function () {
@@ -91,6 +102,8 @@ Route::middleware(['klant.auth'])->group(function () {
     Route::get('/afspraak/betaling/checkout', [AfspraakBetaalController::class, 'checkout'])->name('afspraak.betaling.checkout');
     Route::get('/afspraak/betaling/succes', [AfspraakBetaalController::class, 'succes'])->name('afspraak.betaling.succes');
     Route::get('/afspraak/betaling/annuleren', [AfspraakBetaalController::class, 'annuleren'])->name('afspraak.betaling.annuleren');
+    Route::post('/afspraak/annulering/checkout', [AfspraakBetaalController::class, 'annuleringCheckout'])->name('afspraak.annulering.checkout');
+    Route::get('/afspraak/annulering/succes', [AfspraakBetaalController::class, 'annuleringSucces'])->name('afspraak.annulering.succes');
 });
 
 // Stripe webhook (geen auth middleware!)
@@ -102,4 +115,5 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/kappers', KappersOverzicht::class)->name('kappers');
     Route::get('/afspraken', AdminAfspraken::class)->name('afspraken');
     Route::get('/klanten', AdminKlanten::class)->name('klanten');
+    Route::get('/facturatie', AdminFacturatie::class)->name('facturatie');
 });

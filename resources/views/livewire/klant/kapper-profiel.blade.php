@@ -34,7 +34,21 @@
 
                     {{-- Info --}}
                     <div class="flex-1 min-w-0">
-                        <h1 class="text-xl font-bold text-gray-900 dark:text-neutral-100 leading-tight">{{ $kapper->salon_naam }}</h1>
+                        <div class="flex items-start justify-between gap-2">
+                            <h1 class="text-xl font-bold text-gray-900 dark:text-neutral-100 leading-tight">{{ $kapper->salon_naam }}</h1>
+                            @auth
+                            @if(auth()->user()->isKlant())
+                            <button wire:click="toggleFavoriet"
+                                    class="flex-shrink-0 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors group"
+                                    title="{{ $isFavoriet ? 'Verwijder uit favorieten' : 'Voeg toe aan favorieten' }}">
+                                <svg class="w-5 h-5 transition-colors {{ $isFavoriet ? 'text-red-500' : 'text-gray-300 dark:text-neutral-600 group-hover:text-red-400' }}"
+                                     fill="{{ $isFavoriet ? 'currentColor' : 'none' }}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                </svg>
+                            </button>
+                            @endif
+                            @endauth
+                        </div>
 
                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
                             @if($kapper->stad)
@@ -112,7 +126,7 @@
                                 {{ $geselecteerdeMedewerkerId === null
                                     ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
                                     : 'border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:border-gray-300 dark:hover:border-neutral-600' }}">
-                        Maakt niet uit
+                        Geen voorkeur
                     </button>
                     @foreach($medewerkers as $mw)
                     <button wire:click="selecteerMedewerker({{ $mw->id }})" type="button"
@@ -145,6 +159,22 @@
                 />
             </div>
 
+            {{-- Annuleringsbeleid --}}
+            @if($kapper->annulering_uren)
+            <div class="flex items-center gap-2 px-4 py-3 bg-gray-50 dark:bg-neutral-800/60 border border-gray-200 dark:border-neutral-700 rounded-xl text-xs text-gray-500 dark:text-neutral-400">
+                <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Annuleren is niet meer mogelijk binnen
+                <span class="font-semibold text-gray-700 dark:text-neutral-300">
+                    {{ $kapper->annulering_uren >= 24
+                        ? ($kapper->annulering_uren / 24) . ' ' . ($kapper->annulering_uren == 24 ? 'dag' : 'dagen')
+                        : $kapper->annulering_uren . ' uur' }}
+                </span>
+                voor de afspraak.
+            </div>
+            @endif
+
             {{-- Tijdsloten --}}
             <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl p-5">
                 <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Kies een tijdstip</p>
@@ -166,7 +196,57 @@
                     <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ ucfirst($sluitingsdagReden) }}</p>
                 </div>
                 @elseif($geselecteerdeDatum)
-                <p class="text-sm text-gray-400 dark:text-neutral-500">Geen vrije tijdsloten op deze dag.</p>
+                <div class="py-2">
+                    <p class="text-sm text-gray-500 dark:text-neutral-400 mb-3">Geen vrije tijdsloten op deze dag.</p>
+
+                    @if($geselecteerdeDatum <= today()->toDateString())
+                        <p class="text-xs text-gray-400 dark:text-neutral-500">Kies een andere dag om een afspraak te plannen.</p>
+                    @elseif($wachtlijstVerstuurd)
+                        <div class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-sm font-medium">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Je staat op de wachtlijst! We mailen je zodra er een plek vrijkomt.
+                        </div>
+                    @elseif($toonWachtlijstForm)
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 dark:text-neutral-400 mb-1">Naam</label>
+                                <input wire:model="wachtlijstNaam" type="text" placeholder="Jouw naam"
+                                       class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-800 dark:text-neutral-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                                @error('wachtlijstNaam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 dark:text-neutral-400 mb-1">E-mailadres</label>
+                                <input wire:model="wachtlijstEmail" type="email" placeholder="jouw@email.nl"
+                                       class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-800 dark:text-neutral-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                                @error('wachtlijstEmail') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 dark:text-neutral-400 mb-1">Telefoonnummer <span class="font-normal text-gray-400">(optioneel)</span></label>
+                                <input wire:model="wachtlijstTelefoon" type="tel" placeholder="06 12345678"
+                                       class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-800 dark:text-neutral-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                            </div>
+                            @if($wachtlijstFout)
+                                <p class="text-xs text-red-500">{{ $wachtlijstFout }}</p>
+                            @endif
+                            <div class="flex gap-2 pt-1">
+                                <button type="button" wire:click="resetWachtlijst"
+                                        class="flex-1 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-600 text-gray-500 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                                    Annuleer
+                                </button>
+                                <button type="button" wire:click="wachtlijstAanmelden"
+                                        class="flex-1 py-2 text-sm font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors">
+                                    Inschrijven
+                                </button>
+                            </div>
+                        </div>
+                    @else
+                        <button type="button" wire:click="$set('toonWachtlijstForm', true)"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            Zet me op de wachtlijst
+                        </button>
+                    @endif
+                </div>
                 @else
                 <p class="text-sm text-gray-400 dark:text-neutral-500">Kies eerst een datum hierboven.</p>
                 @endif
@@ -340,6 +420,12 @@
                         @if($review->tekst)
                         <p class="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed pl-9">{{ $review->tekst }}</p>
                         @endif
+                        @if($review->reactie)
+                        <div class="mt-3 ml-9 pl-3 border-l-2 border-blue-200 dark:border-blue-800">
+                            <p class="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-1">Reactie van {{ $kapper->salon_naam }}</p>
+                            <p class="text-sm text-gray-600 dark:text-neutral-400 leading-relaxed">{{ $review->reactie }}</p>
+                        </div>
+                        @endif
                     </div>
                     @endforeach
                 </div>
@@ -392,7 +478,7 @@
                     @if($medewerkers->isNotEmpty())
                     <div class="flex justify-between">
                         <span class="text-gray-500 dark:text-neutral-400">Barber</span>
-                        <span class="font-medium text-gray-800 dark:text-neutral-100">{{ $geselecteerdeMedewerker ? $geselecteerdeMedewerker->naam : 'Maakt niet uit' }}</span>
+                        <span class="font-medium text-gray-800 dark:text-neutral-100">{{ $geselecteerdeMedewerker ? $geselecteerdeMedewerker->naam : 'Geen voorkeur' }}</span>
                     </div>
                     @endif
                     <div class="flex justify-between">
@@ -410,16 +496,24 @@
                 </div>
                 <div class="mb-5">
                     <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2">Betaling</label>
-                    <div class="grid grid-cols-2 gap-2">
+                    <div class="{{ $kapper->stripe_connect_onboarded ? 'grid grid-cols-2' : 'grid grid-cols-1' }} gap-2">
                         <button type="button" wire:click="$set('betaalmethode', 'in_zaak')"
                                 class="py-2.5 rounded-lg border text-sm font-medium transition-colors {{ $betaalmethode === 'in_zaak' ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' : 'border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700' }}">
                             In de zaak
                         </button>
+                        @if($kapper->stripe_connect_onboarded)
                         <button type="button" wire:click="$set('betaalmethode', 'online')"
                                 class="py-2.5 rounded-lg border text-sm font-medium transition-colors {{ $betaalmethode === 'online' ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' : 'border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700' }}">
                             Online
                         </button>
+                        @endif
                     </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-2">Opmerking <span class="font-normal text-gray-400">(optioneel)</span></label>
+                    <textarea wire:model="klantNotitie" rows="2"
+                              placeholder="Bijv. kom samen met mijn vrouw die heeft afspraak om 10:00..."
+                              class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"></textarea>
                 </div>
                 <div class="flex gap-2">
                     <button wire:click="sluitModal" class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">Annuleer</button>

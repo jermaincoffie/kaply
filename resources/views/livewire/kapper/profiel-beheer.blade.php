@@ -142,4 +142,47 @@
         </p>
     </div>
     @endif
+
+    {{-- Stripe Connect --}}
+    <div class="mt-6 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-6">
+        <div class="flex items-center justify-between mb-1">
+            <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200">Online betalingen</h2>
+            @if(auth()->user()->kapper?->stripe_connect_onboarded)
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Gekoppeld
+            </span>
+            @elseif(auth()->user()->kapper?->stripe_connect_id)
+            <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400">Verificatie vereist</span>
+            @else
+            <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-neutral-700 text-gray-500 dark:text-neutral-400">Niet gekoppeld</span>
+            @endif
+        </div>
+
+        @if(auth()->user()->kapper?->stripe_connect_onboarded)
+        <p class="text-xs text-gray-400 dark:text-neutral-500 mb-4">Je Stripe account is gekoppeld. Klanten kunnen nu online betalen bij het boeken.</p>
+        <a href="{{ route('kapper.stripe.dashboard') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-neutral-700 text-gray-700 dark:text-neutral-200 hover:bg-gray-200 dark:hover:bg-neutral-600 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+            Stripe Dashboard openen
+        </a>
+        @elseif(auth()->user()->kapper?->stripe_connect_id)
+        <p class="text-xs text-gray-400 dark:text-neutral-500 mb-4">Je Stripe account aanmaak is nog niet afgerond. Voltooi de verificatie om online betalingen te accepteren.</p>
+        <a href="{{ route('kapper.stripe.onboard') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-yellow-500 text-white hover:bg-yellow-600 transition-colors">
+            Verificatie voltooien →
+        </a>
+        @else
+        <p class="text-xs text-gray-400 dark:text-neutral-500 mb-4">Verbind je Stripe account zodat klanten direct bij jou kunnen betalen bij het boeken. Je beheert je eigen uitbetalingen via Stripe.</p>
+        <a href="{{ route('kapper.stripe.onboard') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Stripe account verbinden
+        </a>
+        @endif
+    </div>
 </div>

@@ -6,6 +6,7 @@ use App\Models\Afspraak;
 use App\Models\Kapper;
 use App\Models\Dienst;
 use App\Models\Review;
+use App\Models\Wachtlijst;
 use App\Services\BeschikbaarheidsService;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -20,10 +21,20 @@ class KapperProfiel extends Component
     public ?string $sluitingsdagReden = null;
 
     // Boeking modal
+    public bool $isFavoriet = false;
     public bool $toonBoekModal = false;
     public string $geselecteerdeTijd = '';
     public string $betaalmethode = 'in_zaak';
+    public string $klantNotitie = '';
     public bool $geboekt = false;
+
+    // Wachtlijst
+    public bool   $toonWachtlijstForm  = false;
+    public string $wachtlijstNaam      = '';
+    public string $wachtlijstEmail     = '';
+    public string $wachtlijstTelefoon  = '';
+    public bool   $wachtlijstVerstuurd = false;
+    public string $wachtlijstFout      = '';
 
     public function mount(string $slug): void
     {
@@ -39,6 +50,17 @@ class KapperProfiel extends Component
 
         $this->geselecteerdeDatum = today()->toDateString();
         $this->laadTijdsloten();
+
+        if (auth()->check()) {
+            $this->wachtlijstNaam  = auth()->user()->name;
+            $this->wachtlijstEmail = auth()->user()->email;
+
+            if (auth()->user()->isKlant()) {
+                $this->isFavoriet = auth()->user()->favorieteKappers()
+                    ->where('kapper_id', $this->kapper->id)
+                    ->exists();
+            }
+        }
 
         // Herstel pending boeking na OTP login
         $pending = session()->pull('pending_boeking');
@@ -68,6 +90,7 @@ class KapperProfiel extends Component
 
     public function updatedGeselecteerdeDatum(): void
     {
+        $this->resetWachtlijst();
         $this->laadTijdsloten();
     }
 
@@ -95,6 +118,7 @@ class KapperProfiel extends Component
         }
         $this->geselecteerdeTijd = $tijd;
         $this->betaalmethode     = 'in_zaak';
+        $this->klantNotitie      = '';
         $this->geboekt           = false;
         $this->toonBoekModal     = true;
     }
@@ -102,6 +126,7 @@ class KapperProfiel extends Component
     public function sluitModal(): void
     {
         $this->toonBoekModal = false;
+        $this->klantNotitie  = '';
     }
 
     public function bevestigBoeking(): void
@@ -124,6 +149,7 @@ class KapperProfiel extends Component
                 'eind_tijd'     => $eind,
                 'status'        => 'wacht_op_betaling',
                 'betaalmethode' => 'online',
+                'notitie'       => trim($this->klantNotitie) ?: null,
             ]);
             $this->redirect(route('afspraak.betaling.checkout', ['afspraak_id' => $afspraak->id]));
             return;
@@ -139,10 +165,63 @@ class KapperProfiel extends Component
             'eind_tijd'     => $eind,
             'status'        => 'gepland',
             'betaalmethode' => $this->betaalmethode,
+            'notitie'       => trim($this->klantNotitie) ?: null,
         ]);
 
         $this->geboekt = true;
         $this->laadTijdsloten();
+    }
+
+    public function wachtlijstAanmelden(): void
+    {
+        $this->wachtlijstFout = '';
+        $this->validate([
+            'wachtlijstNaam'     => 'required|string|min:2',
+            'wachtlijstEmail'    => 'required|email',
+            'wachtlijstTelefoon' => 'nullable|string|max:20',
+        ]);
+
+        if (Wachtlijst::where('kapper_id', $this->kapper->id)->where('email', $this->wachtlijstEmail)->exists()) {
+            $this->wachtlijstFout = 'Dit e-mailadres staat al op de wachtlijst.';
+            return;
+        }
+
+        Wachtlijst::create([
+            'kapper_id'      => $this->kapper->id,
+            'klant_id'       => auth()->id(),
+            'naam'           => $this->wachtlijstNaam,
+            'email'          => $this->wachtlijstEmail,
+            'telefoonnummer' => $this->wachtlijstTelefoon ?: null,
+            'gewenste_datum' => $this->geselecteerdeDatum ?: null,
+            'status'         => 'wachtend',
+        ]);
+
+        $this->wachtlijstVerstuurd = true;
+        $this->toonWachtlijstForm  = false;
+    }
+
+    public function toggleFavoriet(): void
+    {
+        if (!auth()->check() || !auth()->user()->isKlant()) {
+            $this->redirect(route('klant.inloggen'));
+            return;
+        }
+
+        $user = auth()->user();
+        if ($this->isFavoriet) {
+            $user->favorieteKappers()->detach($this->kapper->id);
+            $this->isFavoriet = false;
+        } else {
+            $user->favorieteKappers()->attach($this->kapper->id);
+            $this->isFavoriet = true;
+        }
+    }
+
+    public function resetWachtlijst(): void
+    {
+        $this->toonWachtlijstForm  = false;
+        $this->wachtlijstVerstuurd = false;
+        $this->wachtlijstFout      = '';
     }
 
     public function laadTijdsloten(): void
@@ -189,6 +268,24 @@ class KapperProfiel extends Component
 
         $layout = request()->boolean('embed') ? 'layouts.widget' : 'layouts.publiek';
 
+        $stad = $this->kapper->stad ? str($this->kapper->stad)->title() : null;
+        $seoTitle = $this->kapper->salon_naam
+            . ($stad ? ' - Kapper in ' . $stad : ' - Kapper')
+            . ' | Kaply';
+
+        $dienstenNamen = $this->kapper->diensten->pluck('naam')->take(3)->implode(', ');
+        $seoDescription = $this->kapper->bio
+            ? str($this->kapper->bio)->limit(155)->toString()
+            : 'Boek een afspraak bij ' . $this->kapper->salon_naam
+              . ($stad ? ' in ' . $stad : '')
+              . ($dienstenNamen ? '. Diensten: ' . $dienstenNamen . '.' : '.');
+
+        $seoImage = $this->kapper->foto
+            ? asset('public/storage/' . $this->kapper->foto)
+            : null;
+
+        $seoCanonical = route('kapper.profiel', $this->kapper->slug);
+
         return view('livewire.klant.kapper-profiel', [
             'openingstijden'         => $openingstijden,
             'medewerkers'            => $medewerkers,
@@ -200,6 +297,11 @@ class KapperProfiel extends Component
                 : null,
             'reviews'          => $reviews,
             'gemiddeldRating'  => $gemiddeldRating,
-        ])->layout($layout);
+        ])->layout($layout, [
+            'seoTitle'       => $seoTitle,
+            'seoDescription' => $seoDescription,
+            'seoImage'       => $seoImage,
+            'seoCanonical'   => $seoCanonical,
+        ]);
     }
 }

@@ -100,7 +100,7 @@ class OnboardingWizard extends Component
         auth()->user()->kapper->diensten()->where('id', $id)->delete();
     }
 
-    public function afrondenMetMedia(): void
+    public function slaMediaOpEnNaarStap6(): void
     {
         $this->validate([
             'foto'           => 'nullable|image|max:2048',
@@ -130,7 +130,7 @@ class OnboardingWizard extends Component
             }
         }
 
-        $this->voltooien();
+        $this->stap = 6;
     }
 
     public function afronden(): void
@@ -138,7 +138,13 @@ class OnboardingWizard extends Component
         $this->voltooien();
     }
 
-    private function voltooien(): void
+    public function voltooienEnStripe(): void
+    {
+        $this->slaOnboardingOp();
+        $this->redirect(route('kapper.stripe.onboard', ['from' => 'onboarding']));
+    }
+
+    private function slaOnboardingOp(): void
     {
         $kapper = auth()->user()->kapper;
         $kapper->beschikbaarheden()->delete();
@@ -158,7 +164,11 @@ class OnboardingWizard extends Component
             'buffer_minuten'      => $this->bufferMinuten,
             'onboarding_voltooid' => true,
         ]);
+    }
 
+    private function voltooien(): void
+    {
+        $this->slaOnboardingOp();
         session()->flash('onboarding_klaar', true);
         $this->redirect(route('kapper.dashboard'));
     }

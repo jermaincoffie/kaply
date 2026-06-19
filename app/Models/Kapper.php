@@ -13,13 +13,15 @@ class Kapper extends Model
     protected $fillable = [
         'user_id', 'salon_naam', 'slug', 'adres', 'stad',
         'telefoon', 'bio', 'foto', 'stripe_customer_id',
-        'abonnement_status', 'actief', 'buffer_minuten', 'onboarding_voltooid', 'ical_token',
+        'stripe_connect_id', 'stripe_connect_onboarded',
+        'abonnement_status', 'actief', 'buffer_minuten', 'vooruitboeken_maanden', 'annulering_uren', 'annulering_kosten', 'onboarding_voltooid', 'ical_token',
         'trial_dag3_verstuurd', 'trial_dag10_verstuurd',
     ];
 
     protected $casts = [
         'actief'                  => 'boolean',
         'onboarding_voltooid'     => 'boolean',
+        'stripe_connect_onboarded' => 'boolean',
         'trial_dag3_verstuurd'    => 'boolean',
         'trial_dag10_verstuurd'   => 'boolean',
     ];
@@ -31,6 +33,7 @@ class Kapper extends Model
     public function afspraken() { return $this->hasMany(Afspraak::class); }
     public function medewerkers() { return $this->hasMany(Medewerker::class); }
     public function reviews()        { return $this->hasMany(Review::class); }
+    public function favorietKlanten() { return $this->belongsToMany(User::class, 'klant_favoriete_kappers'); }
     public function kortingscodes() { return $this->hasMany(Kortingscode::class); }
     public function galerij()    { return $this->hasMany(KapperGalerij::class)->orderBy('volgorde'); }
 

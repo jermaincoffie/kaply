@@ -1,6 +1,6 @@
 <div>
 @php
-    $progressSteps = [2 => 'Profiel', 3 => 'Diensten', 4 => 'Beschikbaarheid', 5 => 'Media'];
+    $progressSteps = [2 => 'Profiel', 3 => 'Diensten', 4 => 'Beschikbaarheid', 5 => 'Media', 6 => 'Betalen'];
 @endphp
 
 {{-- Progress bar (stap 2 t/m 5) --}}
@@ -65,6 +65,13 @@
             <div>
                 <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">Foto's toevoegen <span class="text-xs font-normal text-gray-400 dark:text-neutral-500">— optioneel</span></p>
                 <p class="text-xs text-gray-400 dark:text-neutral-500">Profielfoto en galerij</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 dark:bg-neutral-700/50 rounded-xl">
+            <div class="w-7 h-7 rounded-full bg-gray-300 dark:bg-neutral-600 text-gray-500 dark:text-neutral-400 flex items-center justify-center text-xs font-bold flex-shrink-0">5</div>
+            <div>
+                <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">Online betalingen <span class="text-xs font-normal text-gray-400 dark:text-neutral-500">— optioneel</span></p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500">Koppel Stripe zodat klanten online kunnen betalen</p>
             </div>
         </div>
     </div>
@@ -282,6 +289,64 @@
 </div>
 @endif
 
+{{-- Stap 6: Stripe Connect (optioneel) --}}
+@if($stap === 6)
+<div>
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl mb-4 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">
+            <h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Online betalingen instellen</h2>
+            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Optioneel — je kunt dit ook later doen via Instellingen → Profiel</p>
+        </div>
+
+        <div class="px-6 py-5">
+            <div class="flex items-start gap-4 mb-5">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-200 mb-1">Betaling direct naar jouw rekening</p>
+                    <p class="text-sm text-gray-500 dark:text-neutral-400">Verbind je eigen Stripe account zodat klanten online betalen en het geld direct naar jou gaat. Heb je al een Stripe account? Dan duurt dit minder dan 5 minuten.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 mb-2">
+                <div class="text-center px-3 py-3 bg-gray-50 dark:bg-neutral-700/50 rounded-xl">
+                    <p class="text-xs font-semibold text-gray-700 dark:text-neutral-300 mb-0.5">Direct uitbetaald</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500">Geld naar jouw bankrekening</p>
+                </div>
+                <div class="text-center px-3 py-3 bg-gray-50 dark:bg-neutral-700/50 rounded-xl">
+                    <p class="text-xs font-semibold text-gray-700 dark:text-neutral-300 mb-0.5">Eigen dashboard</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500">Beheer via Stripe zelf</p>
+                </div>
+                <div class="text-center px-3 py-3 bg-gray-50 dark:bg-neutral-700/50 rounded-xl">
+                    <p class="text-xs font-semibold text-gray-700 dark:text-neutral-300 mb-0.5">Geen verplicht</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500">Klanten kunnen ook ter plaatse betalen</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex gap-3">
+        <button wire:click="naarStap(5)" type="button"
+                class="px-4 py-3 rounded-xl text-sm font-medium text-gray-500 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 transition-colors">
+            ← Terug
+        </button>
+        <button wire:click="afronden" type="button"
+                class="py-3 px-5 rounded-xl text-sm font-medium text-gray-500 dark:text-neutral-400 border border-gray-200 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+            Overslaan
+        </button>
+        <button wire:click="voltooienEnStripe" type="button"
+                wire:loading.attr="disabled" wire:loading.class="opacity-60 cursor-wait"
+                class="flex-1 py-3 px-6 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
+            <span wire:loading.remove wire:target="voltooienEnStripe">Stripe account verbinden →</span>
+            <span wire:loading wire:target="voltooienEnStripe">Doorsturen...</span>
+        </button>
+    </div>
+</div>
+@endif
+
 {{-- Stap 5: Media (optioneel) --}}
 @if($stap === 5)
 <div>
@@ -348,15 +413,15 @@
                 class="px-4 py-3 rounded-xl text-sm font-medium text-gray-500 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 transition-colors">
             ← Terug
         </button>
-        <button wire:click="afronden" type="button"
+        <button wire:click="naarStap(6)" type="button"
                 class="py-3 px-5 rounded-xl text-sm font-medium text-gray-500 dark:text-neutral-400 border border-gray-200 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
             Overslaan
         </button>
-        <button wire:click="afrondenMetMedia" type="button"
+        <button wire:click="slaMediaOpEnNaarStap6" type="button"
                 wire:loading.attr="disabled" wire:loading.class="opacity-60 cursor-wait"
                 class="flex-1 py-3 px-6 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
-            <span wire:loading.remove wire:target="afrondenMetMedia">Opslaan & afronden</span>
-            <span wire:loading wire:target="afrondenMetMedia">Uploaden...</span>
+            <span wire:loading.remove wire:target="slaMediaOpEnNaarStap6">Opslaan & volgende</span>
+            <span wire:loading wire:target="slaMediaOpEnNaarStap6">Uploaden...</span>
         </button>
     </div>
 </div>
