@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Stripe\Checkout\Session as StripeSession;
 use Stripe\Price;
 use Stripe\Stripe;
 
@@ -24,8 +25,8 @@ class SubscriptionController extends Controller
             $session = $user->newSubscription('default', $priceId)
                 ->trialDays(14)
                 ->checkout([
-                    'success_url' => route('kapper.abonnement') . '?stripe=success',
-                    'cancel_url'  => route('kapper.abonnement') . '?stripe=cancel',
+                    'success_url' => route('kapper.subscription.succes') . '?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url'  => route('kapper.subscription.cancel'),
                     'metadata'    => ['kapper_id' => $kapper?->id],
                     'allow_promotion_codes' => true,
                 ]);
