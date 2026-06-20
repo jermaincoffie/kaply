@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e1e22">
+    <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="apple-touch-icon" href="/images/PWA-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -27,8 +28,8 @@
     {{-- Header --}}
     <header class="sticky top-0 z-30 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700 h-14 flex items-center px-4 sm:px-6 gap-4">
         <a href="{{ route('home') }}" class="hover:opacity-80 transition-opacity flex-shrink-0">
-            <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-16 w-auto" alt="Kaply">
-            <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-16 w-auto" alt="Kaply">
+            <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-12 w-auto" alt="Kaply">
+            <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="hidden dark:block h-12 w-auto" alt="Kaply">
         </a>
 
         <div class="flex-1"></div>
@@ -197,5 +198,6 @@
     <x-pwa-install-banner />
 </body>
 </html>
+
 
 

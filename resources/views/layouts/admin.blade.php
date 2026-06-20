@@ -1,12 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin – {{ config('app.name') }}</title>
+    <title>Admin â€“ {{ config('app.name') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e1e22">
+    <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="apple-touch-icon" href="/images/PWA-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -39,7 +40,7 @@
        class="flex items-center gap-2 px-4 h-14 border-b border-gray-100 dark:border-neutral-700 flex-shrink-0 hover:opacity-80 transition-opacity">
         <div class="min-w-0 flex flex-col">
             <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-12 w-auto" alt="Kaply">
-            <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-12 w-auto" alt="Kaply">
+            <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="hidden dark:block h-12 w-auto" alt="Kaply">
             <div class="text-xs text-gray-500 dark:text-neutral-400 truncate leading-tight mt-0.5">
                 Admin Panel
             </div>
@@ -83,6 +84,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
             </svg>
             Klanten
+        </a>
+
+        {{-- Facturatie --}}
+        <a href="{{ route('admin.facturatie') }}" class="{{ $linkClass('admin.facturatie') }}">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Facturatie
         </a>
 
     </nav>
@@ -284,3 +293,4 @@
 
 </body>
 </html>
+

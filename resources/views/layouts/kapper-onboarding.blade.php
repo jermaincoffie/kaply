@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name') }} — Aan de slag</title>
+    <title>{{ config('app.name') }} â€” Aan de slag</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -20,7 +21,7 @@
         {{-- Header --}}
         <div class="flex items-center justify-center pt-8 pb-6">
             <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-16 w-auto" alt="Kaply">
-            <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-16 w-auto" alt="Kaply">
+            <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="hidden dark:block h-16 w-auto" alt="Kaply">
         </div>
 
         {{-- Content --}}
@@ -34,3 +35,4 @@
     @livewireScripts
 </body>
 </html>
+
