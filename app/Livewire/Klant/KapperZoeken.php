@@ -2,20 +2,31 @@
 
 namespace App\Livewire\Klant;
 
+use App\Models\Dienst;
 use App\Models\Kapper;
 use Livewire\Component;
 
 class KapperZoeken extends Component
 {
-    public string $zoekterm = '';
+    public string $zoekterm    = '';
+    public string $dienstFilter = '';
+    public string $prijsMax    = '';
 
     public function filterStad(string $stad): void
     {
         $this->zoekterm = $stad;
     }
 
+    public function resetFilters(): void
+    {
+        $this->dienstFilter = '';
+        $this->prijsMax     = '';
+    }
+
     public function render()
     {
+        $prijsMaxCenten = $this->prijsMax !== '' ? (int) $this->prijsMax * 100 : null;
+
         $kappers = Kapper::where('actief', true)
             ->where('abonnement_status', 'actief')
             ->when($this->zoekterm, function ($query) {
@@ -23,6 +34,16 @@ class KapperZoeken extends Component
                     $q->where('stad', 'like', "%{$this->zoekterm}%")
                       ->orWhere('salon_naam', 'like', "%{$this->zoekterm}%");
                 });
+            })
+            ->when($this->dienstFilter, function ($query) {
+                $query->whereHas('diensten', fn($q) =>
+                    $q->where('naam', 'like', "%{$this->dienstFilter}%")
+                );
+            })
+            ->when($prijsMaxCenten, function ($query) use ($prijsMaxCenten) {
+                $query->whereHas('diensten', fn($q) =>
+                    $q->where('prijs', '<=', $prijsMaxCenten)
+                );
             })
             ->with('diensten')
             ->withAvg(['reviews as gem_rating' => fn($q) => $q->where('zichtbaar', true)], 'rating')
@@ -42,7 +63,23 @@ class KapperZoeken extends Component
             ->values()
             ->take(8);
 
-        return view('livewire.klant.kapper-zoeken', compact('kappers', 'kappers_totaal', 'steden'))
-            ->layout('layouts.publiek');
+        $diensteNamen = Dienst::whereHas('kapper', fn($q) =>
+                $q->where('actief', true)->where('abonnement_status', 'actief')
+            )
+            ->select('naam')
+            ->groupBy('naam')
+            ->orderByRaw('COUNT(*) DESC')
+            ->limit(20)
+            ->pluck('naam');
+
+        $heeftFilters = $this->dienstFilter !== '' || $this->prijsMax !== '';
+
+        return view('livewire.klant.kapper-zoeken', compact(
+            'kappers', 'kappers_totaal', 'steden', 'diensteNamen', 'heeftFilters'
+        ))
+            ->layout('layouts.publiek', [
+                'seoTitle'       => 'Kaply - Online kapper afspraak boeken in jouw buurt',
+                'seoDescription' => 'Vind en boek een kapper bij jou in de buurt via Kaply. Kies uit tientallen kappers, bekijk reviews en boek direct online zonder account.',
+            ]);
     }
 }
