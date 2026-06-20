@@ -1,4 +1,4 @@
-<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220" class="relative bg-white dark:bg-neutral-900">
+<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220" class="relative bg-white dark:bg-neutral-900 overflow-x-hidden">
 
     {{-- Sticky zoekbalk --}}
     <div x-cloak x-show="sticky"
