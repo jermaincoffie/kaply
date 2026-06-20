@@ -184,8 +184,8 @@
                 Wis
             </button>
             @endif
-            <span class="ml-auto text-xs text-gray-400 dark:text-neutral-500">
-                {{ $kappers->count() }} {{ $kappers->count() === 1 ? 'kapper' : 'kappers' }}
+            <span class="ml-auto text-xs text-gray-400 dark:text-neutral-500 whitespace-nowrap">
+                Toon alle kappers ({{ $kappers->count() }})
             </span>
         </div>
         @endif
