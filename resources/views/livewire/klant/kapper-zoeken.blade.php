@@ -78,7 +78,7 @@
         </div>
         {{-- Fade onderaan hero naar wit --}}
         <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900"></div>
-        <div class="text-center mb-10 sm:mb-14">
+        <div class="text-center mb-24 sm:mb-44">
             <p class="hero-anim hero-anim-1 text-sm font-medium text-gray-400 dark:text-neutral-500 mb-3 tracking-widest uppercase">Welkom bij</p>
             <h1 class="hero-anim hero-anim-2 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-0">
                 {{ config('app.name') }}
