@@ -25,7 +25,8 @@ class KapperZoeken extends Component
 
     public function render()
     {
-        $prijsMaxCenten = $this->prijsMax !== '' ? (int) $this->prijsMax * 100 : null;
+        // prijsMax keys zijn 'p15', 'p25' etc. om int-casting in PHP/JS te vermijden
+        $prijsMaxCenten = $this->prijsMax ? (int) substr($this->prijsMax, 1) * 100 : null;
 
         $kappers = Kapper::where('actief', true)
             ->where('abonnement_status', 'actief')

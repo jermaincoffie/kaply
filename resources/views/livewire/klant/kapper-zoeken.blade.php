@@ -107,27 +107,23 @@
         {{-- Filter balk --}}
         @if($diensteNamen->count() > 0)
         <div class="flex flex-wrap items-center gap-2 mb-5">
-            <select wire:model.live="dienstFilter"
-                    class="text-sm border border-gray-200 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                <option value="">Alle diensten</option>
-                @foreach($diensteNamen as $naam)
-                <option value="{{ $naam }}">{{ $naam }}</option>
-                @endforeach
-            </select>
+            <x-select
+                wire-target="dienstFilter"
+                :current="$dienstFilter"
+                :options="collect([''=>'Alle diensten'])->merge($diensteNamen->mapWithKeys(fn($n)=>[$n=>$n]))->toArray()"
+                placeholder="Alle diensten"
+            />
 
-            <select wire:model.live="prijsMax"
-                    class="text-sm border border-gray-200 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                <option value="">Alle prijzen</option>
-                <option value="15">Tot €15</option>
-                <option value="25">Tot €25</option>
-                <option value="40">Tot €40</option>
-                <option value="60">Tot €60</option>
-                <option value="100">Tot €100</option>
-            </select>
+            <x-select
+                wire-target="prijsMax"
+                :current="$prijsMax"
+                :options="['' => 'Alle prijzen', 'p15' => 'Tot €15', 'p25' => 'Tot €25', 'p40' => 'Tot €40', 'p60' => 'Tot €60', 'p100' => 'Tot €100']"
+                placeholder="Alle prijzen"
+            />
 
             @if($heeftFilters)
             <button wire:click="resetFilters"
-                    class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-gray-500 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 border border-gray-200 dark:border-neutral-700 hover:border-red-300 dark:hover:border-red-700 bg-white dark:bg-neutral-800 transition-colors">
+                    class="inline-flex items-center gap-1.5 py-2 pl-3 pr-3 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-700 dark:text-neutral-300 shadow-sm hover:border-red-300 dark:hover:border-red-700 hover:text-red-600 dark:hover:text-red-400 transition-colors">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
