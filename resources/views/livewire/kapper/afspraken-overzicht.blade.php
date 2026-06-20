@@ -157,12 +157,7 @@
                     {{ $afspraak->betaalmethode === 'online' ? 'Online' : 'In zaak' }}
                 </p>
                 @if($afspraak->status === 'gepland' && $afspraak->datum->lt(today()))
-                <button
-                    @click.prevent="$dispatch('open-confirm', {
-                        title: 'No-show registreren',
-                        message: 'Markeer {{ addslashes(str($afspraak->klant?->name ?? $afspraak->walk_in_naam ?? 'klant')->title()->toString()) }} als no-show? De klant ontvangt een e-mail.',
-                        action: () => $wire.markeerNoShow({{ $afspraak->id }})
-                    })"
+                <button wire:click="openNoShowModal({{ $afspraak->id }})"
                     class="text-xs font-medium text-red-500 dark:text-red-400 hover:underline">
                     No-show
                 </button>
