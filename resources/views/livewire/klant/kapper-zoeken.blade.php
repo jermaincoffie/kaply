@@ -63,7 +63,7 @@
     </div>
 
     {{-- Results --}}
-    <div class="relative z-10 max-w-5xl mx-auto px-4 pb-6">
+    <div class="relative z-20 max-w-5xl mx-auto px-4 pb-6">
 
         {{-- Stats + stad chips (alleen zonder zoekterm) --}}
         @if(!$zoekterm)
