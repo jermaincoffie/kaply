@@ -71,7 +71,7 @@
     </div>
 
     {{-- Hero --}}
-    <div class="relative z-30 min-h-[65vh] sm:min-h-0 flex flex-col justify-center py-16 sm:py-28 px-4">
+    <div class="relative z-30 min-h-[70vh] sm:min-h-0 flex flex-col justify-center py-24 sm:py-40 px-4">
         {{-- Aurora: alleen in hero --}}
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,#93c5fd_10%,#a5b4fc_15%,#bfdbfe_20%,#c4b5fd_25%,#60a5fa_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-[0.38] will-change-transform animate-aurora motion-reduce:animate-none"></div>
@@ -86,7 +86,7 @@
         </div>
 
         {{-- Pill zoekbalk --}}
-        <div class="hero-anim hero-anim-4 max-w-3xl mx-auto w-full">
+        <div class="hero-anim hero-anim-4 max-w-5xl mx-auto w-full">
             <div class="flex items-center bg-white/70 dark:bg-neutral-800 backdrop-blur-sm border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 @if($steden->count() > 0)
                 @php $stadOpties = collect([''=>'Alle steden'])->merge($steden->mapWithKeys(fn($s)=>[$s=>$s]))->toArray(); @endphp
@@ -150,7 +150,7 @@
     </div>
 
     {{-- Results --}}
-    <div class="relative z-20 max-w-5xl mx-auto px-4 pb-6">
+    <div class="relative z-20 max-w-5xl mx-auto px-4 pt-8 pb-6">
 
         {{-- Zoekterm feedback --}}
         @if($zoekterm)
@@ -161,7 +161,7 @@
 
         {{-- Filter rij --}}
         @if($diensteNamen->count() > 0)
-        <div class="flex items-center gap-2 mb-5">
+        <div class="flex items-center gap-2 mb-8">
             <x-select
                 wire-target="dienstFilter"
                 :current="$dienstFilter"
