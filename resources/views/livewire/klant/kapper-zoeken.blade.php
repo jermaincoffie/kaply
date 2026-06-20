@@ -71,21 +71,21 @@
     </div>
 
     {{-- Hero --}}
-    <div class="relative z-30 flex flex-col pt-24 sm:pt-44 pb-6 px-4">
+    <div class="relative z-30 min-h-[65vh] sm:min-h-0 flex flex-col justify-center py-16 sm:py-28 px-4">
         {{-- Aurora: alleen in hero --}}
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,#93c5fd_10%,#a5b4fc_15%,#bfdbfe_20%,#c4b5fd_25%,#60a5fa_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-[0.38] will-change-transform animate-aurora motion-reduce:animate-none"></div>
         </div>
         {{-- Fade onderaan hero naar wit --}}
         <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900"></div>
-        <div class="text-center mb-24 sm:mb-44">
+        <div class="text-center mb-10 sm:mb-14">
             <p class="hero-anim hero-anim-1 text-sm font-medium text-gray-400 dark:text-neutral-500 mb-3 tracking-widest uppercase">Welkom bij</p>
             <h1 class="hero-anim hero-anim-2 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-0">
                 {{ config('app.name') }}
             </h1>
         </div>
 
-        {{-- Pill zoekbalk + filters --}}
+        {{-- Pill zoekbalk --}}
         <div class="hero-anim hero-anim-4 max-w-5xl mx-auto w-full">
             <div class="flex items-center bg-white/70 dark:bg-neutral-800 backdrop-blur-sm border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 @if($steden->count() > 0)
@@ -146,44 +146,44 @@
                 </button>
                 @endif
             </div>
-
-            {{-- Filters direct onder zoekbalk --}}
-            @if($diensteNamen->count() > 0)
-            <div class="flex items-center gap-2 mt-6">
-                <x-select
-                    wire-target="dienstFilter"
-                    :current="$dienstFilter"
-                    :options="collect([''=>'Alle diensten'])->merge($diensteNamen->mapWithKeys(fn($n)=>[$n=>$n]))->toArray()"
-                    placeholder="Alle diensten"
-                />
-                <x-select
-                    wire-target="prijsMax"
-                    :current="$prijsMax"
-                    :options="['' => 'Alle prijzen', 'p15' => 'Tot €15', 'p25' => 'Tot €25', 'p40' => 'Tot €40', 'p60' => 'Tot €60', 'p100' => 'Tot €100']"
-                    placeholder="Alle prijzen"
-                />
-                @if($heeftFilters)
-                <button wire:click="resetFilters"
-                        class="inline-flex items-center gap-1 py-1.5 px-2.5 rounded-lg text-xs text-gray-500 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 border border-gray-200 dark:border-neutral-700 hover:border-red-300 dark:hover:border-red-700 bg-white dark:bg-neutral-800 transition-colors">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                    Wis
-                </button>
-                @endif
-            </div>
-            @endif
         </div>
     </div>
 
     {{-- Results --}}
-    <div class="relative z-20 max-w-5xl mx-auto px-4 pt-4 pb-6">
+    <div class="relative z-20 max-w-5xl mx-auto px-4 pb-6">
 
         {{-- Zoekterm feedback --}}
         @if($zoekterm)
         <p class="text-sm text-gray-500 dark:text-neutral-400 mb-3">
             Resultaten voor <span class="font-semibold text-gray-700 dark:text-neutral-300">"{{ $zoekterm }}"</span>
         </p>
+        @endif
+
+        {{-- Filter rij --}}
+        @if($diensteNamen->count() > 0)
+        <div class="flex items-center gap-2 mb-5">
+            <x-select
+                wire-target="dienstFilter"
+                :current="$dienstFilter"
+                :options="collect([''=>'Alle diensten'])->merge($diensteNamen->mapWithKeys(fn($n)=>[$n=>$n]))->toArray()"
+                placeholder="Alle diensten"
+            />
+            <x-select
+                wire-target="prijsMax"
+                :current="$prijsMax"
+                :options="['' => 'Alle prijzen', 'p15' => 'Tot €15', 'p25' => 'Tot €25', 'p40' => 'Tot €40', 'p60' => 'Tot €60', 'p100' => 'Tot €100']"
+                placeholder="Alle prijzen"
+            />
+            @if($heeftFilters)
+            <button wire:click="resetFilters"
+                    class="inline-flex items-center gap-1 py-1.5 px-2.5 rounded-lg text-xs text-gray-500 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 border border-gray-200 dark:border-neutral-700 hover:border-red-300 dark:hover:border-red-700 bg-white dark:bg-neutral-800 transition-colors">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                Wis
+            </button>
+            @endif
+        </div>
         @endif
 
     </div>{{-- einde max-w-5xl --}}
