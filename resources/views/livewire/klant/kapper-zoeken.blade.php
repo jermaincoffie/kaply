@@ -107,48 +107,34 @@
         {{-- Filter balk --}}
         @if($diensteNamen->count() > 0)
         <div class="flex flex-wrap items-center gap-2 mb-5">
-            {{-- Dienst filter --}}
-            <div class="relative">
-                <select wire:model.live="dienstFilter"
-                        class="appearance-none pl-3 pr-8 py-2 rounded-full text-sm border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer {{ $dienstFilter ? 'border-blue-400 dark:border-blue-500 text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30' : '' }}">
-                    <option value="">Alle diensten</option>
-                    @foreach($diensteNamen as $naam)
-                    <option value="{{ $naam }}">{{ $naam }}</option>
-                    @endforeach
-                </select>
-                <svg class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-            </div>
+            <select wire:model.live="dienstFilter"
+                    class="text-sm border border-gray-200 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">Alle diensten</option>
+                @foreach($diensteNamen as $naam)
+                <option value="{{ $naam }}">{{ $naam }}</option>
+                @endforeach
+            </select>
 
-            {{-- Max prijs filter --}}
-            <div class="relative">
-                <select wire:model.live="prijsMax"
-                        class="appearance-none pl-3 pr-8 py-2 rounded-full text-sm border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer {{ $prijsMax ? 'border-blue-400 dark:border-blue-500 text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30' : '' }}">
-                    <option value="">Alle prijzen</option>
-                    <option value="15">Tot €15</option>
-                    <option value="25">Tot €25</option>
-                    <option value="40">Tot €40</option>
-                    <option value="60">Tot €60</option>
-                    <option value="100">Tot €100</option>
-                </select>
-                <svg class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-            </div>
+            <select wire:model.live="prijsMax"
+                    class="text-sm border border-gray-200 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">Alle prijzen</option>
+                <option value="15">Tot €15</option>
+                <option value="25">Tot €25</option>
+                <option value="40">Tot €40</option>
+                <option value="60">Tot €60</option>
+                <option value="100">Tot €100</option>
+            </select>
 
-            {{-- Wis filters --}}
             @if($heeftFilters)
             <button wire:click="resetFilters"
-                    class="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium text-gray-500 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 border border-gray-200 dark:border-neutral-700 hover:border-red-300 dark:hover:border-red-700 bg-white dark:bg-neutral-800 transition-colors">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-gray-500 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 border border-gray-200 dark:border-neutral-700 hover:border-red-300 dark:hover:border-red-700 bg-white dark:bg-neutral-800 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
                 Wis filters
             </button>
             @endif
 
-            {{-- Resultaat teller --}}
             <span class="ml-auto text-xs text-gray-400 dark:text-neutral-500">
                 {{ $kappers->count() }} {{ $kappers->count() === 1 ? 'kapper' : 'kappers' }}
             </span>
