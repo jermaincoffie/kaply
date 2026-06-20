@@ -11,14 +11,48 @@
          class="fixed top-14 left-0 right-0 z-20 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-neutral-700 shadow-sm px-4 py-2.5">
         <div class="max-w-2xl mx-auto flex items-center bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
             @if($steden->count() > 0)
-            <select wire:model.live="stadFilter"
-                    class="bg-transparent border-none outline-none text-sm text-gray-700 dark:text-neutral-300 focus:ring-0 cursor-pointer pr-1 flex-shrink-0 max-w-[110px]">
-                <option value="">Alle steden</option>
-                @foreach($steden as $stad)
-                <option value="{{ $stad }}">{{ $stad }}</option>
-                @endforeach
-            </select>
-            <div class="w-px h-4 bg-gray-200 dark:bg-neutral-600 mx-2 flex-shrink-0"></div>
+            @php $stadOpties = collect([''=>'Alle steden'])->merge($steden->mapWithKeys(fn($s)=>[$s=>$s]))->toArray(); @endphp
+            <div x-data="{
+                    open: false,
+                    current: '{{ $stadFilter }}',
+                    options: {{ Js::from($stadOpties) }},
+                    get label() { return this.options[this.current] ?? 'Alle steden'; },
+                    choose(val) { this.current = val; this.open = false; this.$wire.set('stadFilter', val); }
+                }"
+                @click.outside="open = false"
+                class="relative flex-shrink-0">
+                <button type="button" @click="open = !open"
+                        class="flex items-center gap-1 text-sm text-gray-700 dark:text-neutral-300 focus:outline-none whitespace-nowrap">
+                    <span x-text="label" class="max-w-[100px] truncate"></span>
+                    <svg class="w-3.5 h-3.5 text-gray-400 dark:text-neutral-500 flex-shrink-0 transition-transform duration-150"
+                         :class="open ? 'rotate-180' : ''"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="absolute left-0 top-full mt-2 z-50 w-52 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-xl overflow-hidden"
+                     style="display:none">
+                    <template x-for="(label, val) in options" :key="val">
+                        <button type="button" @click="choose(val)"
+                                class="w-full text-left flex items-center gap-2 px-3 py-2 text-sm transition-colors"
+                                :class="current === val ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-neutral-800'">
+                            <svg x-show="current === val" class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span x-show="current !== val" class="w-4 inline-block flex-shrink-0"></span>
+                            <span x-text="label"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+            <div class="w-px h-4 bg-gray-200 dark:bg-neutral-600 mx-3 flex-shrink-0"></div>
             @endif
             <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
@@ -56,14 +90,48 @@
         <div class="hero-anim hero-anim-4 max-w-2xl mx-auto">
             <div class="flex items-center bg-white/70 dark:bg-neutral-800 backdrop-blur-sm border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 @if($steden->count() > 0)
-                <select wire:model.live="stadFilter"
-                        class="bg-transparent border-none outline-none text-sm text-gray-700 dark:text-neutral-300 focus:ring-0 cursor-pointer pr-1 flex-shrink-0 max-w-[120px]">
-                    <option value="">Alle steden</option>
-                    @foreach($steden as $stad)
-                    <option value="{{ $stad }}">{{ $stad }}</option>
-                    @endforeach
-                </select>
-                <div class="w-px h-5 bg-gray-200 dark:bg-neutral-600 mx-3 flex-shrink-0"></div>
+                @php $stadOpties = collect([''=>'Alle steden'])->merge($steden->mapWithKeys(fn($s)=>[$s=>$s]))->toArray(); @endphp
+                <div x-data="{
+                        open: false,
+                        current: '{{ $stadFilter }}',
+                        options: {{ Js::from($stadOpties) }},
+                        get label() { return this.options[this.current] ?? 'Alle steden'; },
+                        choose(val) { this.current = val; this.open = false; this.$wire.set('stadFilter', val); }
+                    }"
+                    @click.outside="open = false"
+                    class="relative flex-shrink-0">
+                    <button type="button" @click="open = !open"
+                            class="flex items-center gap-1.5 text-sm text-gray-700 dark:text-neutral-300 focus:outline-none whitespace-nowrap">
+                        <span x-text="label" class="max-w-[120px] truncate"></span>
+                        <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 flex-shrink-0 transition-transform duration-150"
+                             :class="open ? 'rotate-180' : ''"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div x-show="open"
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute left-0 top-full mt-3 z-50 w-52 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-xl overflow-hidden"
+                         style="display:none">
+                        <template x-for="(label, val) in options" :key="val">
+                            <button type="button" @click="choose(val)"
+                                    class="w-full text-left flex items-center gap-2 px-3 py-2 text-sm transition-colors"
+                                    :class="current === val ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-neutral-800'">
+                                <svg x-show="current === val" class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span x-show="current !== val" class="w-4 inline-block flex-shrink-0"></span>
+                                <span x-text="label"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+                <div class="w-px h-5 bg-gray-200 dark:bg-neutral-600 mx-4 flex-shrink-0"></div>
                 @endif
                 <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
