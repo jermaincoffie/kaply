@@ -71,7 +71,7 @@
     </div>
 
     {{-- Hero --}}
-    <div class="relative z-30 min-h-[80vh] flex flex-col justify-center py-24 sm:py-40 px-4">
+    <div class="relative z-30 min-h-[72vh] flex flex-col justify-center py-16 sm:py-28 px-4">
         {{-- Aurora: alleen in hero --}}
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,#93c5fd_10%,#a5b4fc_15%,#bfdbfe_20%,#c4b5fd_25%,#60a5fa_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-[0.38] will-change-transform animate-aurora motion-reduce:animate-none"></div>
