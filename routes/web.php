@@ -58,7 +58,7 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
 
         // Abonnement routes — geen abonnement-check (anders redirect loop)
         Route::get('/abonnement', AbonnementBeheer::class)->name('abonnement');
-        Route::get('/abonnement/checkout', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');
+        Route::post('/abonnement/activeer', [SubscriptionController::class, 'subscribe'])->name('subscription.subscribe');
         Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
         Route::get('/abonnement/succes', AbonnementSucces::class)->name('subscription.succes');
         Route::get('/abonnement/geannuleerd', AbonnementCancel::class)->name('subscription.cancel');
