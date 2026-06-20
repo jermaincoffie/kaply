@@ -13,7 +13,8 @@ class AbonnementBeheer extends Component
 
     public function render()
     {
-        $user = auth()->user();
+        $user         = auth()->user();
+        $kapper       = $user->kapper;
         $subscription = $user->subscription('default');
 
         $inTrial = $subscription?->onTrial() ?? false;
@@ -22,12 +23,13 @@ class AbonnementBeheer extends Component
             : null;
 
         return view('livewire.kapper.abonnement-beheer', [
-            'subscription'   => $subscription,
-            'actief'         => $subscription?->active() ?? false,
-            'gepauzeerd'     => $subscription?->onGracePeriod() ?? false,
-            'eindDatum'      => $subscription?->ends_at,
-            'inTrial'        => $inTrial,
-            'trialDagenOver' => $trialDagenOver,
+            'subscription'          => $subscription,
+            'actief'                => $subscription?->active() ?? false,
+            'gepauzeerd'            => $subscription?->onGracePeriod() ?? false,
+            'eindDatum'             => $subscription?->ends_at,
+            'inTrial'               => $inTrial,
+            'trialDagenOver'        => $trialDagenOver,
+            'stripeConnectOnboarded' => $kapper?->stripe_connect_onboarded ?? false,
         ])->layout('layouts.kapper');
     }
 }

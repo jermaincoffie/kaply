@@ -58,17 +58,27 @@
                 </div>
             </div>
 
-            <div class="mt-5 pt-5 border-t border-gray-100 dark:border-neutral-700 flex items-center gap-3 flex-wrap">
-                <form method="POST" action="{{ route('kapper.subscription.subscribe') }}">
-                    @csrf
-                    <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
-                        </svg>
-                        Activeer abonnement · €25/maand excl. BTW
-                    </button>
-                </form>
-                <p class="text-xs text-gray-400 dark:text-neutral-500">Kosten worden afgeschreven van je Stripe-saldo</p>
+            <div class="mt-5 pt-5 border-t border-gray-100 dark:border-neutral-700">
+                @if($stripeConnectOnboarded)
+                    <form method="POST" action="{{ route('kapper.subscription.subscribe') }}">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
+                            </svg>
+                            Activeer abonnement · €25/maand excl. BTW
+                        </button>
+                    </form>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2">Kosten worden automatisch afgeschreven van je Stripe-saldo · geen creditcard nodig</p>
+                @else
+                    <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                        <p class="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">Eerst Stripe koppelen</p>
+                        <p class="text-sm text-amber-700 dark:text-amber-400 mb-3">Om een abonnement te activeren moet je je Stripe account koppelen. Het abonnement wordt dan automatisch van je Stripe-saldo afgeschreven.</p>
+                        <a href="{{ route('kapper.stripe.onboard') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-600 text-white text-sm font-semibold hover:bg-amber-700 transition-colors">
+                            Stripe account koppelen →
+                        </a>
+                    </div>
+                @endif
             </div>
 
         @elseif($actief)
@@ -147,16 +157,26 @@
             @endif
 
             <div class="mt-5 pt-5 border-t border-gray-100 dark:border-neutral-700">
-                <form method="POST" action="{{ route('kapper.subscription.subscribe') }}">
-                    @csrf
-                    <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
-                        </svg>
-                        Activeer abonnement · €25/maand excl. BTW
-                    </button>
-                </form>
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2">Kosten worden automatisch afgeschreven van je Stripe-saldo · geen creditcard nodig</p>
+                @if($stripeConnectOnboarded)
+                    <form method="POST" action="{{ route('kapper.subscription.subscribe') }}">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
+                            </svg>
+                            Activeer abonnement · €25/maand excl. BTW
+                        </button>
+                    </form>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2">Kosten worden automatisch afgeschreven van je Stripe-saldo · geen creditcard nodig</p>
+                @else
+                    <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                        <p class="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">Eerst Stripe koppelen</p>
+                        <p class="text-sm text-amber-700 dark:text-amber-400 mb-3">Om een abonnement te activeren moet je je Stripe account koppelen. Het abonnement wordt dan automatisch van je Stripe-saldo afgeschreven.</p>
+                        <a href="{{ route('kapper.stripe.onboard') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-600 text-white text-sm font-semibold hover:bg-amber-700 transition-colors">
+                            Stripe account koppelen →
+                        </a>
+                    </div>
+                @endif
             </div>
         @endif
     </div>
