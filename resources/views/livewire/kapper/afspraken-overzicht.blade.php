@@ -139,7 +139,7 @@
             <div class="flex items-start justify-between gap-2 mb-2">
                 <div class="min-w-0">
                     <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">
-                        {{ str($afspraak->klant->name)->title() }}
+                        {{ str($afspraak->klant?->name ?? $afspraak->walk_in_naam ?? 'Onbekend')->title() }}
                     </p>
                     <p class="text-xs text-gray-500 dark:text-neutral-400 mt-0.5 truncate">
                         {{ $afspraak->dienst->naam }}
@@ -156,6 +156,17 @@
                     <span class="mx-1">·</span>
                     {{ $afspraak->betaalmethode === 'online' ? 'Online' : 'In zaak' }}
                 </p>
+                @if($afspraak->status === 'gepland' && $afspraak->datum->lt(today()))
+                <button
+                    @click.prevent="$dispatch('open-confirm', {
+                        title: 'No-show registreren',
+                        message: 'Markeer {{ addslashes(str($afspraak->klant?->name ?? $afspraak->walk_in_naam ?? 'klant')->title()->toString()) }} als no-show? De klant ontvangt een e-mail.',
+                        action: () => $wire.markeerNoShow({{ $afspraak->id }})
+                    })"
+                    class="text-xs font-medium text-red-500 dark:text-red-400 hover:underline">
+                    No-show
+                </button>
+                @endif
             </div>
         </div>
         @empty
@@ -219,7 +230,7 @@
                     <td class="px-6 py-3">
                         <p class="font-medium text-gray-800 dark:text-neutral-100">{{ $afspraak->start_tijd }} – {{ $afspraak->eind_tijd }}</p>
                     </td>
-                    <td class="px-6 py-3.5 text-gray-700 dark:text-neutral-300">{{ str($afspraak->klant->name)->title() }}</td>
+                    <td class="px-6 py-3.5 text-gray-700 dark:text-neutral-300">{{ str($afspraak->klant?->name ?? $afspraak->walk_in_naam ?? 'Onbekend')->title() }}</td>
                     <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400 hidden md:table-cell">
                         {{ $afspraak->dienst->naam }}
                         <span class="text-xs text-gray-400 dark:text-neutral-500 ml-1">€ {{ $afspraak->dienst->prijs_in_euros }}</span>
@@ -240,9 +251,17 @@
                                 default       => 'bg-gray-100 text-gray-500',
                             };
                         @endphp
-                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badge }}">
-                            {{ ucfirst(str_replace('_', ' ', $afspraak->status)) }}
-                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badge }}">
+                                {{ ucfirst(str_replace('_', ' ', $afspraak->status)) }}
+                            </span>
+                            @if($afspraak->status === 'gepland' && $afspraak->datum->lt(today()))
+                            <button wire:click="openNoShowModal({{ $afspraak->id }})"
+                                    class="text-xs font-medium text-red-500 dark:text-red-400 hover:underline whitespace-nowrap">
+                                No-show
+                            </button>
+                            @endif
+                        </div>
                     </td>
                 </tr>
                 @empty
@@ -261,4 +280,84 @@
         </div>
         @endif
     </div>
+
+    {{-- No-show modal --}}
+    @if($noShowAfspraakId)
+    @php $nsAfspraak = $afspraken->firstWhere('id', $noShowAfspraakId) ?? \App\Models\Afspraak::with(['klant','dienst'])->find($noShowAfspraakId); @endphp
+    <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="absolute inset-0 bg-black/50" wire:click="sluitNoShowModal"></div>
+        <div class="relative w-full sm:max-w-sm bg-white dark:bg-neutral-800 sm:rounded-2xl rounded-t-2xl shadow-2xl">
+            <div class="sm:hidden flex justify-center pt-3 pb-1">
+                <div class="w-10 h-1 bg-gray-200 dark:bg-neutral-600 rounded-full"></div>
+            </div>
+            <div class="px-5 pt-5 pb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">No-show registreren</h3>
+                        @if($nsAfspraak)
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
+                            {{ str($nsAfspraak->klant?->name ?? $nsAfspraak->walk_in_naam ?? 'Onbekend')->title() }}
+                            · {{ $nsAfspraak->datum->format('d M Y') }} om {{ $nsAfspraak->start_tijd }}
+                        </p>
+                        @endif
+                    </div>
+                    <button wire:click="sluitNoShowModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                <div class="space-y-2 mb-5">
+                    <label class="flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-colors
+                        {{ $noShowOptie === 'waarschuwing' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-neutral-700 hover:border-gray-300' }}">
+                        <input type="radio" wire:model.live="noShowOptie" value="waarschuwing" class="mt-0.5 accent-blue-600">
+                        <div>
+                            <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">Alleen waarschuwing</p>
+                            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant ontvangt een email dat hij/zij niet is komen opdagen.</p>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-colors
+                        {{ $noShowOptie === 'fee' ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-neutral-700 hover:border-gray-300' }}">
+                        <input type="radio" wire:model.live="noShowOptie" value="fee" class="mt-0.5 accent-red-600">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">No-show fee in rekening brengen</p>
+                            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant ontvangt een betaallink via email.</p>
+                        </div>
+                    </label>
+
+                    @if($noShowOptie === 'fee')
+                    <div class="pl-2 pt-1">
+                        <label class="block text-xs font-medium text-gray-600 dark:text-neutral-400 mb-1.5">Bedrag</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 dark:text-neutral-500">€</span>
+                            <input wire:model="noShowFeeEuros"
+                                   type="text"
+                                   inputmode="decimal"
+                                   placeholder="0,00"
+                                   class="w-full pl-7 pr-3 py-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500">
+                        </div>
+                        @if($noShowFout)
+                        <p class="text-xs text-red-500 mt-1">{{ $noShowFout }}</p>
+                        @endif
+                    </div>
+                    @endif
+                </div>
+
+                <div class="flex gap-2">
+                    <button wire:click="sluitNoShowModal"
+                            class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                        Annuleer
+                    </button>
+                    <button wire:click="bevestigNoShow"
+                            wire:loading.attr="disabled"
+                            class="flex-1 py-2.5 text-sm font-semibold rounded-lg transition-colors disabled:opacity-60
+                                {{ $noShowOptie === 'fee' ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-gray-800 hover:bg-gray-900 dark:bg-neutral-600 dark:hover:bg-neutral-500 text-white' }}">
+                        <span wire:loading.remove>{{ $noShowOptie === 'fee' ? 'Stuur betaallink' : 'Verstuur waarschuwing' }}</span>
+                        <span wire:loading>Verwerken...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>

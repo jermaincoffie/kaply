@@ -4,7 +4,7 @@
         {{-- Logo --}}
         <div class="text-center mb-8">
             <img src="{{ asset('images/kaply-logo-light.png') }}" class="h-16 w-auto mx-auto dark:hidden" alt="Kaply">
-            <img src="{{ asset('images/kaply-logo-dark.png') }}" class="h-16 w-auto mx-auto hidden dark:block" alt="Kaply">
+            <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="h-16 w-auto mx-auto hidden dark:block" alt="Kaply">
         </div>
 
         <div class="bg-white dark:bg-neutral-800 rounded-2xl border border-gray-200 dark:border-neutral-700 shadow-sm p-8">
@@ -45,7 +45,9 @@
             @else
             {{-- Stap 2: code --}}
             <div>
-                <button wire:click="terugNaarEmail" class="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 mb-5 transition-colors">
+                <button type="button"
+                        onclick="kaplyLW(this,'terugNaarEmail')"
+                        class="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 mb-5 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     Terug
                 </button>
@@ -62,65 +64,29 @@
                 </div>
                 @endif
 
-                <form wire:submit="verifieerCode" class="space-y-5">
+                <form id="kaply-otp-form" onsubmit="kaplyOtpVerzend(event)" class="space-y-5">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-3 text-center">Inlogcode</label>
-
-                        <div
-                            x-data="{
-                                digits: ['','','','','',''],
-                                init() { this.$nextTick(() => this.$refs.d0.focus()); },
-                                onInput(idx, e) {
-                                    const v = e.target.value.replace(/\D/g,'').slice(-1);
-                                    this.digits[idx] = v;
-                                    e.target.value = v;
-                                    $wire.set('code', this.digits.join(''));
-                                    if (v && idx < 5) this.$refs['d'+(idx+1)].focus();
-                                    if (v && idx === 5 && this.digits.join('').length === 6) $wire.call('verifieerCode');
-                                },
-                                onKeydown(idx, e) {
-                                    if (e.key === 'Backspace' && !e.target.value && idx > 0) {
-                                        this.digits[idx-1] = '';
-                                        this.$refs['d'+(idx-1)].value = '';
-                                        this.$refs['d'+(idx-1)].focus();
-                                        $wire.set('code', this.digits.join(''));
-                                    }
-                                },
-                                onPaste(e) {
-                                    const text = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
-                                    e.preventDefault();
-                                    for (let i = 0; i < 6; i++) {
-                                        this.digits[i] = text[i] ?? '';
-                                        if (this.$refs['d'+i]) this.$refs['d'+i].value = text[i] ?? '';
-                                    }
-                                    $wire.set('code', this.digits.join(''));
-                                    const last = Math.min(text.length, 5);
-                                    this.$refs['d'+last].focus();
-                                    if (text.length === 6) $wire.call('verifieerCode');
-                                }
-                            }"
-                            class="flex gap-2 justify-center"
-                        >
-                            <input x-ref="d0" @input="onInput(0,$event)" @keydown="onKeydown(0,$event)" @paste.prevent="onPaste($event)"
-                                   type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code"
+                        <div class="flex gap-2 justify-center" id="kaply-otp-velden">
+                            <input data-otp type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code"
+                                   oninput="kaplyOtpInput(this)" onkeydown="kaplyOtpKeydown(event,this)" onpaste="kaplyOtpPlak(event,this)"
                                    class="w-11 h-14 text-center text-2xl font-bold rounded-xl border-2 border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 focus:outline-none focus:border-blue-500 transition-colors">
-                            <input x-ref="d1" @input="onInput(1,$event)" @keydown="onKeydown(1,$event)" @paste.prevent="onPaste($event)"
-                                   type="text" inputmode="numeric" maxlength="1"
+                            <input data-otp type="text" inputmode="numeric" maxlength="1"
+                                   oninput="kaplyOtpInput(this)" onkeydown="kaplyOtpKeydown(event,this)" onpaste="kaplyOtpPlak(event,this)"
                                    class="w-11 h-14 text-center text-2xl font-bold rounded-xl border-2 border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 focus:outline-none focus:border-blue-500 transition-colors">
-                            <input x-ref="d2" @input="onInput(2,$event)" @keydown="onKeydown(2,$event)" @paste.prevent="onPaste($event)"
-                                   type="text" inputmode="numeric" maxlength="1"
+                            <input data-otp type="text" inputmode="numeric" maxlength="1"
+                                   oninput="kaplyOtpInput(this)" onkeydown="kaplyOtpKeydown(event,this)" onpaste="kaplyOtpPlak(event,this)"
                                    class="w-11 h-14 text-center text-2xl font-bold rounded-xl border-2 border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 focus:outline-none focus:border-blue-500 transition-colors">
-                            <input x-ref="d3" @input="onInput(3,$event)" @keydown="onKeydown(3,$event)" @paste.prevent="onPaste($event)"
-                                   type="text" inputmode="numeric" maxlength="1"
+                            <input data-otp type="text" inputmode="numeric" maxlength="1"
+                                   oninput="kaplyOtpInput(this)" onkeydown="kaplyOtpKeydown(event,this)" onpaste="kaplyOtpPlak(event,this)"
                                    class="w-11 h-14 text-center text-2xl font-bold rounded-xl border-2 border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 focus:outline-none focus:border-blue-500 transition-colors">
-                            <input x-ref="d4" @input="onInput(4,$event)" @keydown="onKeydown(4,$event)" @paste.prevent="onPaste($event)"
-                                   type="text" inputmode="numeric" maxlength="1"
+                            <input data-otp type="text" inputmode="numeric" maxlength="1"
+                                   oninput="kaplyOtpInput(this)" onkeydown="kaplyOtpKeydown(event,this)" onpaste="kaplyOtpPlak(event,this)"
                                    class="w-11 h-14 text-center text-2xl font-bold rounded-xl border-2 border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 focus:outline-none focus:border-blue-500 transition-colors">
-                            <input x-ref="d5" @input="onInput(5,$event)" @keydown="onKeydown(5,$event)" @paste.prevent="onPaste($event)"
-                                   type="text" inputmode="numeric" maxlength="1"
+                            <input data-otp type="text" inputmode="numeric" maxlength="1"
+                                   oninput="kaplyOtpInput(this)" onkeydown="kaplyOtpKeydown(event,this)" onpaste="kaplyOtpPlak(event,this)"
                                    class="w-11 h-14 text-center text-2xl font-bold rounded-xl border-2 border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 focus:outline-none focus:border-blue-500 transition-colors">
                         </div>
-
                         @error('code') <p class="text-xs text-red-500 mt-2 text-center">{{ $message }}</p> @enderror
                     </div>
 
@@ -134,7 +100,7 @@
 
                 <p class="text-center text-xs text-gray-400 dark:text-neutral-500 mt-5">
                     Geen code ontvangen?
-                    <button wire:click="terugNaarEmail" class="text-blue-600 dark:text-blue-400 hover:underline">Opnieuw versturen</button>
+                    <button type="button" onclick="kaplyLW(this,'terugNaarEmail')" class="text-blue-600 dark:text-blue-400 hover:underline">Opnieuw versturen</button>
                 </p>
             </div>
             @endif
@@ -142,3 +108,55 @@
         </div>
     </div>
 </div>
+
+@script
+<script>
+window.kaplyLW = function(el, method) {
+    var root = (el && el.closest) ? el.closest('[wire\\:id]') : null;
+    if (!root) root = document.querySelector('[wire\\:id]');
+    if (root) Livewire.find(root.getAttribute('wire:id')).call(method);
+};
+
+window.kaplyOtpInput = function(el) {
+    var v = el.value.replace(/\D/g, '').slice(-1);
+    el.value = v;
+    if (v && el.nextElementSibling) el.nextElementSibling.focus();
+};
+
+window.kaplyOtpKeydown = function(e, el) {
+    if (e.key === 'Backspace' && !el.value && el.previousElementSibling) {
+        el.previousElementSibling.value = '';
+        el.previousElementSibling.focus();
+    }
+};
+
+window.kaplyOtpPlak = function(e, el) {
+    e.preventDefault();
+    var tekst = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+    var velden = document.querySelectorAll('#kaply-otp-velden [data-otp]');
+    velden.forEach(function(inp, i) { inp.value = tekst[i] || ''; });
+    var fi = Math.min(tekst.length, velden.length - 1);
+    if (velden[fi]) velden[fi].focus();
+    if (tekst.length === 6) {
+        var form = document.getElementById('kaply-otp-form');
+        if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }
+};
+
+window.kaplyOtpVerzend = function(e) {
+    e.preventDefault();
+    var velden = document.querySelectorAll('#kaply-otp-velden [data-otp]');
+    var code = Array.from(velden).map(function(i) { return i.value; }).join('');
+    var root = (e.target && e.target.closest) ? e.target.closest('[wire\\:id]') : null;
+    if (!root) root = document.querySelector('[wire\\:id]');
+    if (root) Livewire.find(root.getAttribute('wire:id')).call('verifieerCode', code);
+};
+
+window.addEventListener('otp-fokus', function() {
+    setTimeout(function() {
+        var el = document.querySelector('#kaply-otp-velden [data-otp]');
+        if (el) el.focus();
+    }, 100);
+});
+</script>
+@endscript

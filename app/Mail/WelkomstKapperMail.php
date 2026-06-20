@@ -17,7 +17,7 @@ class WelkomstKapperMail extends Mailable
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'Welkom bij Kaply – ' . $this->salonNaam);
+        return new Envelope(subject: 'Welkom bij Kaply | ' . $this->salonNaam);
     }
 
     public function content(): Content

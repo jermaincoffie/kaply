@@ -17,11 +17,11 @@ class AfspraakHerinneringMail extends Mailable
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'Herinnering: afspraak over ' . $this->timing . ' – ' . $this->afspraak->kapper->salon_naam);
+        return new Envelope(subject: 'Herinnering: afspraak over ' . $this->timing . ' | ' . $this->afspraak->kapper->salon_naam);
     }
 
     public function content(): Content
     {
-        return new Content(view: 'emails.afspraak-herinnering');
+        return new Content(view: 'emails.afspraak-herinnering', text: 'emails.text.afspraak-herinnering');
     }
 }

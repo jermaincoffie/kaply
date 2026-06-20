@@ -43,7 +43,7 @@
             <h2 class="text-lg font-semibold mb-3">4. Abonnement voor kappers</h2>
             <ul class="list-disc pl-5 space-y-1">
                 <li>Nieuwe kappers ontvangen een gratis proefperiode van 14 dagen</li>
-                <li>Na de proefperiode bedraagt het abonnement €25 per maand (incl. BTW)</li>
+                <li>Na de proefperiode bedraagt het abonnement €25 per maand (excl. BTW)</li>
                 <li>Het abonnement wordt maandelijks automatisch verlengd</li>
                 <li>Opzegging kan op elk moment, werkt per het einde van de lopende maand</li>
                 <li>Bij niet-betaling wordt toegang tot het platform opgeschort</li>

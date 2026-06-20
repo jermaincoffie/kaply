@@ -21,11 +21,11 @@ class AfspraakVerzetKapperMail extends Mailable
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'Afspraak verzet door klant – ' . $this->afspraak->kapper->salon_naam);
+        return new Envelope(subject: 'Afspraak verzet door klant | ' . $this->afspraak->kapper->salon_naam);
     }
 
     public function content(): Content
     {
-        return new Content(view: 'emails.afspraak-verzet-kapper');
+        return new Content(view: 'emails.afspraak-verzet-kapper', text: 'emails.text.afspraak-verzet-kapper');
     }
 }

@@ -70,7 +70,7 @@ Kijk bij twijfel naar `c:\Users\jerma\medisch-systeem\resources\views\admin\tena
 
 ## Deploy — CSS/Assets
 
-Na **elke** CSS of JS wijziging altijd lokaal builden en committen vóór deploy:
+⚠️ **Na ELKE blade, CSS of JS wijziging altijd `npm run build` draaien — ook als alleen blade verandert. Nieuwe Tailwind classes werken NIET zonder rebuild.**
 
 ```powershell
 npm run build

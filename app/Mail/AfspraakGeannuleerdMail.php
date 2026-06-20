@@ -17,11 +17,11 @@ class AfspraakGeannuleerdMail extends Mailable
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'Afspraak geannuleerd – ' . $this->afspraak->kapper->salon_naam);
+        return new Envelope(subject: 'Afspraak geannuleerd | ' . $this->afspraak->kapper->salon_naam);
     }
 
     public function content(): Content
     {
-        return new Content(view: 'emails.afspraak-geannuleerd');
+        return new Content(view: 'emails.afspraak-geannuleerd', text: 'emails.text.afspraak-geannuleerd');
     }
 }

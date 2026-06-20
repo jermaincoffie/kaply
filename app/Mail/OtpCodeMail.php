@@ -16,11 +16,11 @@ class OtpCodeMail extends Mailable
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'Jouw inlogcode – Kaply');
+        return new Envelope(subject: 'Jouw inlogcode | Kaply');
     }
 
     public function content(): Content
     {
-        return new Content(view: 'emails.otp-code');
+        return new Content(view: 'emails.otp-code', text: 'emails.text.otp-code');
     }
 }

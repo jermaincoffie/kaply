@@ -17,11 +17,11 @@ class AfspraakBevestigingMail extends Mailable
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'Afspraakbevestiging – ' . $this->afspraak->kapper->salon_naam);
+        return new Envelope(subject: 'Afspraakbevestiging | ' . $this->afspraak->kapper->salon_naam);
     }
 
     public function content(): Content
     {
-        return new Content(view: 'emails.afspraak-bevestiging');
+        return new Content(view: 'emails.afspraak-bevestiging', text: 'emails.text.afspraak-bevestiging');
     }
 }

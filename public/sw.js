@@ -1,4 +1,4 @@
-const CACHE = 'kaply-v1';
+const CACHE = 'kaply-v2';
 const STATIC = [
     '/offline.html',
 ];

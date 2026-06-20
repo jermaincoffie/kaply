@@ -7,7 +7,7 @@
 <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9fafb; margin: 0; padding: 32px 16px; color: #111827; }
     .card { background: #fff; border-radius: 12px; max-width: 520px; margin: 0 auto; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-    .header { background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); padding: 32px 32px 24px; text-align: center; }
+    .header { background: #3b82f6; padding: 32px 32px 24px; text-align: center; }
     .header h1 { color: #fff; margin: 0; font-size: 22px; font-weight: 700; }
     .header p { color: rgba(255,255,255,.8); margin: 6px 0 0; font-size: 14px; }
     .body { padding: 28px 32px; }

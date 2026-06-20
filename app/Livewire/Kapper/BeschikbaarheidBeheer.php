@@ -11,6 +11,9 @@ class BeschikbaarheidBeheer extends Component
 {
     public array $rooster = [];
     public int $bufferMinuten = 0;
+    public int $vooruitboekenMaanden = 2;
+    public string $annuleringUren = '';
+    public string $annuleringKosten = '';
     public string $sluitingsDatum = '';
     public string $sluitingsDatumTot = '';
     public string $sluitingsReden = '';
@@ -28,6 +31,9 @@ class BeschikbaarheidBeheer extends Component
         $this->icalUrl = route('kapper.ical', $kapper->ical_token);
 
         $this->bufferMinuten = (int) ($kapper->buffer_minuten ?? 0);
+        $this->vooruitboekenMaanden = (int) ($kapper->vooruitboeken_maanden ?? 2);
+        $this->annuleringUren = $kapper->annulering_uren !== null ? (string) $kapper->annulering_uren : '';
+        $this->annuleringKosten = $kapper->annulering_kosten ? number_format($kapper->annulering_kosten / 100, 2, '.', '') : '';
         $bestaand = $kapper->beschikbaarheden()->get()->keyBy('dag_van_week');
 
         for ($dag = 0; $dag <= 6; $dag++) {
@@ -42,10 +48,20 @@ class BeschikbaarheidBeheer extends Component
 
     public function opslaan(): void
     {
-        $this->validate(['bufferMinuten' => 'integer|min:0|max:60']);
+        $this->validate([
+            'bufferMinuten'        => 'integer|min:0|max:60',
+            'vooruitboekenMaanden' => 'integer|in:1,2,3,6',
+            'annuleringUren'       => 'nullable|integer|in:1,2,4,8,12,24,48',
+            'annuleringKosten'     => 'nullable|numeric|min:0|max:999',
+        ]);
 
         $kapper = auth()->user()->kapper;
-        $kapper->update(['buffer_minuten' => $this->bufferMinuten]);
+        $kapper->update([
+            'buffer_minuten'        => $this->bufferMinuten,
+            'vooruitboeken_maanden' => $this->vooruitboekenMaanden,
+            'annulering_uren'       => $this->annuleringUren !== '' ? (int) $this->annuleringUren : null,
+            'annulering_kosten'     => $this->annuleringKosten !== '' ? (int) round((float) $this->annuleringKosten * 100) : null,
+        ]);
         $kapper->beschikbaarheden()->delete();
 
         foreach ($this->rooster as $dag => $data) {

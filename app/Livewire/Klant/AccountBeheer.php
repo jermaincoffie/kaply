@@ -65,9 +65,15 @@ class AccountBeheer extends Component
         $this->dispatch('wachtwoord-opgeslagen');
     }
 
+    public function verwijderFavoriet(int $kapperId): void
+    {
+        auth()->user()->favorieteKappers()->detach($kapperId);
+    }
+
     public function render()
     {
-        return view('livewire.klant.account-beheer')
-            ->layout('layouts.klant', ['title' => 'Account']);
+        return view('livewire.klant.account-beheer', [
+            'favorieteKappers' => auth()->user()->favorieteKappers()->get(),
+        ])->layout('layouts.klant', ['title' => 'Account']);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Afspraak;
 use App\Models\Dienst;
 use App\Models\Kapper;
 use App\Models\Kortingscode;
+use App\Models\Wachtlijst;
 use App\Notifications\NieuweAfspraakNotificatie;
 use App\Services\BeschikbaarheidsService;
 use Carbon\Carbon;
@@ -28,11 +29,55 @@ class BoekingWizard extends Component
     public string $kortingLabel         = '';
     public string $kortingFout          = '';
 
+    // Wachtlijst
+    public bool   $toonWachtlijstForm   = false;
+    public string $wachtlijstNaam       = '';
+    public string $wachtlijstEmail      = '';
+    public string $wachtlijstTelefoon   = '';
+    public bool   $wachtlijstVerstuurd  = false;
+    public string $wachtlijstFout       = '';
+
     public function mount(string $kapperSlug, int $dienstId): void
     {
         $this->kapper = Kapper::where('slug', $kapperSlug)->where('actief', true)->firstOrFail();
         $this->dienst = Dienst::where('id', $dienstId)->where('kapper_id', $this->kapper->id)->firstOrFail();
         $this->gekozenDatum = Carbon::now()->addDay()->toDateString();
+
+        if (auth()->check()) {
+            $this->wachtlijstNaam  = auth()->user()->name;
+            $this->wachtlijstEmail = auth()->user()->email;
+        }
+    }
+
+    public function wachtlijstAanmelden(): void
+    {
+        $this->wachtlijstFout = '';
+        $this->validate([
+            'wachtlijstNaam'     => 'required|string|min:2',
+            'wachtlijstEmail'    => 'required|email',
+            'wachtlijstTelefoon' => 'nullable|string|max:20',
+        ]);
+
+        $bestaatAl = Wachtlijst::where('kapper_id', $this->kapper->id)
+            ->where('email', $this->wachtlijstEmail)
+            ->exists();
+
+        if ($bestaatAl) {
+            $this->wachtlijstFout = 'Dit e-mailadres staat al op de wachtlijst.';
+            return;
+        }
+
+        Wachtlijst::create([
+            'kapper_id'      => $this->kapper->id,
+            'klant_id'       => auth()->id(),
+            'naam'           => $this->wachtlijstNaam,
+            'email'          => $this->wachtlijstEmail,
+            'telefoonnummer' => $this->wachtlijstTelefoon ?: null,
+            'status'         => 'wachtend',
+        ]);
+
+        $this->wachtlijstVerstuurd = true;
+        $this->toonWachtlijstForm  = false;
     }
 
     public function kortingscodeToepassen(): void
@@ -74,8 +119,10 @@ class BoekingWizard extends Component
 
     public function bevestig(): void
     {
+        $maxDatum = Carbon::now()->addMonths($this->kapper->vooruitboeken_maanden ?? 2)->toDateString();
+
         $this->validate([
-            'gekozenDatum'    => 'required|date|after_or_equal:today',
+            'gekozenDatum'    => "required|date|after_or_equal:today|before_or_equal:{$maxDatum}",
             'gekozenTijdslot' => 'required|string',
             'betaalmethode'   => 'required|in:online,in_zaak',
         ]);
@@ -145,7 +192,9 @@ class BoekingWizard extends Component
 
         $teBetalenCenten = max(0, $this->dienst->prijs - $this->kortingBedrag);
 
-        return view('livewire.klant.boeking-wizard', compact('vrijeslots', 'teBetalenCenten'))
+        $maxDatum = Carbon::now()->addMonths($this->kapper->vooruitboeken_maanden ?? 2)->toDateString();
+
+        return view('livewire.klant.boeking-wizard', compact('vrijeslots', 'teBetalenCenten', 'maxDatum'))
             ->layout('layouts.publiek');
     }
 }

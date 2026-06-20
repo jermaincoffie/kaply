@@ -44,10 +44,14 @@ class Inloggen extends Component
         Mail::to($this->email)->send(new OtpCodeMail($code));
 
         $this->stap = 'code';
+        $this->dispatch('otp-fokus');
     }
 
-    public function verifieerCode(): void
+    public function verifieerCode(string $otpCode = ''): void
     {
+        if ($otpCode !== '') {
+            $this->code = $otpCode;
+        }
         $this->validate(['code' => 'required|digits:6']);
         $this->fout = '';
 

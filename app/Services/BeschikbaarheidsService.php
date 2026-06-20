@@ -60,6 +60,9 @@ class BeschikbaarheidsService
 
         $bufferMinuten = (int) ($kapper->buffer_minuten ?? 0);
 
+        // Geen slots voor datums die al voorbij zijn
+        if ($date->toDateString() < now()->toDateString()) return [];
+
         $slots = [];
         $current = Carbon::parse("{$datum} {$beschikbaarheid->start_tijd}");
         $eind    = Carbon::parse("{$datum} {$beschikbaarheid->eind_tijd}");
@@ -79,6 +82,14 @@ class BeschikbaarheidsService
             if ($bezettingen < $maxCapaciteit) $slots[] = $slotStart;
 
             $current->addMinutes(30);
+        }
+
+        // Filter slots die vandaag al voorbij zijn
+        if ($date->isToday()) {
+            $slots = array_values(array_filter(
+                $slots,
+                fn($slot) => Carbon::parse("{$datum} {$slot}")->gt(now())
+            ));
         }
 
         return $slots;

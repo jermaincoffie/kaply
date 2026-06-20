@@ -4,8 +4,10 @@ namespace App\Livewire\Klant;
 
 use App\Mail\AfspraakGeannuleerdMail;
 use App\Mail\AfspraakVerzetKapperMail;
+use App\Mail\WachtlijstNotificatieMail;
 use App\Models\Afspraak;
 use App\Models\Review;
+use App\Models\Wachtlijst;
 use App\Notifications\AfspraakGeannuleerdNotificatie;
 use App\Notifications\AfspraakVerzetNotificatie;
 use App\Services\BeschikbaarheidsService;
@@ -18,6 +20,9 @@ class MijnAfspraken extends Component
     public ?int $reviewAfspraakId = null;
     public int $reviewRating = 0;
     public string $reviewTekst = '';
+    public string $annuleerFout = '';
+    public ?int $annuleringFeeAfspraakId = null;
+    public int $annuleringFeeKosten = 0;
 
     // Verzetten
     public ?int $verzetAfspraakId = null;
@@ -28,6 +33,8 @@ class MijnAfspraken extends Component
 
     public function annuleer(int $id): void
     {
+        $this->annuleerFout = '';
+
         $afspraak = Afspraak::where('id', $id)
             ->where('klant_id', auth()->id())
             ->where('status', 'gepland')
@@ -36,10 +43,47 @@ class MijnAfspraken extends Component
 
         if (!$afspraak) return;
 
+        if ($afspraak->kapper->annulering_uren) {
+            $deadline = \Carbon\Carbon::parse($afspraak->datum->format('Y-m-d') . ' ' . $afspraak->start_tijd)
+                ->subHours($afspraak->kapper->annulering_uren);
+
+            if (now()->isAfter($deadline)) {
+                if ($afspraak->kapper->annulering_kosten > 0) {
+                    $this->annuleringFeeAfspraakId = $afspraak->id;
+                    $this->annuleringFeeKosten = $afspraak->kapper->annulering_kosten;
+                    return;
+                }
+
+                $uren = $afspraak->kapper->annulering_uren;
+                $this->annuleerFout = $uren >= 24
+                    ? 'Annuleren is niet meer mogelijk. Dit salon hanteert een annuleringstermijn van ' . ($uren / 24) . ($uren / 24 > 1 ? ' dagen' : ' dag') . '.'
+                    : 'Annuleren is niet meer mogelijk. Dit salon hanteert een annuleringstermijn van ' . $uren . ' uur.';
+                return;
+            }
+        }
+
         $afspraak->update(['status' => 'geannuleerd']);
 
         Mail::to($afspraak->klant->email)->send(new AfspraakGeannuleerdMail($afspraak));
         $afspraak->kapper->user->notify(new AfspraakGeannuleerdNotificatie($afspraak));
+
+        // Wachtlijst: toekomstige annulering → email; vandaag → kapper ziet in dashboard
+        if ($afspraak->datum->isAfter(today())) {
+            $wachtenden = Wachtlijst::where('kapper_id', $afspraak->kapper_id)
+                ->where('status', 'wachtend')
+                ->get();
+
+            foreach ($wachtenden as $wachtende) {
+                Mail::to($wachtende->email)->send(new WachtlijstNotificatieMail($afspraak->kapper));
+                $wachtende->update(['status' => 'genotificeerd']);
+            }
+        }
+    }
+
+    public function sluitAnnuleringFee(): void
+    {
+        $this->annuleringFeeAfspraakId = null;
+        $this->annuleringFeeKosten = 0;
     }
 
     public function openVerzetten(int $id): void
@@ -124,6 +168,16 @@ class MijnAfspraken extends Component
         $this->verzetGeslaagd = false;
     }
 
+    public function toggleFavoriet(int $kapperId): void
+    {
+        $user = auth()->user();
+        if ($user->favorieteKappers()->where('kapper_id', $kapperId)->exists()) {
+            $user->favorieteKappers()->detach($kapperId);
+        } else {
+            $user->favorieteKappers()->attach($kapperId);
+        }
+    }
+
     public function openReview(int $afspraakId): void
     {
         $this->reviewAfspraakId = $afspraakId;
@@ -140,7 +194,10 @@ class MijnAfspraken extends Component
 
         $afspraak = Afspraak::where('id', $this->reviewAfspraakId)
             ->where('klant_id', auth()->id())
-            ->where('status', 'voltooid')
+            ->where(fn($q) => $q
+                ->where('status', 'voltooid')
+                ->orWhere(fn($q2) => $q2->where('status', 'gepland')->where('datum', '<', today()))
+            )
             ->firstOrFail();
 
         Review::create([
@@ -159,13 +216,25 @@ class MijnAfspraken extends Component
     {
         return view('livewire.klant.mijn-afspraken', [
             'aankomend' => Afspraak::where('klant_id', auth()->id())
-                ->where('datum', '>=', today())
                 ->where('status', 'gepland')
+                ->where(fn($q) => $q
+                    ->where('datum', '>', today())
+                    ->orWhere(fn($q) => $q
+                        ->where('datum', today())
+                        ->where('start_tijd', '>', now()->format('H:i'))
+                    )
+                )
                 ->with(['kapper', 'dienst'])
                 ->orderBy('datum')->orderBy('start_tijd')
                 ->get(),
+            'favorieteKappers'  => auth()->user()->favorieteKappers()->get(),
+            'favorietKapperIds' => auth()->user()->favorieteKappers()->pluck('kappers.id'),
             'geschiedenis' => Afspraak::where('klant_id', auth()->id())
-                ->where(fn($q) => $q->where('datum', '<', today())->orWhereNotIn('status', ['gepland']))
+                ->where(fn($q) => $q
+                    ->where('datum', '<', today())
+                    ->orWhere(fn($q) => $q->where('datum', today())->where('start_tijd', '<=', now()->format('H:i'))->where('status', 'gepland'))
+                    ->orWhereNotIn('status', ['gepland'])
+                )
                 ->with(['kapper', 'dienst', 'review'])
                 ->orderByDesc('datum')
                 ->limit(20)

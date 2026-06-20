@@ -1,9 +1,9 @@
-<div class="min-h-screen bg-gray-50 dark:bg-neutral-900 flex flex-col items-center justify-center px-4 py-12">
+﻿<div class="min-h-screen bg-gray-50 dark:bg-neutral-900 flex flex-col items-center justify-center px-4 py-12">
 
     {{-- Logo --}}
     <a href="{{ route('home') }}" class="mb-8 hover:opacity-80 transition-opacity">
         <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-16 w-auto" alt="Kaply">
-        <img src="{{ asset('images/kaply-logo-dark.png') }}" class="hidden dark:block h-16 w-auto" alt="Kaply">
+        <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="hidden dark:block h-16 w-auto" alt="Kaply">
     </a>
 
     {{-- Card --}}
@@ -178,13 +178,13 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
                 </svg>
-                Abonneer nu · €25/maand
+                Abonneer nu Â· â‚¬25/maand excl. BTW
             </a>
 
             <div>
                 <a href="{{ route('kapper.dashboard') }}"
                    class="text-xs text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:hover:text-neutral-300 transition-colors">
-                    Later doen → naar dashboard
+                    Later doen â†’ naar dashboard
                 </a>
             </div>
         </div>
@@ -202,5 +202,6 @@
 
     </div>
 </div>
+
 
 

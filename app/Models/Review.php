@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
-    protected $fillable = ['kapper_id', 'klant_id', 'afspraak_id', 'rating', 'tekst', 'zichtbaar'];
+    protected $fillable = ['kapper_id', 'klant_id', 'afspraak_id', 'rating', 'tekst', 'zichtbaar', 'reactie', 'reactie_op'];
 
-    protected $casts = ['zichtbaar' => 'boolean', 'rating' => 'integer'];
+    protected $casts = ['zichtbaar' => 'boolean', 'rating' => 'integer', 'reactie_op' => 'datetime'];
 
     public function kapper()   { return $this->belongsTo(Kapper::class); }
     public function klant()    { return $this->belongsTo(User::class, 'klant_id'); }

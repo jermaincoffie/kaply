@@ -32,6 +32,7 @@ function pwaBanner() {
             if (localStorage.getItem('kaply_pwa_gesloten')) return;
             if (window.matchMedia('(display-mode: standalone)').matches) return;
             if (window.navigator.standalone === true) return;
+            if (window.innerWidth >= 768) return;
 
             const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
             const safari = /safari/i.test(navigator.userAgent) && !/chrome|crios|fxios/i.test(navigator.userAgent);
