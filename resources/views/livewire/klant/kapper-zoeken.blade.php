@@ -10,11 +10,21 @@
          x-transition:leave-end="-translate-y-full opacity-0"
          class="fixed top-14 left-0 right-0 z-20 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-neutral-700 shadow-sm px-4 py-2.5">
         <div class="max-w-2xl mx-auto flex items-center bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
-            <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            @if($steden->count() > 0)
+            <select wire:model.live="stadFilter"
+                    class="bg-transparent border-none outline-none text-sm text-gray-700 dark:text-neutral-300 focus:ring-0 cursor-pointer pr-1 flex-shrink-0 max-w-[110px]">
+                <option value="">Alle steden</option>
+                @foreach($steden as $stad)
+                <option value="{{ $stad }}">{{ $stad }}</option>
+                @endforeach
+            </select>
+            <div class="w-px h-4 bg-gray-200 dark:bg-neutral-600 mx-2 flex-shrink-0"></div>
+            @endif
+            <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
             </svg>
             <input wire:model.live="zoekterm" type="text"
-                placeholder="Zoek op stad of naam..."
+                placeholder="Zoek op naam..."
                 class="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 text-sm focus:ring-0">
             @if($zoekterm)
             <button wire:click="$set('zoekterm', '')" class="ml-2 text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 flex-shrink-0">
@@ -45,11 +55,21 @@
         {{-- Pill zoekbalk --}}
         <div class="hero-anim hero-anim-4 max-w-2xl mx-auto">
             <div class="flex items-center bg-white/70 dark:bg-neutral-800 backdrop-blur-sm border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
-                <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                @if($steden->count() > 0)
+                <select wire:model.live="stadFilter"
+                        class="bg-transparent border-none outline-none text-sm text-gray-700 dark:text-neutral-300 focus:ring-0 cursor-pointer pr-1 flex-shrink-0 max-w-[120px]">
+                    <option value="">Alle steden</option>
+                    @foreach($steden as $stad)
+                    <option value="{{ $stad }}">{{ $stad }}</option>
+                    @endforeach
+                </select>
+                <div class="w-px h-5 bg-gray-200 dark:bg-neutral-600 mx-3 flex-shrink-0"></div>
+                @endif
+                <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
                 </svg>
                 <input wire:model.live="zoekterm" type="text"
-                    placeholder="Zoek op stad of naam..."
+                    placeholder="Zoek op naam..."
                     class="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 text-sm focus:ring-0">
                 @if($zoekterm)
                 <button wire:click="$set('zoekterm', '')" class="ml-3 text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 flex-shrink-0">

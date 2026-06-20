@@ -9,50 +9,44 @@ use Livewire\Component;
 class KapperZoeken extends Component
 {
     public string $zoekterm    = '';
+    public string $stadFilter  = '';
     public string $dienstFilter = '';
     public string $prijsMax    = '';
-
-    public function filterStad(string $stad): void
-    {
-        $this->zoekterm = $stad;
-    }
 
     public function resetFilters(): void
     {
         $this->dienstFilter = '';
         $this->prijsMax     = '';
+        $this->stadFilter   = '';
     }
 
     public function render()
     {
-        // prijsMax keys zijn 'p15', 'p25' etc. om int-casting in PHP/JS te vermijden
         $prijsMaxCenten = $this->prijsMax ? (int) substr($this->prijsMax, 1) * 100 : null;
 
         $kappers = Kapper::where('actief', true)
             ->where('abonnement_status', 'actief')
-            ->when($this->zoekterm, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('stad', 'like', "%{$this->zoekterm}%")
-                      ->orWhere('salon_naam', 'like', "%{$this->zoekterm}%");
-                });
-            })
-            ->when($this->dienstFilter, function ($query) {
-                $query->whereHas('diensten', fn($q) =>
-                    $q->where('naam', 'like', "%{$this->dienstFilter}%")
-                );
-            })
-            ->when($prijsMaxCenten, function ($query) use ($prijsMaxCenten) {
-                $query->whereHas('diensten', fn($q) =>
-                    $q->where('prijs', '<=', $prijsMaxCenten)
-                );
-            })
+            ->when($this->zoekterm, fn($q) =>
+                $q->where('salon_naam', 'like', "%{$this->zoekterm}%")
+            )
+            ->when($this->stadFilter, fn($q) =>
+                $q->where('stad', $this->stadFilter)
+            )
+            ->when($this->dienstFilter, fn($q) =>
+                $q->whereHas('diensten', fn($q2) =>
+                    $q2->where('naam', 'like', "%{$this->dienstFilter}%")
+                )
+            )
+            ->when($prijsMaxCenten, fn($q) =>
+                $q->whereHas('diensten', fn($q2) =>
+                    $q2->where('prijs', '<=', $prijsMaxCenten)
+                )
+            )
             ->with('diensten')
             ->withAvg(['reviews as gem_rating' => fn($q) => $q->where('zichtbaar', true)], 'rating')
             ->withCount(['reviews as review_count' => fn($q) => $q->where('zichtbaar', true)])
             ->orderBy('salon_naam')
             ->get();
-
-        $kappers_totaal = Kapper::where('actief', true)->where('abonnement_status', 'actief')->count();
 
         $steden = Kapper::where('actief', true)
             ->where('abonnement_status', 'actief')
@@ -61,8 +55,7 @@ class KapperZoeken extends Component
             ->map(fn($s) => str($s)->title()->toString())
             ->unique()
             ->sort()
-            ->values()
-            ->take(8);
+            ->values();
 
         $diensteNamen = Dienst::whereHas('kapper', fn($q) =>
                 $q->where('actief', true)->where('abonnement_status', 'actief')
@@ -73,10 +66,10 @@ class KapperZoeken extends Component
             ->limit(20)
             ->pluck('naam');
 
-        $heeftFilters = $this->dienstFilter !== '' || $this->prijsMax !== '';
+        $heeftFilters = $this->stadFilter !== '' || $this->dienstFilter !== '' || $this->prijsMax !== '';
 
         return view('livewire.klant.kapper-zoeken', compact(
-            'kappers', 'kappers_totaal', 'steden', 'diensteNamen', 'heeftFilters'
+            'kappers', 'steden', 'diensteNamen', 'heeftFilters'
         ))
             ->layout('layouts.publiek', [
                 'seoTitle'       => 'Kaply - Online kapper afspraak boeken in jouw buurt',
