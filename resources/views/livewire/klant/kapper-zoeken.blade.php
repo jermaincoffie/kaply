@@ -184,9 +184,6 @@
                 Wis
             </button>
             @endif
-            <span class="ml-auto text-xs text-gray-400 dark:text-neutral-500 whitespace-nowrap">
-                Toon alle kappers ({{ $kappers->count() }})
-            </span>
         </div>
         @endif
 
@@ -319,7 +316,7 @@
         <div class="flex items-center justify-center mt-6">
             <a href="{{ route('home') }}"
                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-gray-200 dark:border-neutral-700 text-sm font-medium text-gray-600 dark:text-neutral-400 bg-white dark:bg-neutral-800 hover:border-blue-300 hover:text-blue-600 dark:hover:border-blue-600 dark:hover:text-blue-400 transition-colors">
-                Bekijk alle kappers
+                Bekijk alle kappers ({{ $kappers->count() }})
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>
