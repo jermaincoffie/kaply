@@ -86,7 +86,7 @@
         </div>
 
         {{-- Pill zoekbalk --}}
-        <div class="hero-anim hero-anim-4 max-w-2xl mx-auto">
+        <div class="hero-anim hero-anim-4 max-w-3xl mx-auto w-full">
             <div class="flex items-center bg-white/70 dark:bg-neutral-800 backdrop-blur-sm border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 @if($steden->count() > 0)
                 @php $stadOpties = collect([''=>'Alle steden'])->merge($steden->mapWithKeys(fn($s)=>[$s=>$s]))->toArray(); @endphp
