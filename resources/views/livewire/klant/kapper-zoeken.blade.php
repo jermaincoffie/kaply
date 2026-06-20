@@ -85,7 +85,7 @@
             </h1>
         </div>
 
-        {{-- Pill zoekbalk --}}
+        {{-- Pill zoekbalk + filters --}}
         <div class="hero-anim hero-anim-4 max-w-5xl mx-auto w-full">
             <div class="flex items-center bg-white/70 dark:bg-neutral-800 backdrop-blur-sm border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 @if($steden->count() > 0)
@@ -146,44 +146,44 @@
                 </button>
                 @endif
             </div>
+
+            {{-- Filters direct onder zoekbalk --}}
+            @if($diensteNamen->count() > 0)
+            <div class="flex items-center gap-2 mt-3">
+                <x-select
+                    wire-target="dienstFilter"
+                    :current="$dienstFilter"
+                    :options="collect([''=>'Alle diensten'])->merge($diensteNamen->mapWithKeys(fn($n)=>[$n=>$n]))->toArray()"
+                    placeholder="Alle diensten"
+                />
+                <x-select
+                    wire-target="prijsMax"
+                    :current="$prijsMax"
+                    :options="['' => 'Alle prijzen', 'p15' => 'Tot €15', 'p25' => 'Tot €25', 'p40' => 'Tot €40', 'p60' => 'Tot €60', 'p100' => 'Tot €100']"
+                    placeholder="Alle prijzen"
+                />
+                @if($heeftFilters)
+                <button wire:click="resetFilters"
+                        class="inline-flex items-center gap-1 py-1.5 px-2.5 rounded-lg text-xs text-gray-500 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 border border-gray-200 dark:border-neutral-700 hover:border-red-300 dark:hover:border-red-700 bg-white dark:bg-neutral-800 transition-colors">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Wis
+                </button>
+                @endif
+            </div>
+            @endif
         </div>
     </div>
 
     {{-- Results --}}
-    <div class="relative z-20 max-w-5xl mx-auto px-4 pt-8 pb-6">
+    <div class="relative z-20 max-w-5xl mx-auto px-4 pt-4 pb-6">
 
         {{-- Zoekterm feedback --}}
         @if($zoekterm)
         <p class="text-sm text-gray-500 dark:text-neutral-400 mb-3">
             Resultaten voor <span class="font-semibold text-gray-700 dark:text-neutral-300">"{{ $zoekterm }}"</span>
         </p>
-        @endif
-
-        {{-- Filter rij --}}
-        @if($diensteNamen->count() > 0)
-        <div class="flex items-center gap-2 mb-8">
-            <x-select
-                wire-target="dienstFilter"
-                :current="$dienstFilter"
-                :options="collect([''=>'Alle diensten'])->merge($diensteNamen->mapWithKeys(fn($n)=>[$n=>$n]))->toArray()"
-                placeholder="Alle diensten"
-            />
-            <x-select
-                wire-target="prijsMax"
-                :current="$prijsMax"
-                :options="['' => 'Alle prijzen', 'p15' => 'Tot €15', 'p25' => 'Tot €25', 'p40' => 'Tot €40', 'p60' => 'Tot €60', 'p100' => 'Tot €100']"
-                placeholder="Alle prijzen"
-            />
-            @if($heeftFilters)
-            <button wire:click="resetFilters"
-                    class="inline-flex items-center gap-1 py-1.5 px-2.5 rounded-lg text-xs text-gray-500 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 border border-gray-200 dark:border-neutral-700 hover:border-red-300 dark:hover:border-red-700 bg-white dark:bg-neutral-800 transition-colors">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-                Wis
-            </button>
-            @endif
-        </div>
         @endif
 
     </div>{{-- einde max-w-5xl --}}
