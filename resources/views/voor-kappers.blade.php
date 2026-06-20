@@ -1,75 +1,45 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaply voor kappers – Meer boekingen, minder stress</title>
-    <meta name="description" content="Kaply is het online boekingssysteem voor kappers en barbiers. Klanten boeken 24/7 online, jij beheert alles vanuit één dashboard. Probeer 14 dagen gratis.">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
-<body class="font-sans antialiased bg-white text-gray-900">
+@extends('layouts.publiek')
 
-{{-- NAV --}}
-<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <a href="{{ route('home') }}" class="hover:opacity-80 transition-opacity">
-            <img src="{{ asset('images/kaply-logo-light.png') }}" class="h-20 w-auto" alt="Kaply">
-        </a>
-        <nav class="flex items-center gap-2 sm:gap-4">
-            <a href="{{ route('login') }}" class="text-sm text-gray-500 hover:text-gray-900 transition-colors px-3 py-2">Inloggen</a>
-            <a href="{{ route('kapper.registreer') }}"
-               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
-                Gratis starten
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
-            </a>
-        </nav>
-    </div>
-</header>
+@section('content')
 
 {{-- HERO --}}
-<section class="relative overflow-hidden bg-gray-950 text-white">
-    {{-- Aurora achtergrond --}}
+<section class="relative overflow-hidden bg-white">
+    {{-- Aurora achtergrond (zelfde als homepage) --}}
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="[--aurora:repeating-linear-gradient(100deg,#1d4ed8_10%,#4f46e5_15%,#2563eb_20%,#7c3aed_25%,#1e40af_30%)] [background-image:var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%] blur-[100px] absolute -inset-[10px] opacity-20 will-change-transform animate-aurora motion-reduce:animate-none"></div>
+        <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,#93c5fd_10%,#a5b4fc_15%,#bfdbfe_20%,#c4b5fd_25%,#60a5fa_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-[0.38] will-change-transform animate-aurora motion-reduce:animate-none"></div>
     </div>
-    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-950/80 to-gray-950 pointer-events-none"></div>
+    <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white"></div>
 
     <div class="relative max-w-5xl mx-auto px-4 sm:px-6 py-20 sm:py-32 text-center">
-        <div class="inline-flex items-center gap-2 bg-blue-600/20 border border-blue-500/30 text-blue-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
-            <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
             14 dagen gratis · geen creditcard nodig
         </div>
 
-        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-gray-900 mb-6 leading-tight">
             Meer boekingen.<br>
-            <span class="text-blue-400">Minder gedoe.</span>
+            <span class="text-blue-600">Minder gedoe.</span>
         </h1>
 
-        <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+        <p class="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
             Kaply is het online boekingssysteem voor kappers en barbiers. Klanten boeken 24/7 online — jij beheert alles vanuit één slim dashboard.
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="{{ route('kapper.registreer') }}"
-               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-blue-600 text-white text-base font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-600/25">
+               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-blue-600 text-white text-base font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/25">
                 Start gratis proefperiode
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                 </svg>
             </a>
             <a href="{{ route('kapper.profiel', 'demo-salon') }}" target="_blank"
-               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white/10 text-white text-base font-medium hover:bg-white/20 transition-all">
+               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gray-100 text-gray-700 text-base font-medium hover:bg-gray-200 transition-all">
                 Bekijk voorbeeldprofiel
             </a>
         </div>
 
-        <p class="text-gray-500 text-xs mt-4">14 dagen gratis · daarna €25/maand · elke maand opzegbaar</p>
+        <p class="text-gray-400 text-xs mt-4">14 dagen gratis · daarna €25/maand excl. BTW · elke maand opzegbaar</p>
     </div>
 </section>
 
@@ -93,7 +63,7 @@
 </section>
 
 {{-- HOE HET WERKT --}}
-<section class="py-20 px-4 sm:px-6">
+<section id="hoe-werkt-het" class="py-20 px-4 sm:px-6">
     <div class="max-w-5xl mx-auto">
         <div class="text-center mb-14">
             <p class="text-xs font-semibold text-blue-600 tracking-widest uppercase mb-2">Zo simpel</p>
@@ -138,7 +108,7 @@
             ] as [$titel, $tekst, $icon])
             <div class="bg-white border border-gray-100 rounded-xl p-5 hover:border-blue-100 hover:shadow-sm transition-all">
                 <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center mb-3">
-                    <svg class="w-4.5 h-4.5 text-blue-600 w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="{{ $icon }}"/>
                     </svg>
                 </div>
@@ -151,8 +121,12 @@
 </section>
 
 {{-- PRICING --}}
-<section class="py-20 px-4 sm:px-6">
-    <div class="max-w-lg mx-auto">
+<section class="relative overflow-hidden bg-white py-20 px-4 sm:px-6">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,#93c5fd_10%,#a5b4fc_15%,#bfdbfe_20%,#c4b5fd_25%,#60a5fa_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-[0.38] will-change-transform animate-aurora motion-reduce:animate-none"></div>
+    </div>
+    <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[20%] to-white"></div>
+    <div class="max-w-lg mx-auto relative">
         <div class="text-center mb-10">
             <p class="text-xs font-semibold text-blue-600 tracking-widest uppercase mb-2">Prijzen</p>
             <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900">Eén eenvoudig tarief</h2>
@@ -162,10 +136,11 @@
         <div class="bg-gray-950 text-white rounded-2xl p-8 relative overflow-hidden">
             <div class="absolute top-0 right-0 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
-            <div class="flex items-end gap-2 mb-2">
+            <div class="flex items-end gap-2 mb-1">
                 <span class="text-5xl font-extrabold">€25</span>
                 <span class="text-gray-400 mb-2">/maand</span>
             </div>
+            <p class="text-gray-500 text-xs mb-3">excl. BTW</p>
             <p class="text-blue-400 text-sm font-semibold mb-6">14 dagen gratis proberen</p>
 
             <ul class="space-y-3 mb-8">
@@ -195,6 +170,7 @@
     </div>
 </section>
 
+
 {{-- FAQ --}}
 <section class="py-20 px-4 sm:px-6 bg-gray-50" x-data="{ open: null }">
     <div class="max-w-2xl mx-auto">
@@ -205,7 +181,7 @@
 
         <div class="space-y-2">
             @foreach([
-                ['Moet ik betalen om te starten?', 'Nee. Je start met een gratis proefperiode van 14 dagen. Geen creditcard nodig. Daarna kies je zelf of je doorgaat voor €25/maand.'],
+                ['Moet ik betalen om te starten?', 'Nee. Je start met een gratis proefperiode van 14 dagen. Geen creditcard nodig. Daarna kies je zelf of je doorgaat voor €25/maand (excl. BTW).'],
                 ['Hoe lang duurt het instellen?', 'Gemiddeld 15 minuten. Je vult je profiel in, voegt je diensten toe en stelt je beschikbaarheid in. Daarna deel je je link en ontvang je boekingen.'],
                 ['Moet mijn klant een account aanmaken?', 'Klanten loggen in via een eenmalige code die ze per e-mail ontvangen. Geen wachtwoord, geen gedoe — gewoon code invullen en boeken.'],
                 ['Kan ik opzeggen wanneer ik wil?', 'Ja. Je abonnement is maandelijks opzegbaar. Je hebt altijd toegang tot het einde van je betaalperiode.'],
@@ -255,7 +231,7 @@
 {{-- FOOTER --}}
 <footer class="bg-gray-950 border-t border-gray-800 py-8 px-4 sm:px-6">
     <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <img src="{{ asset('images/kaply-logo-dark.png') }}" class="h-16 w-auto opacity-70" alt="Kaply">
+        <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="h-16 w-auto opacity-70" alt="Kaply">
         <div class="flex items-center gap-6 text-xs text-gray-500">
             <a href="{{ route('home') }}" class="hover:text-gray-300 transition-colors">Kappers zoeken</a>
             <a href="{{ route('privacy') }}" class="hover:text-gray-300 transition-colors">Privacy</a>
@@ -266,6 +242,4 @@
     </div>
 </footer>
 
-<x-cookie-banner />
-</body>
-</html>
+@endsection
