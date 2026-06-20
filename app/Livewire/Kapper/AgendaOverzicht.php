@@ -6,6 +6,7 @@ use App\Models\Afspraak;
 use App\Models\Blokkering;
 use App\Models\Dienst;
 use App\Models\User;
+use App\Models\Wachtlijst;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
@@ -36,6 +37,8 @@ class AgendaOverzicht extends Component
     public bool $toonKlantDropdown = false;
     public bool $isWalkIn = false;
     public string $walkInNaam = '';
+    public ?int $gefilterdeMedewerkerId = null;
+    public string $afspraakNotitie = '';
 
     public function mount(): void
     {
@@ -83,6 +86,20 @@ class AgendaOverzicht extends Component
     {
         $this->geselecteerdeAfspraakId = $this->geselecteerdeAfspraakId === $id ? null : $id;
         $this->toonNieuwFormulier = false;
+
+        if ($this->geselecteerdeAfspraakId) {
+            $afspraak = Afspraak::find($this->geselecteerdeAfspraakId);
+            $this->afspraakNotitie = $afspraak?->notitie ?? '';
+        } else {
+            $this->afspraakNotitie = '';
+        }
+    }
+
+    public function notitieOpslaan(int $id): void
+    {
+        Afspraak::where('id', $id)
+            ->where('kapper_id', auth()->user()->kapper->id)
+            ->update(['notitie' => trim($this->afspraakNotitie) ?: null]);
     }
 
     public function openNieuwFormulier(string $datum, string $tijd, bool $walkIn = false): void
@@ -187,6 +204,13 @@ class AgendaOverzicht extends Component
         $this->blokkeerReden = '';
     }
 
+    public function openPauzeForm(string $datum = ''): void
+    {
+        $this->openBlokkerenForm($datum);
+        $this->blokkeerEindTijd = Carbon::parse($this->blokkeerStartTijd)->addMinutes(30)->format('H:i');
+        $this->blokkeerReden = 'Pauze';
+    }
+
     public function blokkeerOpslaan(): void
     {
         $this->validate([
@@ -218,6 +242,12 @@ class AgendaOverzicht extends Component
     {
         Blokkering::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->delete();
         $this->geselecteerdeBlokkeringId = null;
+    }
+
+    public function filterMedewerker(?int $id): void
+    {
+        $this->gefilterdeMedewerkerId = $id;
+        $this->sluitAlles();
     }
 
     public function sluitAlles(): void
@@ -257,6 +287,10 @@ class AgendaOverzicht extends Component
             ->orderBy('start_tijd')
             ->get();
 
+        if ($this->gefilterdeMedewerkerId !== null) {
+            $afspraken = $afspraken->filter(fn($a) => $a->medewerker_id === $this->gefilterdeMedewerkerId)->values();
+        }
+
         $afsprakenPerDag = $afspraken->groupBy(fn($a) => $a->datum->toDateString());
 
         $omzet_maand = Afspraak::where('afspraken.kapper_id', $kapper_id)
@@ -282,6 +316,10 @@ class AgendaOverzicht extends Component
             ->with(['klant', 'dienst'])
             ->orderBy('start_tijd')
             ->get();
+
+        if ($this->gefilterdeMedewerkerId !== null) {
+            $mobielAfspraken = $mobielAfspraken->filter(fn($a) => $a->medewerker_id === $this->gefilterdeMedewerkerId)->values();
+        }
 
         $vandaagAfspraken = Afspraak::where('kapper_id', $kapper_id)
             ->whereDate('datum', today())
@@ -378,12 +416,20 @@ class AgendaOverzicht extends Component
             : collect();
 
         $kapper = auth()->user()->kapper;
+        $medewerkers = $kapper->medewerkers()->where('actief', true)->orderBy('id')->get();
+        $medewerkerKolom = $medewerkers->pluck('id')->values()->flip()->toArray(); // medewerker_id => 0-based column index
+
         $onboarding = [
             'beschikbaarheid' => $kapper->beschikbaarheden()->exists(),
             'diensten'        => $kapper->diensten()->exists(),
             'medewerkers'     => $kapper->medewerkers()->where('actief', true)->exists(),
         ];
         $toonOnboarding = !$onboarding['beschikbaarheid'] || !$onboarding['diensten'];
+
+        $wachtlijst = Wachtlijst::where('kapper_id', $kapper->id)
+            ->where('status', 'wachtend')
+            ->orderBy('created_at')
+            ->get();
 
         return view('livewire.kapper.agenda-overzicht', compact(
             'days', 'afsprakenPerDag', 'omzet_maand', 'afspraken_maand',
@@ -392,7 +438,8 @@ class AgendaOverzicht extends Component
             'vandaagAfspraken', 'volgendeAfspraak', 'omzet_vandaag',
             'blokkeringenPerDag', 'mobielBlokkeringen', 'geselecteerdeblokkering',
             'onboarding', 'toonOnboarding',
-            'no_show_pct', 'bezettingsgraad', 'druksteUurLabel'
+            'no_show_pct', 'bezettingsgraad', 'druksteUurLabel',
+            'wachtlijst', 'medewerkers', 'medewerkerKolom'
         ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }
