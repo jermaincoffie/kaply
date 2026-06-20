@@ -65,30 +65,41 @@
     {{-- Results --}}
     <div class="relative z-20 max-w-5xl mx-auto px-4 pb-6">
 
-        {{-- Stats + stad chips (alleen zonder zoekterm) --}}
-        @if(!$zoekterm)
-            @if($kappers_totaal > 0)
-            <div class="flex items-center justify-center gap-2 mb-5 text-xs text-gray-400 dark:text-neutral-500">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                <span>{{ $kappers_totaal }} {{ $kappers_totaal === 1 ? 'kapper' : 'kappers' }} aangesloten</span>
-                @if($steden->count() > 0)
-                <span>·</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                <span>{{ $steden->count() }} steden</span>
+        {{-- Zoekterm feedback --}}
+        @if($zoekterm)
+        <p class="text-sm text-gray-500 dark:text-neutral-400 mb-3">
+            Resultaten voor <span class="font-semibold text-gray-700 dark:text-neutral-300">"{{ $zoekterm }}"</span>
+        </p>
+        @endif
+
+        {{-- Gecombineerde filter + stad chip rij --}}
+        @if($diensteNamen->count() > 0)
+        <div class="flex items-center gap-2 mb-5 -mx-4 sm:mx-0">
+
+            {{-- Filter dropdowns: buiten overflow zodat dropdown panel niet geclipte wordt --}}
+            <div class="flex-shrink-0 flex items-center gap-2 pl-4 sm:pl-0">
+                <x-select
+                    wire-target="dienstFilter"
+                    :current="$dienstFilter"
+                    :options="collect([''=>'Alle diensten'])->merge($diensteNamen->mapWithKeys(fn($n)=>[$n=>$n]))->toArray()"
+                    placeholder="Alle diensten"
+                />
+                <x-select
+                    wire-target="prijsMax"
+                    :current="$prijsMax"
+                    :options="['' => 'Alle prijzen', 'p15' => 'Tot €15', 'p25' => 'Tot €25', 'p40' => 'Tot €40', 'p60' => 'Tot €60', 'p100' => 'Tot €100']"
+                    placeholder="Alle prijzen"
+                />
+                @if(!$zoekterm && $steden->count() > 0)
+                <div class="w-px h-5 bg-gray-200 dark:bg-neutral-700 flex-shrink-0"></div>
                 @endif
             </div>
-            @endif
 
-            @if($steden->count() > 0)
-            <div class="relative mb-7 -mx-4 sm:mx-0">
-                {{-- gradient fade rechts als scroll-hint --}}
-                <div class="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-white dark:from-neutral-900 to-transparent z-10 sm:hidden"></div>
-                <div class="flex gap-2 overflow-x-auto scrollbar-hide px-4 sm:px-0 sm:flex-wrap sm:justify-center">
+            {{-- Stad chips: scrollbaar --}}
+            @if(!$zoekterm && $steden->count() > 0)
+            <div class="relative flex-1 min-w-0">
+                <div class="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white dark:from-neutral-900 to-transparent z-10 sm:hidden"></div>
+                <div class="flex gap-2 overflow-x-auto scrollbar-hide sm:flex-wrap">
                     @foreach($steden as $stad)
                     <button wire:click="filterStad('{{ addslashes($stad) }}')"
                             class="flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 bg-white dark:bg-neutral-800 hover:border-blue-300 hover:text-blue-600 dark:hover:border-blue-600 dark:hover:text-blue-400 transition-colors">
@@ -97,43 +108,26 @@
                     @endforeach
                 </div>
             </div>
-            @endif
-        @else
-        <p class="text-sm text-gray-500 dark:text-neutral-400 mb-5">
-            Resultaten voor <span class="font-semibold text-gray-700 dark:text-neutral-300">"{{ $zoekterm }}"</span>
-        </p>
-        @endif
-
-        {{-- Filter balk --}}
-        @if($diensteNamen->count() > 0)
-        <div class="flex flex-wrap items-center gap-2 mb-5">
-            <x-select
-                wire-target="dienstFilter"
-                :current="$dienstFilter"
-                :options="collect([''=>'Alle diensten'])->merge($diensteNamen->mapWithKeys(fn($n)=>[$n=>$n]))->toArray()"
-                placeholder="Alle diensten"
-            />
-
-            <x-select
-                wire-target="prijsMax"
-                :current="$prijsMax"
-                :options="['' => 'Alle prijzen', 'p15' => 'Tot €15', 'p25' => 'Tot €25', 'p40' => 'Tot €40', 'p60' => 'Tot €60', 'p100' => 'Tot €100']"
-                placeholder="Alle prijzen"
-            />
-
-            @if($heeftFilters)
-            <button wire:click="resetFilters"
-                    class="inline-flex items-center gap-1.5 py-2 pl-3 pr-3 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-700 dark:text-neutral-300 shadow-sm hover:border-red-300 dark:hover:border-red-700 hover:text-red-600 dark:hover:text-red-400 transition-colors">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-                Wis filters
-            </button>
+            @else
+            <div class="flex-1"></div>
             @endif
 
-            <span class="ml-auto text-xs text-gray-400 dark:text-neutral-500">
-                {{ $kappers->count() }} {{ $kappers->count() === 1 ? 'kapper' : 'kappers' }}
-            </span>
+            {{-- Wis + count --}}
+            <div class="flex-shrink-0 flex items-center gap-2 pr-4 sm:pr-0">
+                @if($heeftFilters)
+                <button wire:click="resetFilters"
+                        class="inline-flex items-center gap-1 py-1.5 px-2.5 rounded-lg text-xs text-gray-500 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 border border-gray-200 dark:border-neutral-700 hover:border-red-300 dark:hover:border-red-700 bg-white dark:bg-neutral-800 transition-colors">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Wis
+                </button>
+                @endif
+                <span class="text-xs text-gray-400 dark:text-neutral-500 whitespace-nowrap">
+                    {{ $kappers->count() }} {{ $kappers->count() === 1 ? 'kapper' : 'kappers' }}
+                </span>
+            </div>
+
         </div>
         @endif
 
