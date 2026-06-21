@@ -28,6 +28,9 @@ class KapperProfiel extends Component
     public string $klantNotitie = '';
     public bool $geboekt = false;
 
+    // Beschikbaarheid
+    public bool $kapperWerktDag = false;
+
     // Wachtlijst
     public bool   $toonWachtlijstForm  = false;
     public string $wachtlijstNaam      = '';
@@ -235,11 +238,14 @@ class KapperProfiel extends Component
         if (!$dienst) { $this->tijdsloten = []; return; }
 
         $service = new BeschikbaarheidsService();
+
+        $this->kapperWerktDag = $service->heeftBeschikbaarheid($this->kapper, $this->geselecteerdeDatum);
+
         $sluitingsdag = $service->getSluitingsdag($this->kapper, $this->geselecteerdeDatum);
         $this->sluitingsdagReden = $sluitingsdag
             ? ($sluitingsdag->reden ?: 'gesloten')
             : null;
-        $this->tijdsloten = $sluitingsdag
+        $this->tijdsloten = ($sluitingsdag || !$this->kapperWerktDag)
             ? []
             : $service->getVrijeTijdslots($this->kapper, $dienst, $this->geselecteerdeDatum, $this->geselecteerdeMedewerkerId);
     }

@@ -21,7 +21,6 @@
         @if($gekozenDatum)
         <div>
             <label class="block font-medium mb-2">Kies een tijdstip</label>
-            {{-- DEBUG: slots={{ count($vrijeslots) }} werkt={{ $kapperWerktDag ? 'ja' : 'nee' }} datum={{ $gekozenDatum }} --}}
             @if(count($vrijeslots) === 0)
                 <div class="rounded-xl border border-gray-200 bg-gray-50 p-5 text-center">
                     @if(!$kapperWerktDag)
