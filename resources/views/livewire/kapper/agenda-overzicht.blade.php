@@ -41,21 +41,30 @@
                         <p class="text-xs text-gray-400 dark:text-neutral-500">
                             {{ $wachtende->email }}
                             @if($wachtende->gewenste_datum)
-                            · <span class="text-amber-600 dark:text-amber-400 font-medium">{{ $wachtende->gewenste_datum->translatedFormat('d M') }}</span>
+                            · <span class="text-amber-600 dark:text-amber-400 font-medium">{{ \Carbon\Carbon::parse($wachtende->gewenste_datum)->translatedFormat('d M Y') }}</span>
+                            @else
+                            · <span class="italic">geen datum opgegeven</span>
                             @endif
                         </p>
                     </div>
-                    @if($wachtende->telefoonnummer)
-                    <a href="tel:{{ $wachtende->telefoonnummer }}"
-                       class="flex-shrink-0 ml-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-semibold hover:bg-amber-700 transition-colors">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                        </svg>
-                        {{ $wachtende->telefoonnummer }}
-                    </a>
-                    @else
-                    <span class="flex-shrink-0 ml-3 text-xs text-gray-400 dark:text-neutral-500">Geen tel.</span>
-                    @endif
+                    <div class="flex items-center gap-2 flex-shrink-0 ml-3">
+                        @if($wachtende->telefoonnummer)
+                        <a href="tel:{{ $wachtende->telefoonnummer }}"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-semibold hover:bg-amber-700 transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                            </svg>
+                            {{ $wachtende->telefoonnummer }}
+                        </a>
+                        @endif
+                        <button type="button" wire:click="wachtlijstVerwijderen({{ $wachtende->id }})"
+                                wire:confirm="'{{ $wachtende->naam }}' verwijderen van de wachtlijst?"
+                                class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 @endforeach
             </div>

@@ -212,6 +212,11 @@ class MijnAfspraken extends Component
         $this->reviewAfspraakId = null;
     }
 
+    public function wachtlijstAfmelden(int $id): void
+    {
+        Wachtlijst::where('id', $id)->where('klant_id', auth()->id())->delete();
+    }
+
     public function render()
     {
         return view('livewire.klant.mijn-afspraken', [
@@ -226,6 +231,11 @@ class MijnAfspraken extends Component
                 )
                 ->with(['kapper', 'dienst'])
                 ->orderBy('datum')->orderBy('start_tijd')
+                ->get(),
+            'wachtlijst' => Wachtlijst::where('klant_id', auth()->id())
+                ->where('status', 'wachtend')
+                ->with('kapper')
+                ->orderBy('created_at')
                 ->get(),
             'favorieteKappers'  => auth()->user()->favorieteKappers()->get(),
             'favorietKapperIds' => auth()->user()->favorieteKappers()->pluck('kappers.id'),

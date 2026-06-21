@@ -40,6 +40,34 @@
     </div>
     @endif
 
+    {{-- Wachtlijst --}}
+    @if($wachtlijst->isNotEmpty())
+    <div class="mb-8">
+        <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Op de wachtlijst</p>
+        <div class="space-y-2">
+            @foreach($wachtlijst as $w)
+            <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                    <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100">{{ $w->kapper->salon_naam }}</p>
+                    <p class="text-xs text-gray-500 dark:text-neutral-400 mt-0.5">
+                        @if($w->gewenste_datum)
+                            Gewenste datum: <span class="font-medium text-amber-700 dark:text-amber-400">{{ \Carbon\Carbon::parse($w->gewenste_datum)->translatedFormat('d F Y') }}</span>
+                        @else
+                            Geen specifieke datum opgegeven
+                        @endif
+                    </p>
+                </div>
+                <button type="button" wire:click="wachtlijstAfmelden({{ $w->id }})"
+                        wire:confirm="Jezelf verwijderen van de wachtlijst bij {{ $w->kapper->salon_naam }}?"
+                        class="flex-shrink-0 text-xs text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors underline">
+                    Afmelden
+                </button>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     {{-- Aankomend --}}
     <div class="mb-8">
         <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Aankomend</p>

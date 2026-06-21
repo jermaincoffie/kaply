@@ -270,6 +270,11 @@ class AgendaOverzicht extends Component
         $this->geselecteerdeAfspraakId = null;
     }
 
+    public function wachtlijstVerwijderen(int $id): void
+    {
+        Wachtlijst::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->delete();
+    }
+
     public function render()
     {
         $kapper_id = auth()->user()->kapper->id;
