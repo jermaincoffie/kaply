@@ -67,12 +67,11 @@ class MijnAfspraken extends Component
         Mail::to($afspraak->klant->email)->send(new AfspraakGeannuleerdMail($afspraak));
         $afspraak->kapper->user->notify(new AfspraakGeannuleerdNotificatie($afspraak));
 
-        // Wachtlijst: toekomstige annulering → iedereen mailen
-        // Vandaag annulering → alleen wie zich eerder dan vandaag aanmeldde (niet zelfde dag)
-        if (!$afspraak->datum->isPast()) {
+        // Vandaag geannuleerd → kapper belt zelf, geen mail
+        // Toekomstige datum geannuleerd → iedereen op wachtlijst mailen
+        if ($afspraak->datum->isAfter(today())) {
             $wachtenden = Wachtlijst::where('kapper_id', $afspraak->kapper_id)
                 ->where('status', 'wachtend')
-                ->when($afspraak->datum->isToday(), fn($q) => $q->whereDate('created_at', '<', today()))
                 ->get();
 
             foreach ($wachtenden as $wachtende) {
