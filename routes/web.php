@@ -27,7 +27,6 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\StripeConnectController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Livewire\Klant\AccountBeheer;
-use App\Livewire\Klant\BoekingWizard;
 use App\Livewire\Klant\Inloggen;
 use App\Livewire\Klant\KapperProfiel;
 use App\Livewire\Klant\KapperZoeken;
@@ -102,7 +101,6 @@ Route::middleware(['auth'])->get('/dashboard', function () {
 Route::middleware(['klant.auth'])->group(function () {
     Route::get('/mijn-afspraken', MijnAfspraken::class)->name('klant.afspraken');
     Route::get('/mijn-account', AccountBeheer::class)->name('klant.account');
-    Route::get('/boeken/{kapperSlug}/{dienstId}', BoekingWizard::class)->name('boeken');
     Route::get('/afspraak/betaling/checkout', [AfspraakBetaalController::class, 'checkout'])->name('afspraak.betaling.checkout');
     Route::get('/afspraak/betaling/succes', [AfspraakBetaalController::class, 'succes'])->name('afspraak.betaling.succes');
     Route::get('/afspraak/betaling/annuleren', [AfspraakBetaalController::class, 'annuleren'])->name('afspraak.betaling.annuleren');
