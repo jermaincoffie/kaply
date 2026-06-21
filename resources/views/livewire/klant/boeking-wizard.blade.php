@@ -23,9 +23,12 @@
             <label class="block font-medium mb-2">Kies een tijdstip</label>
             @if(count($vrijeslots) === 0)
                 <div class="rounded-xl border border-gray-200 bg-gray-50 p-5 text-center">
+                    @if(!$kapperWerktDag)
+                        <p class="text-sm font-medium text-gray-700 mb-1">Kapper werkt niet op deze dag.</p>
+                        <p class="text-xs text-gray-400">Selecteer een andere datum.</p>
+                    @else
                     <p class="text-sm font-medium text-gray-700 mb-1">Geen beschikbare tijdsloten op deze datum.</p>
                     <p class="text-xs text-gray-400 mb-4">Kies een andere dag of schrijf je in op de wachtlijst.</p>
-
                     @if($wachtlijstVerstuurd)
                         <div class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-green-50 border border-green-200 text-green-700 text-sm font-medium">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -70,6 +73,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                             Zet me op de wachtlijst
                         </button>
+                    @endif
                     @endif
                 </div>
             @else

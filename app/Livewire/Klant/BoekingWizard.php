@@ -73,6 +73,7 @@ class BoekingWizard extends Component
             'naam'           => $this->wachtlijstNaam,
             'email'          => $this->wachtlijstEmail,
             'telefoonnummer' => $this->wachtlijstTelefoon ?: null,
+            'gewenste_datum' => $this->gekozenDatum ?: null,
             'status'         => 'wachtend',
         ]);
 
@@ -186,15 +187,20 @@ class BoekingWizard extends Component
 
     public function render()
     {
+        $service = new BeschikbaarheidsService();
         $vrijeslots = $this->gekozenDatum
-            ? (new BeschikbaarheidsService())->getVrijeTijdslots($this->kapper, $this->dienst, $this->gekozenDatum)
+            ? $service->getVrijeTijdslots($this->kapper, $this->dienst, $this->gekozenDatum)
             : [];
+
+        $kapperWerktDag = $this->gekozenDatum
+            ? $service->heeftBeschikbaarheid($this->kapper, $this->gekozenDatum)
+            : false;
 
         $teBetalenCenten = max(0, $this->dienst->prijs - $this->kortingBedrag);
 
         $maxDatum = Carbon::now()->addMonths($this->kapper->vooruitboeken_maanden ?? 2)->toDateString();
 
-        return view('livewire.klant.boeking-wizard', compact('vrijeslots', 'teBetalenCenten', 'maxDatum'))
+        return view('livewire.klant.boeking-wizard', compact('vrijeslots', 'kapperWerktDag', 'teBetalenCenten', 'maxDatum'))
             ->layout('layouts.publiek');
     }
 }

@@ -21,6 +21,24 @@ class BeschikbaarheidsService
             )->first();
     }
 
+    public function heeftBeschikbaarheid(Kapper $kapper, string $datum): bool
+    {
+        $date = Carbon::parse($datum);
+        $dagVanWeek = $date->dayOfWeekIso - 1;
+
+        if (!Beschikbaarheid::where('kapper_id', $kapper->id)->where('dag_van_week', $dagVanWeek)->exists()) {
+            return false;
+        }
+
+        return !$kapper->sluitingsdagen()
+            ->where(fn($q) => $q
+                ->where(fn($q2) => $q2->whereNull('datum_tot')->whereDate('datum', $datum))
+                ->orWhere(fn($q2) => $q2->whereNotNull('datum_tot')
+                    ->where('datum', '<=', $datum)
+                    ->where('datum_tot', '>=', $datum))
+            )->exists();
+    }
+
     public function getVrijeTijdslots(
         Kapper $kapper,
         Dienst $dienst,
