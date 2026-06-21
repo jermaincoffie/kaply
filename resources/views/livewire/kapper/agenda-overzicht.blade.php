@@ -41,7 +41,11 @@
                         <p class="text-xs text-gray-400 dark:text-neutral-500">
                             {{ $wachtende->email }}
                             @if($wachtende->gewenste_datum)
-                            · <span class="text-amber-600 dark:text-amber-400 font-medium">{{ \Carbon\Carbon::parse($wachtende->gewenste_datum)->translatedFormat('d M Y') }}</span>
+                                @if(\Carbon\Carbon::parse($wachtende->gewenste_datum)->isToday())
+                                · <span class="font-semibold text-red-600 dark:text-red-400">Vandaag — zelf bellen</span>
+                                @else
+                                · <span class="text-amber-600 dark:text-amber-400 font-medium">{{ \Carbon\Carbon::parse($wachtende->gewenste_datum)->translatedFormat('d M Y') }}</span>
+                                @endif
                             @else
                             · <span class="italic">geen datum opgegeven</span>
                             @endif
