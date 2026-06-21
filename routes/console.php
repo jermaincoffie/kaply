@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('herinneringen:stuur')->everyFifteenMinutes();
 Schedule::command('kaply:trial-opvolging')->dailyAt('09:00');
+Schedule::command('kaply:wachtlijst-opruimen')->dailyAt('03:00');

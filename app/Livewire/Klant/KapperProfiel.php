@@ -171,6 +171,13 @@ class KapperProfiel extends Component
             'notitie'       => trim($this->klantNotitie) ?: null,
         ]);
 
+        // Klant heeft geboekt — verwijder van wachtlijst voor deze kapper
+        if (auth()->id()) {
+            Wachtlijst::where('kapper_id', $this->kapper->id)
+                ->where('klant_id', auth()->id())
+                ->delete();
+        }
+
         $this->geboekt = true;
         $this->laadTijdsloten();
     }
