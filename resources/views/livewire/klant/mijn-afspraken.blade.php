@@ -57,8 +57,8 @@
                         @endif
                     </p>
                 </div>
-                <button type="button" wire:click="wachtlijstAfmelden({{ $w->id }})"
-                        wire:confirm="Jezelf verwijderen van de wachtlijst bij {{ $w->kapper->salon_naam }}?"
+                <button type="button"
+                        @click.prevent="$dispatch('open-confirm', { title: 'Afmelden van wachtlijst', message: 'Jezelf verwijderen van de wachtlijst bij {{ addslashes($w->kapper->salon_naam) }}?', action: () => $wire.wachtlijstAfmelden({{ $w->id }}) })"
                         class="flex-shrink-0 text-xs text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors underline">
                     Afmelden
                 </button>
