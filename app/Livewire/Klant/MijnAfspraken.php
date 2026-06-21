@@ -235,8 +235,12 @@ class MijnAfspraken extends Component
                 ->get(),
             'wachtlijst' => Wachtlijst::where('klant_id', auth()->id())
                 ->where('status', 'wachtend')
+                ->where(fn($q) => $q
+                    ->whereNull('gewenste_datum')
+                    ->orWhere('gewenste_datum', '>=', today())
+                )
                 ->with('kapper')
-                ->orderBy('created_at')
+                ->orderByDesc('created_at')
                 ->get(),
             'favorieteKappers'  => auth()->user()->favorieteKappers()->get(),
             'favorietKapperIds' => auth()->user()->favorieteKappers()->pluck('kappers.id'),

@@ -433,7 +433,11 @@ class AgendaOverzicht extends Component
 
         $wachtlijst = Wachtlijst::where('kapper_id', $kapper->id)
             ->where('status', 'wachtend')
-            ->orderBy('created_at')
+            ->where(fn($q) => $q
+                ->whereNull('gewenste_datum')
+                ->orWhere('gewenste_datum', '>=', today())
+            )
+            ->orderByDesc('created_at')
             ->get();
 
         return view('livewire.kapper.agenda-overzicht', compact(
