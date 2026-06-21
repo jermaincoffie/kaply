@@ -26,6 +26,24 @@ class StripeWebhookController extends CashierWebhookController
         $this->syncAbonnementStatus($payload);
     }
 
+    public function handleCheckoutSessionCompleted(array $payload): void
+    {
+        $object = $payload['data']['object'] ?? [];
+        if (($object['mode'] ?? '') !== 'subscription') return;
+
+        $customerId     = $object['customer'] ?? null;
+        $subscriptionId = $object['subscription'] ?? null;
+        if (!$customerId || !$subscriptionId) return;
+
+        $user = User::where('stripe_id', $customerId)->first();
+        if ($user?->kapper) {
+            $user->kapper->update([
+                'stripe_subscription_id' => $subscriptionId,
+                'abonnement_status'      => 'actief',
+            ]);
+        }
+    }
+
     private function syncAbonnementStatus(array $payload): void
     {
         $stripeCustomerId = $payload['data']['object']['customer'] ?? null;
