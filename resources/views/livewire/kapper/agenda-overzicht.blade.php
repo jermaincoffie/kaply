@@ -825,18 +825,70 @@
                     $colWidthPct = 100 / $colCount;
                     $colLeftPct  = $colIndex * $colWidthPct;
                 @endphp
-                <button
-                    wire:click="selecteerAfspraak({{ $afspraak->id }})"
-                    @click.stop
-                    class="absolute rounded-md border-l-2 px-1.5 py-0.5 text-left transition-all cursor-pointer {{ $kleur }}
-                        {{ $isSelected ? 'ring-2 ring-offset-1 ring-blue-400 z-20' : 'z-10' }}"
+                <div
+                    x-data="{
+                        show: false,
+                        timer: null,
+                        top: 0,
+                        left: 0,
+                        enter() {
+                            clearTimeout(this.timer);
+                            const rect = $el.getBoundingClientRect();
+                            this.top = rect.top;
+                            this.left = rect.right + 10;
+                            if (this.left + 224 > window.innerWidth) { this.left = rect.left - 234; }
+                            this.timer = setTimeout(() => { this.show = true; }, 150);
+                        },
+                        leaveMain() { this.timer = setTimeout(() => { this.show = false; }, 120); },
+                        leaveTooltip() { this.show = false; },
+                        cancelLeave() { clearTimeout(this.timer); }
+                    }"
+                    @mouseenter="enter()"
+                    @mouseleave="leaveMain()"
+                    class="absolute {{ $isSelected ? 'z-20' : 'z-10' }}"
                     style="top: {{ $top }}px; height: {{ $height }}px; left: calc({{ $colLeftPct }}% + 2px); width: calc({{ $colWidthPct }}% - 4px);"
                 >
-                    <p class="text-xs font-semibold truncate leading-tight">{{ $afspraak->klant_naam }}</p>
-                    @if($height > 35)
-                    <p class="text-xs opacity-80 truncate leading-tight">{{ $afspraak->dienst->naam }}</p>
-                    @endif
-                </button>
+                    <button
+                        wire:click="selecteerAfspraak({{ $afspraak->id }})"
+                        @click.stop
+                        class="w-full h-full rounded-md border-l-2 px-1.5 py-0.5 text-left transition-all cursor-pointer {{ $kleur }}"
+                    >
+                        <p class="text-xs font-semibold truncate leading-tight">{{ $afspraak->klant_naam }}</p>
+                        @if($height > 35)
+                        <p class="text-xs opacity-80 truncate leading-tight">{{ $afspraak->dienst->naam }}</p>
+                        @endif
+                    </button>
+
+                    <template x-teleport="body">
+                        <div x-show="show"
+                             x-cloak
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="opacity-0 translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             @mouseenter="cancelLeave()"
+                             @mouseleave="leaveTooltip()"
+                             :style="`position:fixed;top:${top}px;left:${left}px;z-index:9999`"
+                             class="w-56 bg-white dark:bg-neutral-800 rounded-xl shadow-xl border border-gray-100 dark:border-neutral-700 p-3">
+                            <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">{{ $afspraak->klant_naam }}</p>
+                            <p class="text-xs text-gray-500 dark:text-neutral-400 mt-0.5 truncate">{{ $afspraak->dienst->naam }}</p>
+                            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $afspraak->start_tijd }} – {{ $afspraak->eind_tijd }}</p>
+                            @if(!$afspraak->walk_in_naam && $afspraak->klant?->telefoon)
+                            <div class="mt-2 pt-2 border-t border-gray-100 dark:border-neutral-700">
+                                <a href="tel:{{ $afspraak->klant->telefoon }}"
+                                   class="flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                    </svg>
+                                    {{ $afspraak->klant->telefoon }}
+                                </a>
+                            </div>
+                            @endif
+                        </div>
+                    </template>
+                </div>
                 @endforeach
             </div>
             @endforeach
