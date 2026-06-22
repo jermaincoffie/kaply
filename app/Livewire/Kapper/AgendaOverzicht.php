@@ -31,6 +31,7 @@ class AgendaOverzicht extends Component
     public string $nieuwTijd = '';
     public ?int $nieuwDienstId = null;
     public string $nieuwBetaalmethode = 'in_zaak';
+    public ?int $nieuwMedewerkerId = null;
     public string $klantZoekterm = '';
     public ?int $geselecteerdeKlantId = null;
     public string $geselecteerdeKlantNaam = '';
@@ -110,6 +111,7 @@ class AgendaOverzicht extends Component
         $this->nieuwTijd = $tijd;
         $this->nieuwDienstId = auth()->user()->kapper->diensten()->first()?->id;
         $this->nieuwBetaalmethode = 'in_zaak';
+        $this->nieuwMedewerkerId = null;
         $this->klantZoekterm = '';
         $this->geselecteerdeKlantId = null;
         $this->geselecteerdeKlantNaam = '';
@@ -182,6 +184,7 @@ class AgendaOverzicht extends Component
             'walk_in_naam'  => $walkInNaam,
             'kapper_id'     => auth()->user()->kapper->id,
             'dienst_id'     => $dienst->id,
+            'medewerker_id' => $this->nieuwMedewerkerId,
             'datum'         => $this->nieuwDatum,
             'start_tijd'    => $this->nieuwTijd,
             'eind_tijd'     => $eind,
@@ -261,6 +264,12 @@ class AgendaOverzicht extends Component
     public function noShow(int $id): void
     {
         Afspraak::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->update(['status' => 'no_show']);
+        $this->geselecteerdeAfspraakId = null;
+    }
+
+    public function annuleren(int $id): void
+    {
+        Afspraak::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->update(['status' => 'geannuleerd']);
         $this->geselecteerdeAfspraakId = null;
     }
 
