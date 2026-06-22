@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Admin;
 
+use App\Mail\KapperAfgewezenMail;
 use App\Models\Kapper;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class KappersOverzicht extends Component
@@ -19,7 +21,12 @@ class KappersOverzicht extends Component
     public function afwijzen(int $id): void
     {
         $kapper = Kapper::with('user')->findOrFail($id);
-        $user = $kapper->user;
+        $user   = $kapper->user;
+
+        if ($user) {
+            Mail::to($user->email)->send(new KapperAfgewezenMail($user->name, $kapper->salon_naam));
+        }
+
         $kapper->delete();
         $user?->delete();
     }
