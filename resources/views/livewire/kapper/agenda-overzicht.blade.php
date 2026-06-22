@@ -1023,22 +1023,29 @@
                     </div>
                     @endif
 
-                    {{-- Tijd + betaling --}}
+                    {{-- Datum + Tijd --}}
                     <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Datum</label>
+                            <input wire:model="nieuwDatum" type="date"
+                                   class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                        </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Begintijd</label>
                             <input wire:model="nieuwTijd" type="time"
                                    class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Betaling</label>
-                            <x-select
-                                wire-target="nieuwBetaalmethode"
-                                :current="$nieuwBetaalmethode"
-                                :options="['in_zaak' => 'In de zaak', 'online' => 'Online']"
-                                placeholder="Betaalmethode"
-                            />
-                        </div>
+                    </div>
+
+                    {{-- Betaling --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Betaling</label>
+                        <x-select
+                            wire-target="nieuwBetaalmethode"
+                            :current="$nieuwBetaalmethode"
+                            :options="['in_zaak' => 'In de zaak', 'online' => 'Online']"
+                            placeholder="Betaalmethode"
+                        />
                     </div>
 
                     <div class="flex gap-2 pt-1">
