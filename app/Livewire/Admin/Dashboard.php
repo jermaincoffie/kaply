@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\Afspraak;
 use App\Models\Kapper;
 use App\Models\Review;
 use App\Models\User;
@@ -40,21 +39,27 @@ class Dashboard extends Component
             ->count();
         $mrr_verschil = ($nieuwe_actief_deze_maand - $nieuwe_actief_vorige_maand) * self::ABONNEMENT_PRIJS;
 
-        // Trial kappers: onboarding voltooid, geen abonnement, aangemeld ≤ 14 dagen geleden
+        // Trial kappers: Stripe subscription met stripe_status = 'trialing'
         $trial_kappers = Kapper::with('user')
-            ->where('abonnement_status', 'geen')
-            ->where('onboarding_voltooid', true)
-            ->where('created_at', '>=', now()->subDays(self::TRIAL_DAGEN))
+            ->whereHas('user', fn($q) => $q->whereHas('subscriptions', fn($q2) => $q2->where('stripe_status', 'trialing')))
             ->orderBy('created_at')
             ->get()
             ->map(function ($k) {
-                $k->dagen_resterend = max(0, self::TRIAL_DAGEN - (int) now()->diffInDays($k->created_at));
+                $trialEnds = $k->user->subscription('default')?->trial_ends_at;
+                $k->dagen_resterend = $trialEnds ? max(0, (int) now()->diffInDays($trialEnds)) : 0;
                 return $k;
             });
 
         // Conversieratio: actieve abonnees / alle kappers die onboarding voltooid hebben
         $totaal_onboarded = Kapper::where('onboarding_voltooid', true)->count();
         $conversieratio   = $totaal_onboarded > 0 ? round(($abonnees_actief / $totaal_onboarded) * 100) : 0;
+
+        $wachtende_kappers = Kapper::with('user')
+            ->where('actief', false)
+            ->where('abonnement_status', 'geen')
+            ->orderByDesc('created_at')
+            ->limit(4)
+            ->get();
 
         $nieuw_aangemeld = Kapper::where('actief', false)
             ->where('abonnement_status', 'geen')
@@ -81,10 +86,7 @@ class Dashboard extends Component
             'trial_count'             => $trial_kappers->count(),
             'conversieratio'          => $conversieratio,
             'recente_aanmeldingen'    => $recente_aanmeldingen,
-            'recente_afspraken'       => Afspraak::with(['kapper', 'dienst', 'klant'])
-                ->orderByDesc('datum')->orderByDesc('start_tijd')
-                ->limit(8)
-                ->get(),
+            'wachtende_kappers'       => $wachtende_kappers,
             'top_kappers'             => Kapper::withCount([
                 'afspraken as boekingen_maand' => fn($q) => $q
                     ->whereMonth('datum', now()->month)
