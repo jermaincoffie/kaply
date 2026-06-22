@@ -8,16 +8,16 @@
     {{-- Stat kaarten --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
-            <p class="text-xs text-gray-500 dark:text-neutral-400">Actief</p>
+            <p class="text-xs text-gray-500 dark:text-neutral-400">Betaald</p>
             <p class="text-2xl font-bold text-gray-800 dark:text-neutral-100 mt-1">{{ $totaalActief }}</p>
         </div>
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
             <p class="text-xs text-gray-500 dark:text-neutral-400">Trial</p>
-            <p class="text-2xl font-bold text-gray-800 dark:text-neutral-100 mt-1">{{ $totaalTrial }}</p>
+            <p class="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-1">{{ $totaalTrial }}</p>
         </div>
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
-            <p class="text-xs text-gray-500 dark:text-neutral-400">Inactief</p>
-            <p class="text-2xl font-bold text-gray-800 dark:text-neutral-100 mt-1">{{ $totaalInactief }}</p>
+        <div class="bg-white dark:bg-neutral-800 border border-{{ $totaalPastDue > 0 ? 'red-300 dark:border-red-700' : 'gray-200 dark:border-neutral-700' }} rounded-xl p-4">
+            <p class="text-xs text-gray-500 dark:text-neutral-400">Betaling mislukt</p>
+            <p class="text-2xl font-bold {{ $totaalPastDue > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-800 dark:text-neutral-100' }} mt-1">{{ $totaalPastDue }}</p>
         </div>
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
             <p class="text-xs text-gray-500 dark:text-neutral-400">Maandomzet (excl. BTW)</p>
@@ -38,7 +38,7 @@
         <x-select
             wire-target="statusFilter"
             :current="$statusFilter"
-            :options="['' => 'Alle statussen', 'actief' => 'Actief', 'trial' => 'Trial', 'inactief' => 'Inactief', 'geen' => 'Geen abo']"
+            :options="['' => 'Alle statussen', 'actief' => 'Actief', 'past_due' => 'Betaling mislukt', 'inactief' => 'Inactief', 'geen' => 'Geen abo']"
             placeholder="Alle statussen"
         />
     </div>
@@ -59,10 +59,10 @@
             @php
                 $sub = $subscriptions[$kapper->user_id] ?? null;
                 $statusLabel = match($kapper->abonnement_status) {
-                    'actief'   => ['label' => 'Actief',   'class' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'],
-                    'trial'    => ['label' => 'Trial',    'class' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'],
-                    'inactief' => ['label' => 'Inactief', 'class' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'],
-                    default    => ['label' => 'Geen',     'class' => 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400'],
+                    'actief'   => ['label' => 'Actief',            'class' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'],
+                    'past_due' => ['label' => 'Betaling mislukt',  'class' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'],
+                    'inactief' => ['label' => 'Inactief',          'class' => 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400'],
+                    default    => ['label' => 'Geen',              'class' => 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400'],
                 };
                 $stripeStatus = $sub ? match($sub->stripe_status) {
                     'active'             => ['label' => 'Betaald',     'class' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'],

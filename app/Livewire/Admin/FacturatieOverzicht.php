@@ -28,13 +28,16 @@ class FacturatieOverzicht extends Component
             ->get()
             ->keyBy('user_id');
 
-        $totaalActief  = Kapper::where('abonnement_status', 'actief')->count();
-        $totaalTrial   = Kapper::where('abonnement_status', 'trial')->count();
-        $totaalInactief = Kapper::whereIn('abonnement_status', ['inactief', 'geen', null])->count();
-        $maandOmzet    = $totaalActief * 2500;
+        $totaalActief   = Kapper::whereHas('user', fn($q) => $q->whereHas('subscriptions',
+                              fn($q2) => $q2->where('stripe_status', 'active')))->count();
+        $totaalTrial    = Kapper::whereHas('user', fn($q) => $q->whereHas('subscriptions',
+                              fn($q2) => $q2->where('stripe_status', 'trialing')))->count();
+        $totaalPastDue  = Kapper::where('abonnement_status', 'past_due')->count();
+        $totaalInactief = Kapper::whereIn('abonnement_status', ['inactief', 'geen'])->count();
+        $maandOmzet     = $totaalActief * 2500;
 
         return view('livewire.admin.facturatie-overzicht', compact(
-            'kappers', 'subscriptions', 'totaalActief', 'totaalTrial', 'totaalInactief', 'maandOmzet'
+            'kappers', 'subscriptions', 'totaalActief', 'totaalTrial', 'totaalPastDue', 'totaalInactief', 'maandOmzet'
         ))->layout('layouts.admin', ['title' => 'Facturatie']);
     }
 }
