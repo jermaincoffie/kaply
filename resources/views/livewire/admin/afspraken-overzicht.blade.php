@@ -1,21 +1,19 @@
 <div>
     {{-- Header --}}
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-4">
         <div>
             <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100">Afspraken</h1>
-            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Alle afspraken van alle kappers</p>
+            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $totaal }} afspraken totaal</p>
         </div>
     </div>
 
     {{-- Filters --}}
     <div class="flex gap-3 mb-4">
-        <div class="relative flex-1 max-w-xs">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
-                </svg>
-            </div>
-            <input wire:model.live="zoekterm" type="text" placeholder="Zoek klant of kapper..."
+        <div class="relative flex-1">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-neutral-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+            </svg>
+            <input wire:model.live.debounce.300ms="zoekterm" type="text" placeholder="Zoek klant of kapper..."
                 class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
@@ -27,14 +25,14 @@
         />
     </div>
 
-    {{-- Tabel --}}
+    {{-- Lijst --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
 
-        {{-- Mobiel: cards --}}
+        {{-- Mobiel: compacte cards met uitklap --}}
         <div class="sm:hidden divide-y divide-gray-50 dark:divide-neutral-700">
             @forelse($afspraken as $afspraak)
             @php
-                $badgeM = match($afspraak->status) {
+                $badgeCls = match($afspraak->status) {
                     'gepland'     => 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
                     'voltooid'    => 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400',
                     'geannuleerd' => 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400',
@@ -42,16 +40,45 @@
                     default       => 'bg-gray-100 text-gray-500',
                 };
             @endphp
-            <div class="px-4 py-3">
-                <div class="flex items-start justify-between gap-3 mb-1.5">
-                    <div class="min-w-0">
-                        <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ str($afspraak->klant?->name ?? '—')->title() }}</p>
-                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5 truncate">{{ str($afspraak->kapper?->salon_naam ?? '—')->title() }} · {{ $afspraak->dienst?->naam ?? '—' }}</p>
-                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $afspraak->datum->format('d-m-Y') }} · {{ $afspraak->start_tijd }}–{{ $afspraak->eind_tijd }}</p>
+            <div x-data="{ open: false }">
+                {{-- Compacte rij --}}
+                <button @click="open = !open" class="w-full px-4 py-3 flex items-center justify-between gap-3 text-left">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">
+                            {{ str($afspraak->klant?->name ?? '—')->title() }}
+                        </p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
+                            {{ $afspraak->datum->format('d M Y') }} · {{ $afspraak->start_tijd }}
+                        </p>
                     </div>
-                    <span class="inline-flex flex-shrink-0 px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badgeM }}">
-                        {{ ucfirst(str_replace('_', ' ', $afspraak->status)) }}
-                    </span>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $badgeCls }}">
+                            {{ ucfirst(str_replace('_', ' ', $afspraak->status)) }}
+                        </span>
+                        <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                </button>
+
+                {{-- Uitklapbare details --}}
+                <div x-show="open" x-collapse class="px-4 pb-3 space-y-1.5 border-t border-gray-50 dark:border-neutral-700 pt-2.5">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400 dark:text-neutral-500">Kapper</span>
+                        <span class="text-gray-700 dark:text-neutral-300 font-medium">{{ str($afspraak->kapper?->salon_naam ?? '—')->title() }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400 dark:text-neutral-500">Dienst</span>
+                        <span class="text-gray-700 dark:text-neutral-300">{{ $afspraak->dienst?->naam ?? '—' }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400 dark:text-neutral-500">Tijd</span>
+                        <span class="text-gray-700 dark:text-neutral-300">{{ $afspraak->start_tijd }} – {{ $afspraak->eind_tijd }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400 dark:text-neutral-500">Betaling</span>
+                        <span class="text-gray-700 dark:text-neutral-300">{{ $afspraak->betaalmethode === 'online' ? 'Online' : 'In zaak' }}</span>
+                    </div>
                 </div>
             </div>
             @empty
@@ -74,24 +101,15 @@
             <tbody class="divide-y divide-gray-50 dark:divide-neutral-700">
                 @forelse($afspraken as $afspraak)
                 <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
-                    <td class="px-6 py-3.5 font-medium text-gray-800 dark:text-neutral-100">
-                        {{ str($afspraak->klant?->name ?? '—')->title() }}
-                    </td>
-                    <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">
-                        {{ str($afspraak->kapper?->salon_naam ?? '—')->title() }}
-                    </td>
-                    <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">
-                        {{ $afspraak->dienst?->naam ?? '—' }}
-                    </td>
+                    <td class="px-6 py-3.5 font-medium text-gray-800 dark:text-neutral-100">{{ str($afspraak->klant?->name ?? '—')->title() }}</td>
+                    <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ str($afspraak->kapper?->salon_naam ?? '—')->title() }}</td>
+                    <td class="px-6 py-3.5 text-gray-500 dark:text-neutral-400">{{ $afspraak->dienst?->naam ?? '—' }}</td>
                     <td class="px-6 py-3.5 text-gray-400 dark:text-neutral-500 text-xs">
-                        {{ $afspraak->datum->format('d-m-Y') }}<br>
-                        {{ $afspraak->start_tijd }} – {{ $afspraak->eind_tijd }}
+                        {{ $afspraak->datum->format('d-m-Y') }}<br>{{ $afspraak->start_tijd }} – {{ $afspraak->eind_tijd }}
                     </td>
                     <td class="px-6 py-3.5">
                         <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium
-                            {{ $afspraak->betaalmethode === 'online'
-                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                                : 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400' }}">
+                            {{ $afspraak->betaalmethode === 'online' ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400' }}">
                             {{ $afspraak->betaalmethode === 'online' ? 'Online' : 'In zaak' }}
                         </span>
                     </td>
@@ -112,17 +130,22 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-6 py-12 text-center text-sm text-gray-400 dark:text-neutral-500">
-                        Geen afspraken gevonden
-                    </td>
+                    <td colspan="6" class="px-6 py-12 text-center text-sm text-gray-400 dark:text-neutral-500">Geen afspraken gevonden</td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
 
-    </div>
+        {{-- Laad meer --}}
+        @if($heeftMeer)
+        <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-700 text-center">
+            <button wire:click="laadMeer" wire:loading.attr="disabled" wire:target="laadMeer"
+                    class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50">
+                <span wire:loading.remove wire:target="laadMeer">Laad meer afspraken</span>
+                <span wire:loading wire:target="laadMeer">Laden...</span>
+            </button>
+        </div>
+        @endif
 
-    <div class="mt-6">
-        {{ $afspraken->links() }}
     </div>
 </div>
