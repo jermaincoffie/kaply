@@ -929,12 +929,7 @@
             {{-- ===== NIEUW FORMULIER ===== --}}
             <div class="px-5 pt-4 pb-6">
                 <div class="flex items-center justify-between mb-5">
-                    <div>
-                        <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Afspraak inplannen</h3>
-                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
-                            {{ \Carbon\Carbon::parse($nieuwDatum)->isoFormat('dddd D MMMM') }} · {{ $nieuwTijd }}
-                        </p>
-                    </div>
+                    <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Afspraak inplannen</h3>
                     <button wire:click="sluitAlles" class="text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -1027,8 +1022,7 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Datum</label>
-                            <input wire:model="nieuwDatum" type="date"
-                                   class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                            <x-datepicker wire-model="nieuwDatum" :value="$nieuwDatum" />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Begintijd</label>
