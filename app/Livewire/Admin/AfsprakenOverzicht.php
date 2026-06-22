@@ -35,11 +35,13 @@ class AfsprakenOverzicht extends Component
         $afspraken = $query->limit($this->limite)->get();
         $heeftMeer = $totaal > $this->limite;
 
-        $kappers = Kapper::where('actief', true)
+        $kapperOpties = ['' => 'Alle kappers'] + Kapper::where('actief', true)
             ->orderBy('salon_naam')
-            ->get(['id', 'salon_naam']);
+            ->get(['id', 'salon_naam'])
+            ->mapWithKeys(fn($k) => [(string) $k->id => str($k->salon_naam)->title()->toString()])
+            ->toArray();
 
-        return view('livewire.admin.afspraken-overzicht', compact('afspraken', 'heeftMeer', 'totaal', 'kappers'))
+        return view('livewire.admin.afspraken-overzicht', compact('afspraken', 'heeftMeer', 'totaal', 'kapperOpties'))
             ->layout('layouts.admin');
     }
 }

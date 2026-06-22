@@ -17,22 +17,19 @@
                 class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
-        <select wire:model.live="filterStatus"
-            class="px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="">Alle statussen</option>
-            <option value="gepland">Gepland</option>
-            <option value="voltooid">Voltooid</option>
-            <option value="geannuleerd">Geannuleerd</option>
-            <option value="no_show">No-show</option>
-        </select>
+        <x-select
+            wire-target="filterStatus"
+            :current="$filterStatus"
+            :options="['' => 'Alle statussen', 'gepland' => 'Gepland', 'voltooid' => 'Voltooid', 'geannuleerd' => 'Geannuleerd', 'no_show' => 'No-show']"
+            placeholder="Alle statussen"
+        />
 
-        <select wire:model.live="filterKapper"
-            class="px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="">Alle kappers</option>
-            @foreach($kappers as $kapper)
-            <option value="{{ $kapper->id }}">{{ str($kapper->salon_naam)->title() }}</option>
-            @endforeach
-        </select>
+        <x-select
+            wire-target="filterKapper"
+            :current="$filterKapper"
+            :options="$kapperOpties"
+            placeholder="Alle kappers"
+        />
     </div>
 
     {{-- Lijst --}}
