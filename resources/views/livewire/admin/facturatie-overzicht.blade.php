@@ -26,33 +26,104 @@
     </div>
 
     {{-- Filters --}}
-    <div class="flex flex-col sm:flex-row gap-3">
+    <div class="flex flex-col sm:flex-row gap-2">
         <div class="relative flex-1">
-            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-neutral-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
             <input wire:model.live.debounce.300ms="zoekterm" type="search"
                    placeholder="Zoek kapper of e-mail..."
-                   class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-800 dark:text-neutral-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                   class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-800 dark:text-neutral-200 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
-        <select wire:model.live="statusFilter"
-                class="text-sm border border-gray-200 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500">
-            <option value="">Alle statussen</option>
-            <option value="actief">Actief</option>
-            <option value="trial">Trial</option>
-            <option value="inactief">Inactief</option>
-            <option value="geen">Geen</option>
-        </select>
+        <x-select
+            wire-target="statusFilter"
+            :current="$statusFilter"
+            :options="['' => 'Alle statussen', 'actief' => 'Actief', 'trial' => 'Trial', 'inactief' => 'Inactief', 'geen' => 'Geen abo']"
+            placeholder="Alle statussen"
+        />
     </div>
 
-    {{-- Tabel --}}
+    {{-- Lijst --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
+
         @if($kappers->isEmpty())
         <div class="text-center py-12">
             <p class="text-sm text-gray-400 dark:text-neutral-500">Geen kappers gevonden.</p>
         </div>
+
         @else
-        <div class="overflow-x-auto">
+
+        {{-- Mobiel: expandable cards --}}
+        <div class="sm:hidden divide-y divide-gray-50 dark:divide-neutral-700">
+            @foreach($kappers as $kapper)
+            @php
+                $sub = $subscriptions[$kapper->user_id] ?? null;
+                $statusLabel = match($kapper->abonnement_status) {
+                    'actief'   => ['label' => 'Actief',   'class' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'],
+                    'trial'    => ['label' => 'Trial',    'class' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'],
+                    'inactief' => ['label' => 'Inactief', 'class' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'],
+                    default    => ['label' => 'Geen',     'class' => 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400'],
+                };
+                $stripeStatus = $sub ? match($sub->stripe_status) {
+                    'active'             => ['label' => 'Betaald',     'class' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'],
+                    'trialing'           => ['label' => 'Trial',       'class' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'],
+                    'past_due'           => ['label' => 'Te laat',     'class' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'],
+                    'canceled'           => ['label' => 'Geannuleerd', 'class' => 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400'],
+                    'incomplete'         => ['label' => 'Onvolledig',  'class' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'],
+                    'incomplete_expired' => ['label' => 'Verlopen',    'class' => 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400'],
+                    default              => ['label' => $sub->stripe_status, 'class' => 'bg-gray-100 text-gray-600'],
+                } : null;
+            @endphp
+            <div x-data="{ open: false }">
+                <button @click="open = !open" class="w-full px-4 py-3 flex items-center justify-between gap-3 text-left">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $kapper->salon_naam }}</p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5 truncate">{{ $kapper->user?->name }}</p>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $statusLabel['class'] }}">
+                            {{ $statusLabel['label'] }}
+                        </span>
+                        <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                </button>
+
+                <div x-show="open" x-collapse class="px-4 pb-3 space-y-1.5 border-t border-gray-50 dark:border-neutral-700 pt-2.5">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400 dark:text-neutral-500">E-mail</span>
+                        <span class="text-gray-700 dark:text-neutral-300 truncate ml-4 text-right">{{ $kapper->user?->email ?? '—' }}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-gray-400 dark:text-neutral-500">Stripe</span>
+                        @if($stripeStatus)
+                            <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $stripeStatus['class'] }}">{{ $stripeStatus['label'] }}</span>
+                        @else
+                            <span class="text-gray-400 dark:text-neutral-500">Geen data</span>
+                        @endif
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400 dark:text-neutral-500">Bedrag</span>
+                        <span class="text-gray-700 dark:text-neutral-300 font-medium">
+                            @if(in_array($kapper->abonnement_status, ['actief', 'trial']))
+                                € 25,00/maand
+                            @else
+                                —
+                            @endif
+                        </span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-400 dark:text-neutral-500">Aangemeld</span>
+                        <span class="text-gray-700 dark:text-neutral-300">{{ \Carbon\Carbon::parse($kapper->created_at)->format('d M Y') }}</span>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        {{-- Desktop: tabel --}}
+        <div class="hidden sm:block overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-100 dark:border-neutral-700">
@@ -75,13 +146,13 @@
                             default    => ['label' => 'Geen',     'class' => 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400'],
                         };
                         $stripeStatus = $sub ? match($sub->stripe_status) {
-                            'active'            => ['label' => 'Betaald',       'class' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'],
-                            'trialing'          => ['label' => 'Trial',         'class' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'],
-                            'past_due'          => ['label' => 'Te laat',       'class' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'],
-                            'canceled'          => ['label' => 'Geannuleerd',   'class' => 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400'],
-                            'incomplete'        => ['label' => 'Onvolledig',    'class' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'],
-                            'incomplete_expired'=> ['label' => 'Verlopen',      'class' => 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400'],
-                            default             => ['label' => $sub->stripe_status, 'class' => 'bg-gray-100 text-gray-600'],
+                            'active'             => ['label' => 'Betaald',     'class' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'],
+                            'trialing'           => ['label' => 'Trial',       'class' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'],
+                            'past_due'           => ['label' => 'Te laat',     'class' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'],
+                            'canceled'           => ['label' => 'Geannuleerd', 'class' => 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400'],
+                            'incomplete'         => ['label' => 'Onvolledig',  'class' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'],
+                            'incomplete_expired' => ['label' => 'Verlopen',    'class' => 'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400'],
+                            default              => ['label' => $sub->stripe_status, 'class' => 'bg-gray-100 text-gray-600'],
                         } : null;
                     @endphp
                     <tr class="hover:bg-gray-50 dark:hover:bg-neutral-700/30 transition-colors">
@@ -89,9 +160,7 @@
                             <div class="font-medium text-gray-800 dark:text-neutral-200">{{ $kapper->salon_naam }}</div>
                             <div class="text-xs text-gray-400 dark:text-neutral-500">{{ $kapper->user?->name }}</div>
                         </td>
-                        <td class="px-4 py-3 text-gray-600 dark:text-neutral-400">
-                            {{ $kapper->user?->email ?? '—' }}
-                        </td>
+                        <td class="px-4 py-3 text-gray-600 dark:text-neutral-400">{{ $kapper->user?->email ?? '—' }}</td>
                         <td class="px-4 py-3">
                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $statusLabel['class'] }}">
                                 {{ $statusLabel['label'] }}
@@ -110,9 +179,8 @@
                             @endif
                         </td>
                         <td class="px-4 py-3 text-gray-700 dark:text-neutral-300 font-medium">
-                            @if($kapper->abonnement_status === 'actief' || $kapper->abonnement_status === 'trial')
-                                € 25,00
-                                <span class="text-xs text-gray-400 dark:text-neutral-500 font-normal">/maand</span>
+                            @if(in_array($kapper->abonnement_status, ['actief', 'trial']))
+                                € 25,00 <span class="text-xs text-gray-400 dark:text-neutral-500 font-normal">/maand</span>
                             @else
                                 <span class="text-gray-400 dark:text-neutral-500">—</span>
                             @endif
@@ -125,6 +193,7 @@
                 </tbody>
             </table>
         </div>
+
         @endif
     </div>
 
