@@ -279,6 +279,48 @@ class AgendaOverzicht extends Component
         $this->geselecteerdeAfspraakId = null;
     }
 
+    private function berekenOverlapKolommen($afspraken): array
+    {
+        $layout = [];
+        if ($afspraken->isEmpty()) return $layout;
+
+        $sorted = $afspraken->sortBy('start_tijd')->values();
+
+        // Wijs kolommen toe op basis van tijdoverlap
+        $kolomEind = []; // col => eind_tijd van laatste afspraak in die kolom
+
+        foreach ($sorted as $a) {
+            $start = substr($a->start_tijd, 0, 5);
+            $eind  = substr($a->eind_tijd, 0, 5);
+
+            $col = 0;
+            while (isset($kolomEind[$col]) && $kolomEind[$col] > $start) {
+                $col++;
+            }
+            $kolomEind[$col] = $eind;
+            $layout[$a->id] = ['col_index' => $col, 'col_count' => 1];
+        }
+
+        // Tweede pass: bepaal col_count = hoeveel kolommen tegelijk bezet zijn
+        foreach ($sorted as $a) {
+            $aStart = substr($a->start_tijd, 0, 5);
+            $aEind  = substr($a->eind_tijd, 0, 5);
+            $maxKol = $layout[$a->id]['col_index'];
+
+            foreach ($sorted as $b) {
+                if ($b->id === $a->id) continue;
+                $bStart = substr($b->start_tijd, 0, 5);
+                $bEind  = substr($b->eind_tijd, 0, 5);
+                if ($aStart < $bEind && $aEind > $bStart) {
+                    $maxKol = max($maxKol, $layout[$b->id]['col_index']);
+                }
+            }
+            $layout[$a->id]['col_count'] = $maxKol + 1;
+        }
+
+        return $layout;
+    }
+
     public function wachtlijstVerwijderen(int $id): void
     {
         Wachtlijst::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->delete();
@@ -449,6 +491,13 @@ class AgendaOverzicht extends Component
             ->orderByDesc('created_at')
             ->get();
 
+        // Overlap-gebaseerde kolom layout per dag
+        $afspraakLayout = [];
+        foreach ($afsprakenPerDag as $dagAfspraken) {
+            $afspraakLayout += $this->berekenOverlapKolommen($dagAfspraken);
+        }
+        $mobielLayout = $this->berekenOverlapKolommen($mobielAfspraken);
+
         return view('livewire.kapper.agenda-overzicht', compact(
             'days', 'afsprakenPerDag', 'omzet_maand', 'afspraken_maand',
             'komende_afspraken', 'geselecteerdeAfspraak', 'weekStartDate',
@@ -457,7 +506,8 @@ class AgendaOverzicht extends Component
             'blokkeringenPerDag', 'mobielBlokkeringen', 'geselecteerdeblokkering',
             'onboarding', 'toonOnboarding',
             'no_show_pct', 'bezettingsgraad', 'druksteUurLabel',
-            'wachtlijst', 'medewerkers', 'medewerkerKolom'
+            'wachtlijst', 'medewerkers', 'medewerkerKolom',
+            'afspraakLayout', 'mobielLayout'
         ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }

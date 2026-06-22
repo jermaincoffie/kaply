@@ -567,14 +567,10 @@
                             };
                         @endphp
                         @php
-                            $mAantalKolommen = $gefilterdeMedewerkerId === null && count($medewerkerKolom) > 1
-                                ? count($medewerkerKolom)
-                                : 1;
-                            $mKolomIndex = ($mAantalKolommen > 1 && $afspraak->medewerker_id && isset($medewerkerKolom[$afspraak->medewerker_id]))
-                                ? $medewerkerKolom[$afspraak->medewerker_id]
-                                : 0;
-                            $mColWidthPct = 100 / $mAantalKolommen;
-                            $mColLeftPct  = $mKolomIndex * $mColWidthPct;
+                            $mColCount    = $mobielLayout[$afspraak->id]['col_count'] ?? 1;
+                            $mColIndex    = $mobielLayout[$afspraak->id]['col_index'] ?? 0;
+                            $mColWidthPct = 100 / $mColCount;
+                            $mColLeftPct  = $mColIndex * $mColWidthPct;
                         @endphp
                         <button wire:click="selecteerAfspraak({{ $afspraak->id }})" @click.stop
                                 class="absolute rounded-md border-l-2 px-2 py-1 text-left z-10 {{ $mKleur }}"
@@ -824,15 +820,10 @@
                         default                            => 'bg-blue-500 hover:bg-blue-600 border-blue-600 text-white',
                     };
 
-                    // Sub-kolom berekening: elke medewerker krijgt eigen kolom
-                    $aantalKolommen = $gefilterdeMedewerkerId === null && count($medewerkerKolom) > 1
-                        ? count($medewerkerKolom)
-                        : 1;
-                    $kolomIndex = ($aantalKolommen > 1 && $afspraak->medewerker_id && isset($medewerkerKolom[$afspraak->medewerker_id]))
-                        ? $medewerkerKolom[$afspraak->medewerker_id]
-                        : 0;
-                    $colWidthPct = 100 / $aantalKolommen;
-                    $colLeftPct  = $kolomIndex * $colWidthPct;
+                    $colCount    = $afspraakLayout[$afspraak->id]['col_count'] ?? 1;
+                    $colIndex    = $afspraakLayout[$afspraak->id]['col_index'] ?? 0;
+                    $colWidthPct = 100 / $colCount;
+                    $colLeftPct  = $colIndex * $colWidthPct;
                 @endphp
                 <button
                     wire:click="selecteerAfspraak({{ $afspraak->id }})"
