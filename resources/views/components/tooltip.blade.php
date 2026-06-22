@@ -4,7 +4,7 @@
 $hPos = match($position) {
     'right'       => 'right-0',
     'left'        => 'left-0',
-    'below-right' => 'right-0',
+    'below-right' => 'left-0 sm:left-auto sm:right-0',
     'below-left'  => 'left-0',
     'below'       => 'left-1/2 -translate-x-1/2',
     default       => 'left-1/2 -translate-x-1/2',
@@ -15,7 +15,7 @@ $vPos = str_starts_with($position, 'below') ? 'top-6' : 'bottom-6';
 $arrowPos = match($position) {
     'right'       => 'right-2',
     'left'        => 'left-2',
-    'below-right' => 'right-2',
+    'below-right' => 'left-2 sm:left-auto sm:right-2',
     'below-left'  => 'left-2',
     default       => 'left-1/2 -translate-x-1/2',
 };

@@ -279,6 +279,12 @@ class AgendaOverzicht extends Component
         $this->geselecteerdeAfspraakId = null;
     }
 
+    public function verbergUitAgenda(int $id): void
+    {
+        Afspraak::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->update(['verborgen_in_agenda' => true]);
+        $this->geselecteerdeAfspraakId = null;
+    }
+
     private function berekenOverlapKolommen($afspraken): array
     {
         $layout = [];
@@ -339,7 +345,8 @@ class AgendaOverzicht extends Component
 
         $afspraken = Afspraak::where('kapper_id', $kapper_id)
             ->whereBetween('datum', [$weekStartDate->toDateString(), $weekEndDate->toDateString()])
-            ->with(['klant', 'dienst'])
+            ->where('verborgen_in_agenda', false)
+            ->with(['klant', 'dienst', 'medewerker'])
             ->orderBy('start_tijd')
             ->get();
 
@@ -369,7 +376,8 @@ class AgendaOverzicht extends Component
 
         $mobielAfspraken = Afspraak::where('kapper_id', $kapper_id)
             ->whereDate('datum', $this->mobielDatum)
-            ->with(['klant', 'dienst'])
+            ->where('verborgen_in_agenda', false)
+            ->with(['klant', 'dienst', 'medewerker'])
             ->orderBy('start_tijd')
             ->get();
 
@@ -379,6 +387,7 @@ class AgendaOverzicht extends Component
 
         $vandaagAfspraken = Afspraak::where('kapper_id', $kapper_id)
             ->whereDate('datum', today())
+            ->where('verborgen_in_agenda', false)
             ->with(['klant', 'dienst'])
             ->orderBy('start_tijd')
             ->get();

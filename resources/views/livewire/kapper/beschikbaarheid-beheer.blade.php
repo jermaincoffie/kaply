@@ -27,75 +27,7 @@
             </button>
         </div>
 
-        {{-- Buffer tijd --}}
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex flex-wrap items-center justify-between gap-3">
-            <div>
-                <div class="flex items-center gap-1">
-                    <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">Buffer tijd</p>
-                    <x-tooltip position="below-right">Vrije tijd die automatisch na elke afspraak wordt gereserveerd. Klanten kunnen in die periode niet boeken.</x-tooltip>
-                </div>
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Pauze na elke afspraak</p>
-            </div>
-            <x-select
-                wire-target="bufferMinuten"
-                :current="(string) $bufferMinuten"
-                :options="['0' => 'Geen buffer', '5' => '5 minuten', '10' => '10 minuten', '15' => '15 minuten', '30' => '30 minuten']"
-            />
-        </div>
-
-        {{-- Vooruitboeken --}}
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex flex-wrap items-center justify-between gap-3">
-            <div>
-                <div class="flex items-center gap-1">
-                    <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">Vooruitboeken</p>
-                    <x-tooltip position="below-right">Hoe ver in de toekomst klanten een afspraak kunnen inplannen.</x-tooltip>
-                </div>
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Maximale boekingsperiode</p>
-            </div>
-            <x-select
-                wire-target="vooruitboekenMaanden"
-                :current="(string) $vooruitboekenMaanden"
-                :options="['1' => '1 maand', '2' => '2 maanden', '3' => '3 maanden', '6' => '6 maanden']"
-            />
-        </div>
-
-        {{-- Annuleringstermijn --}}
-        <div class="px-4 sm:px-6 py-4 flex items-center justify-between gap-4 border-t border-gray-100 dark:border-neutral-700">
-            <div>
-                <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
-                    </svg>
-                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">Annuleringstermijn</p>
-                </div>
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant kan niet meer gratis annuleren binnen deze tijd</p>
-            </div>
-            <x-select
-                wire-target="annuleringUren"
-                :current="$annuleringUren"
-                :options="['' => 'Geen limiet', '1' => '1 uur', '2' => '2 uur', '4' => '4 uur', '8' => '8 uur', '12' => '12 uur', '24' => '24 uur', '48' => '48 uur']"
-            />
-        </div>
-
-        {{-- Annuleringskosten --}}
-        <div class="px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-t border-gray-100 dark:border-neutral-700">
-            <div>
-                <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">Annuleringskosten</p>
-                </div>
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant betaalt dit bedrag bij laat annuleren (leeg = blokkeren)</p>
-            </div>
-            <div class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 dark:text-neutral-500 pointer-events-none">€</span>
-                <input wire:model="annuleringKosten" type="number" step="0.01" min="0" max="999" placeholder="0.00"
-                       class="pl-7 pr-3 py-2 w-28 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder-gray-300 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-            </div>
-        </div>
-
-        <div class="divide-y divide-gray-50 dark:divide-neutral-700">
+        <div class="divide-y divide-gray-50 dark:divide-neutral-700 border-b border-gray-100 dark:border-neutral-700">
             @foreach($rooster as $dag => $data)
             <div class="px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
                 <label class="flex items-center gap-3 cursor-pointer sm:flex-shrink-0 sm:w-32">
@@ -117,6 +49,79 @@
                 @endif
             </div>
             @endforeach
+        </div>
+
+        {{-- Buffer tijd --}}
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
+            <div class="min-w-0">
+                <div class="flex items-center gap-1">
+                    <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">Buffer tijd</p>
+                    <x-tooltip position="below-right">Vrije tijd die automatisch na elke afspraak wordt gereserveerd. Klanten kunnen in die periode niet boeken.</x-tooltip>
+                </div>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Pauze na elke afspraak</p>
+            </div>
+            <x-select
+                class="w-full sm:w-auto"
+                wire-target="bufferMinuten"
+                :current="(string) $bufferMinuten"
+                :options="['0' => 'Geen buffer', '5' => '5 minuten', '10' => '10 minuten', '15' => '15 minuten', '30' => '30 minuten']"
+            />
+        </div>
+
+        {{-- Vooruitboeken --}}
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
+            <div class="min-w-0">
+                <div class="flex items-center gap-1">
+                    <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">Vooruitboeken</p>
+                    <x-tooltip position="below-right">Hoe ver in de toekomst klanten een afspraak kunnen inplannen.</x-tooltip>
+                </div>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Maximale boekingsperiode</p>
+            </div>
+            <x-select
+                class="w-full sm:w-auto"
+                wire-target="vooruitboekenMaanden"
+                :current="(string) $vooruitboekenMaanden"
+                :options="['1' => '1 maand', '2' => '2 maanden', '3' => '3 maanden', '6' => '6 maanden']"
+            />
+        </div>
+
+        {{-- Annuleringstermijn --}}
+        <div class="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 border-b border-gray-100 dark:border-neutral-700">
+            <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                    </svg>
+                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">Annuleringstermijn</p>
+                    <x-tooltip position="below-right">Stel in hoe lang van tevoren een klant gratis kan annuleren. Annuleert de klant binnen deze tijd? Dan ziet hij een waarschuwing en — als je annuleringskosten hebt ingesteld — een betaalverzoek. Zonder ingestelde kosten wordt annuleren binnen de termijn geblokkeerd.</x-tooltip>
+                </div>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant kan niet meer gratis annuleren binnen deze tijd</p>
+            </div>
+            <x-select
+                class="w-full sm:w-auto"
+                wire-target="annuleringUren"
+                :current="$annuleringUren"
+                :options="['' => 'Geen limiet', '1' => '1 uur', '2' => '2 uur', '4' => '4 uur', '8' => '8 uur', '12' => '12 uur', '24' => '24 uur', '48' => '48 uur']"
+            />
+        </div>
+
+        {{-- Annuleringskosten --}}
+        <div class="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+            <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">Annuleringskosten</p>
+                    <x-tooltip position="below-right">Bedrag dat de klant betaalt bij te-late annulering. De klant ziet een betaalverzoek en moet betalen vóór de afspraak geannuleerd wordt. Heeft de klant een opgeslagen betaalmethode, dan wordt dit automatisch afgeschreven. Anders krijgt hij een Stripe betaalpagina. Laat leeg om te-late annulering volledig te blokkeren.</x-tooltip>
+                </div>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant betaalt dit bedrag bij laat annuleren (leeg = blokkeren)</p>
+            </div>
+            <div class="relative w-full sm:w-auto">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 dark:text-neutral-500 pointer-events-none">€</span>
+                <input wire:model="annuleringKosten" type="number" step="0.01" min="0" max="999" placeholder="0.00"
+                       class="pl-7 pr-3 py-2 w-full sm:w-28 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder-gray-300 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+            </div>
         </div>
     </form>
 
@@ -209,9 +214,9 @@
 
         <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 overflow-visible">
             <form wire:submit="sluitingsdagToevoegen" class="space-y-3 overflow-visible">
-                <div class="flex flex-wrap gap-3 items-center overflow-visible">
-                    <div class="flex items-center gap-2 overflow-visible">
-                        <span class="text-xs font-medium text-gray-500 dark:text-neutral-400 whitespace-nowrap">Van</span>
+                <div class="flex items-center gap-3 overflow-visible">
+                    <span class="text-xs font-medium text-gray-500 dark:text-neutral-400 w-8 flex-shrink-0">Van</span>
+                    <div class="flex-1 overflow-visible">
                         <x-datepicker
                             wire-model="sluitingsDatum"
                             :value="$sluitingsDatum"
@@ -219,8 +224,10 @@
                             placeholder="Startdatum"
                         />
                     </div>
-                    <div class="flex items-center gap-2 overflow-visible">
-                        <span class="text-xs font-medium text-gray-500 dark:text-neutral-400 whitespace-nowrap">Tot</span>
+                </div>
+                <div class="flex items-center gap-3 overflow-visible">
+                    <span class="text-xs font-medium text-gray-500 dark:text-neutral-400 w-8 flex-shrink-0">Tot</span>
+                    <div class="flex-1 overflow-visible">
                         <x-datepicker
                             wire-model="sluitingsDatumTot"
                             :value="$sluitingsDatumTot"
@@ -229,17 +236,15 @@
                         />
                     </div>
                 </div>
-                <div class="flex flex-wrap gap-3">
-                    <input wire:model="sluitingsReden" type="text" placeholder="Reden (optioneel)"
-                           class="flex-1 min-w-40 py-2 px-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-                    <button type="submit"
-                            class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        Toevoegen
-                    </button>
-                </div>
+                <input wire:model="sluitingsReden" type="text" placeholder="Reden (optioneel)"
+                       class="w-full py-2 px-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                <button type="submit"
+                        class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Toevoegen
+                </button>
             </form>
             @error('sluitingsDatum')
             <p class="text-xs text-red-500 dark:text-red-400 mt-2">{{ $message }}</p>
@@ -251,21 +256,23 @@
 
         <div class="divide-y divide-gray-50 dark:divide-neutral-700">
             @forelse($sluitingsdagen as $dag)
-            <div class="flex items-center justify-between px-6 py-3.5">
-                <div>
-                    <span class="text-sm font-medium text-gray-700 dark:text-neutral-300">
+            <div class="flex items-center gap-3 px-6 py-3.5">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">
                         {{ $dag->datum->isoFormat('D MMM YYYY') }}
                         @if($dag->datum_tot && !$dag->datum->equalTo($dag->datum_tot))
                         – {{ $dag->datum_tot->isoFormat('D MMM YYYY') }}
                         @endif
-                    </span>
+                    </p>
                     @if($dag->reden)
-                    <span class="text-xs text-gray-400 dark:text-neutral-500 ml-2">— {{ $dag->reden }}</span>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $dag->reden }}</p>
                     @endif
                 </div>
                 <button wire:click="sluitingsdagVerwijderen({{ $dag->id }})"
-                        class="text-xs font-medium text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors">
-                    Verwijder
+                        class="flex-shrink-0 p-1.5 rounded-lg text-gray-400 hover:text-red-500 dark:text-neutral-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
                 </button>
             </div>
             @empty

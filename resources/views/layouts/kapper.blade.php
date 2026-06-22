@@ -77,7 +77,7 @@
 
         {{-- Marketing dropdown --}}
         @php
-            $marketingActief = request()->routeIs('kapper.galerij') || request()->routeIs('kapper.reviews') || request()->routeIs('kapper.kortingscodes');
+            $marketingActief = request()->routeIs('kapper.reviews') || request()->routeIs('kapper.kortingscodes');
         @endphp
         <div x-data="{ open: {{ $marketingActief ? 'true' : 'false' }} }">
             <button @click="open = !open"
@@ -92,12 +92,6 @@
                 </svg>
             </button>
             <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="mt-0.5 ml-4 pl-3 border-l-2 border-gray-100 dark:border-neutral-700 space-y-0.5">
-                <a href="{{ route('kapper.galerij') }}" class="{{ $linkClass('kapper.galerij') }}">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 9.75A6.75 6.75 0 019.75 3h4.5A6.75 6.75 0 0121 9.75v4.5A6.75 6.75 0 0114.25 21H9.75A6.75 6.75 0 013 14.25V9.75z"/>
-                    </svg>
-                    Galerij
-                </a>
                 <a href="{{ route('kapper.reviews') }}" class="{{ $linkClass('kapper.reviews') }}">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
@@ -115,7 +109,7 @@
 
         {{-- Instellingen dropdown --}}
         @php
-            $instellingenActief = request()->routeIs('kapper.diensten') || request()->routeIs('kapper.beschikbaarheid') || request()->routeIs('kapper.medewerkers') || request()->routeIs('kapper.profiel-beheer') || request()->routeIs('kapper.abonnement') || request()->routeIs('kapper.facturatie');
+            $instellingenActief = request()->routeIs('kapper.diensten') || request()->routeIs('kapper.beschikbaarheid') || request()->routeIs('kapper.medewerkers') || request()->routeIs('kapper.profiel-beheer') || request()->routeIs('kapper.galerij') || request()->routeIs('kapper.abonnement') || request()->routeIs('kapper.facturatie');
         @endphp
         <div x-data="{ open: {{ $instellingenActief ? 'true' : 'false' }} }">
             <button @click="open = !open"
@@ -153,6 +147,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
                     Profiel
+                </a>
+                <a href="{{ route('kapper.galerij') }}" class="{{ $linkClass('kapper.galerij') }}">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 9.75A6.75 6.75 0 019.75 3h4.5A6.75 6.75 0 0121 9.75v4.5A6.75 6.75 0 0114.25 21H9.75A6.75 6.75 0 013 14.25V9.75z"/>
+                    </svg>
+                    Galerij
                 </a>
                 <a href="{{ route('kapper.abonnement') }}" class="{{ $linkClass('kapper.abonnement') }}">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

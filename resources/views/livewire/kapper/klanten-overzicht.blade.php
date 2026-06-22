@@ -109,9 +109,13 @@
             </tbody>
         </table>
 
-        @if($klanten->hasPages())
+        @if($heeftMeer)
         <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-700">
-            {{ $klanten->links() }}
+            <button wire:click="laadMeer" wire:loading.attr="disabled" wire:target="laadMeer"
+                    class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50 transition-colors">
+                <span wire:loading.remove wire:target="laadMeer">Laad meer klanten</span>
+                <span wire:loading wire:target="laadMeer">Laden...</span>
+            </button>
         </div>
         @endif
     </div>

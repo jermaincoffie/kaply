@@ -1,7 +1,10 @@
 <div class="p-4 sm:p-6 max-w-4xl mx-auto space-y-6">
 
     <div>
-        <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100">Galerij</h1>
+        <div class="flex items-center gap-1">
+            <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100">Galerij</h1>
+            <x-tooltip position="below-right">Klanten zien deze foto's op jouw publieke profielpagina. Gebruik het om je werk en salon te showcasen — een mooie galerij trekt meer boekingen aan.</x-tooltip>
+        </div>
         <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Foto's van je salon en werk · max 12 foto's</p>
     </div>
 

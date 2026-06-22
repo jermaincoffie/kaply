@@ -575,7 +575,12 @@
                         <button wire:click="selecteerAfspraak({{ $afspraak->id }})" @click.stop
                                 class="absolute rounded-md border-l-2 px-2 py-1 text-left z-10 {{ $mKleur }}"
                                 style="top: {{ $mTop }}px; height: {{ $mHeight }}px; left: calc({{ $mColLeftPct }}% + 2px); width: calc({{ $mColWidthPct }}% - 4px);">
-                            <p class="text-xs font-semibold truncate leading-tight">{{ $afspraak->klant_naam }}</p>
+                            <p class="text-xs font-semibold truncate leading-tight">
+                                {{ $afspraak->klant_naam }}
+                                @if($medewerkers->count() > 0)
+                                <span class="font-normal opacity-70 text-[10px]">({{ $afspraak->medewerker?->naam ?? 'Geen voorkeur' }})</span>
+                                @endif
+                            </p>
                             @if($mHeight > 42)
                             <p class="text-[11px] opacity-85 truncate leading-tight">{{ $afspraak->dienst->naam }}</p>
                             @endif
@@ -853,7 +858,12 @@
                         @click.stop
                         class="w-full h-full rounded-md border-l-2 px-1.5 py-0.5 text-left transition-all cursor-pointer {{ $kleur }}"
                     >
-                        <p class="text-xs font-semibold truncate leading-tight">{{ $afspraak->klant_naam }}</p>
+                        <p class="text-xs font-semibold truncate leading-tight">
+                            {{ $afspraak->klant_naam }}
+                            @if($medewerkers->count() > 0)
+                            <span class="font-normal opacity-70 text-[10px]">({{ $afspraak->medewerker?->naam ?? 'Geen voorkeur' }})</span>
+                            @endif
+                        </p>
                         @if($height > 35)
                         <p class="text-xs opacity-80 truncate leading-tight">{{ $afspraak->dienst->naam }}</p>
                         @endif
@@ -875,6 +885,9 @@
                             <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">{{ $afspraak->klant_naam }}</p>
                             <p class="text-xs text-gray-500 dark:text-neutral-400 mt-0.5 truncate">{{ $afspraak->dienst->naam }}</p>
                             <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $afspraak->start_tijd }} – {{ $afspraak->eind_tijd }}</p>
+                            @if($medewerkers->count() > 0)
+                            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $afspraak->medewerker?->naam ?? 'Geen voorkeur' }}</p>
+                            @endif
                             @if(!$afspraak->walk_in_naam && $afspraak->klant?->telefoon)
                             <div class="mt-2 pt-2 border-t border-gray-100 dark:border-neutral-700">
                                 <a href="tel:{{ $afspraak->klant->telefoon }}"
@@ -1012,8 +1025,8 @@
                         <x-select
                             wire-target="nieuwMedewerkerId"
                             :current="$nieuwMedewerkerId"
-                            :options="$medewerkers->mapWithKeys(fn($m) => [$m->id => $m->naam])->toArray()"
-                            placeholder="— Kies medewerker —"
+                            :options="array_merge(['' => 'Geen voorkeur'], $medewerkers->mapWithKeys(fn($m) => [$m->id => $m->naam])->toArray())"
+                            placeholder="Geen voorkeur"
                         />
                     </div>
                     @endif
@@ -1191,6 +1204,12 @@
                             {{ ucfirst(str_replace('_', ' ', $a->status)) }}
                         </span>
                     </div>
+                    @if($medewerkers->count() > 0)
+                    <div class="col-span-2">
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 mb-0.5">Medewerker</p>
+                        <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">{{ $a->medewerker?->naam ?? 'Geen voorkeur' }}</p>
+                    </div>
+                    @endif
                 </div>
 
                 {{-- Klant contact --}}
@@ -1258,6 +1277,13 @@
                             No-show
                         </button>
                     </div>
+                </div>
+                @elseif($a->status === 'geannuleerd')
+                <div class="pt-4 border-t border-gray-100 dark:border-neutral-700 mt-4">
+                    <button @click.prevent="$dispatch('open-confirm', { title: 'Uit agenda verwijderen', message: 'Afspraak verbergen uit de agenda? De afspraak blijft zichtbaar in het klantprofiel.', action: () => $wire.verbergUitAgenda({{ $a->id }}) })"
+                            class="w-full py-2.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-neutral-600 text-gray-500 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                        Verwijder uit agenda
+                    </button>
                 </div>
                 @endif
             </div>

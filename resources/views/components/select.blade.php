@@ -5,7 +5,7 @@
     'current'     => '',
 ])
 
-<div
+<div {{ $attributes->merge(['class' => 'relative']) }}
     x-data="{
         open: false,
         current: '{{ $current }}',
@@ -27,7 +27,7 @@
     <button
         type="button"
         @click="open = !open"
-        class="inline-flex items-center justify-between gap-2 py-2 pl-3 pr-3 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 shadow-sm hover:border-gray-300 dark:hover:border-neutral-600 focus:outline-none transition-colors cursor-pointer min-w-[150px]"
+        class="flex w-full items-center justify-between gap-2 py-2 pl-3 pr-3 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 shadow-sm hover:border-gray-300 dark:hover:border-neutral-600 focus:outline-none transition-colors cursor-pointer min-w-[150px]"
         :class="open ? 'border-blue-600 ring-1 ring-blue-600' : ''"
     >
         <span x-text="label" class="truncate"></span>

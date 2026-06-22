@@ -6,16 +6,14 @@ use App\Mail\NoShowMail;
 use App\Models\Afspraak;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
-use Livewire\WithPagination;
 use Stripe\Checkout\Session as StripeSession;
 use Stripe\Stripe;
 
 class AfsprakenOverzicht extends Component
 {
-    use WithPagination;
-
     public string $periode = 'aankomend';
     public string $filterStatus = '';
+    public int $limite = 30;
 
     // No-show modal
     public ?int $noShowAfspraakId = null;
@@ -23,8 +21,10 @@ class AfsprakenOverzicht extends Component
     public string $noShowFeeEuros = '';
     public string $noShowFout = '';
 
-    public function updatingPeriode(): void { $this->resetPage(); }
-    public function updatingFilterStatus(): void { $this->resetPage(); }
+    public function updatingPeriode(): void { $this->limite = 30; }
+    public function updatingFilterStatus(): void { $this->limite = 30; }
+
+    public function laadMeer(): void { $this->limite += 30; }
 
     public function openNoShowModal(int $id): void
     {
@@ -117,16 +117,19 @@ class AfsprakenOverzicht extends Component
 
         $heeftAfspraken = Afspraak::where('kapper_id', $kapperId)->exists();
 
-        $afspraken = Afspraak::where('kapper_id', $kapperId)
+        $query = Afspraak::where('kapper_id', $kapperId)
             ->when($this->periode === 'aankomend', fn($q) => $q->where('datum', '>=', today())->where('status', 'gepland'))
             ->when($this->periode === 'verleden',  fn($q) => $q->where(fn($q) => $q->where('datum', '<', today())->orWhereIn('status', ['voltooid','geannuleerd','no_show'])))
             ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
-            ->with(['klant', 'dienst'])
+            ->with(['klant', 'dienst', 'medewerker'])
             ->orderBy('datum', $this->periode === 'verleden' ? 'desc' : 'asc')
-            ->orderBy('start_tijd')
-            ->paginate(15);
+            ->orderBy('start_tijd');
 
-        return view('livewire.kapper.afspraken-overzicht', compact('afspraken', 'heeftAfspraken'))
+        $totaal    = $query->count();
+        $afspraken = $query->limit($this->limite)->get();
+        $heeftMeer = $totaal > $this->limite;
+
+        return view('livewire.kapper.afspraken-overzicht', compact('afspraken', 'heeftAfspraken', 'heeftMeer'))
             ->layout('layouts.kapper', ['title' => 'Afspraken']);
     }
 }

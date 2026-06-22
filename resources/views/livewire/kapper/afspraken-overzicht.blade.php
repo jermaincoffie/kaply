@@ -135,33 +135,26 @@
         </div>
         @endif
 
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4">
-            <div class="flex items-start justify-between gap-2 mb-2">
-                <div class="min-w-0">
-                    <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">
-                        {{ str($afspraak->klant?->name ?? $afspraak->walk_in_naam ?? 'Onbekend')->title() }}
-                    </p>
-                    <p class="text-xs text-gray-500 dark:text-neutral-400 mt-0.5 truncate">
-                        {{ $afspraak->dienst->naam }}
-                        <span class="text-gray-400 dark:text-neutral-500">· €{{ $afspraak->dienst->prijs_in_euros }}</span>
-                    </p>
-                </div>
-                <span class="inline-flex flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-medium {{ $badgeM }}">
-                    {{ ucfirst(str_replace('_', ' ', $afspraak->status)) }}
-                </span>
-            </div>
-            <div class="flex items-center justify-between">
-                <p class="text-xs text-gray-400 dark:text-neutral-500">
-                    {{ $afspraak->start_tijd }} – {{ $afspraak->eind_tijd }}
-                    <span class="mx-1">·</span>
-                    {{ $afspraak->betaalmethode === 'online' ? 'Online' : 'In zaak' }}
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl px-4 py-3">
+            <div class="flex items-center gap-3">
+                <p class="text-sm font-medium text-gray-500 dark:text-neutral-400 flex-shrink-0">{{ $afspraak->start_tijd }}</p>
+                <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate flex-1">
+                    {{ str($afspraak->klant?->name ?? $afspraak->walk_in_naam ?? 'Onbekend')->title() }}
+                    @if($afspraak->medewerker)
+                    <span class="font-normal text-gray-400 dark:text-neutral-500 text-xs">({{ $afspraak->medewerker->naam }})</span>
+                    @endif
                 </p>
-                @if($afspraak->status === 'gepland' && $afspraak->datum->lt(today()))
-                <button wire:click="openNoShowModal({{ $afspraak->id }})"
-                    class="text-xs font-medium text-red-500 dark:text-red-400 hover:underline">
-                    No-show
-                </button>
-                @endif
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $badgeM }}">
+                        {{ ucfirst(str_replace('_', ' ', $afspraak->status)) }}
+                    </span>
+                    @if($afspraak->status === 'gepland' && $afspraak->datum->lt(today()))
+                    <button wire:click="openNoShowModal({{ $afspraak->id }})"
+                        class="text-xs font-medium text-red-500 dark:text-red-400 hover:underline">
+                        No-show
+                    </button>
+                    @endif
+                </div>
             </div>
         </div>
         @empty
@@ -170,10 +163,12 @@
         </div>
         @endforelse
 
-        @if($afspraken->hasPages())
-        <div class="py-4">
-            {{ $afspraken->links() }}
-        </div>
+        @if($heeftMeer)
+        <button wire:click="laadMeer" wire:loading.attr="disabled" wire:target="laadMeer"
+                class="w-full mt-2 py-3 text-sm font-medium text-gray-500 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 disabled:opacity-50 transition-colors">
+            <span wire:loading.remove wire:target="laadMeer">Laad meer afspraken</span>
+            <span wire:loading wire:target="laadMeer">Laden...</span>
+        </button>
         @endif
     </div>
 
@@ -269,9 +264,13 @@
             </tbody>
         </table>
 
-        @if($afspraken->hasPages())
+        @if($heeftMeer)
         <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-700">
-            {{ $afspraken->links() }}
+            <button wire:click="laadMeer" wire:loading.attr="disabled" wire:target="laadMeer"
+                    class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50 transition-colors">
+                <span wire:loading.remove wire:target="laadMeer">Laad meer afspraken</span>
+                <span wire:loading wire:target="laadMeer">Laden...</span>
+            </button>
         </div>
         @endif
     </div>

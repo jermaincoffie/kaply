@@ -6,13 +6,11 @@ use App\Models\Afspraak;
 use App\Models\KlantNotitie;
 use App\Models\User;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class KlantenOverzicht extends Component
 {
-    use WithPagination;
-
     public string $zoekterm = '';
+    public int $limite = 30;
     public ?int $notitieKlantId = null;
     public string $notitieText = '';
     public ?int $geselecteerdeKlantId = null;
@@ -42,16 +40,15 @@ class KlantenOverzicht extends Component
         $this->dispatch('notitie-opgeslagen');
     }
 
-    public function updatingZoekterm(): void
-    {
-        $this->resetPage();
-    }
+    public function updatingZoekterm(): void { $this->limite = 30; }
+
+    public function laadMeer(): void { $this->limite += 30; }
 
     public function render()
     {
         $kapperId = auth()->user()->kapper->id;
 
-        $klanten = User::whereHas('afspraken', fn($q) => $q->where('kapper_id', $kapperId))
+        $query = User::whereHas('afspraken', fn($q) => $q->where('kapper_id', $kapperId))
             ->when($this->zoekterm, fn($q) => $q->where(function ($q) {
                 $q->where('name', 'like', "%{$this->zoekterm}%")
                   ->orWhere('email', 'like', "%{$this->zoekterm}%");
@@ -60,8 +57,11 @@ class KlantenOverzicht extends Component
             ->withCount(['afspraken as voltooide_afspraken' => fn($q) => $q->where('kapper_id', $kapperId)->where('status', 'voltooid')])
             ->with(['afspraken' => fn($q) => $q->where('kapper_id', $kapperId)->orderByDesc('datum')->limit(1)])
             ->with(['klantNotitie' => fn($q) => $q->where('kapper_id', $kapperId)])
-            ->orderByDesc('totaal_afspraken')
-            ->paginate(20);
+            ->orderByDesc('totaal_afspraken');
+
+        $totaal    = $query->count();
+        $klanten   = $query->limit($this->limite)->get();
+        $heeftMeer = $totaal > $this->limite;
 
         $geselecteerdeKlant = null;
         if ($this->geselecteerdeKlantId) {
@@ -76,7 +76,7 @@ class KlantenOverzicht extends Component
                 ->first();
         }
 
-        return view('livewire.kapper.klanten-overzicht', compact('klanten', 'geselecteerdeKlant'))
+        return view('livewire.kapper.klanten-overzicht', compact('klanten', 'geselecteerdeKlant', 'heeftMeer'))
             ->layout('layouts.kapper', ['title' => 'Klanten']);
     }
 }

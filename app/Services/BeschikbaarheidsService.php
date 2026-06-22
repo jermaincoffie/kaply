@@ -69,12 +69,11 @@ class BeschikbaarheidsService
         $aantalMedewerkers = $kapper->medewerkers()->where('actief', true)->count();
         $capaciteit = max(1, $aantalMedewerkers);
 
-        $geboekteAfspraken = Afspraak::where('kapper_id', $kapper->id)
+        $alleGeboekteAfspraken = Afspraak::where('kapper_id', $kapper->id)
             ->whereDate('datum', $datum)
             ->whereIn('status', ['gepland', 'voltooid', 'wacht_op_betaling'])
-            ->when($medewerkerId, fn($q) => $q->where('medewerker_id', $medewerkerId))
             ->when($excludeAfspraakId, fn($q) => $q->where('id', '!=', $excludeAfspraakId))
-            ->get(['start_tijd', 'eind_tijd']);
+            ->get(['start_tijd', 'eind_tijd', 'medewerker_id']);
 
         $bufferMinuten = (int) ($kapper->buffer_minuten ?? 0);
 
@@ -89,15 +88,21 @@ class BeschikbaarheidsService
             $slotStart = $current->format('H:i');
             $slotEind  = $current->copy()->addMinutes($dienst->duur_minuten)->format('H:i');
 
-            $bezettingen = $geboekteAfspraken->filter(function ($afspraak) use ($slotStart, $slotEind, $bufferMinuten, $datum) {
+            $overlappend = $alleGeboekteAfspraken->filter(function ($afspraak) use ($slotStart, $slotEind, $bufferMinuten, $datum) {
                 $effectiefEind = $bufferMinuten > 0
                     ? Carbon::parse("{$datum} {$afspraak->eind_tijd}")->addMinutes($bufferMinuten)->format('H:i')
                     : (string) $afspraak->eind_tijd;
                 return $afspraak->start_tijd < $slotEind && $effectiefEind > $slotStart;
-            })->count();
+            });
 
-            $maxCapaciteit = $medewerkerId ? 1 : $capaciteit;
-            if ($bezettingen < $maxCapaciteit) $slots[] = $slotStart;
+            if ($medewerkerId) {
+                // Specifieke medewerker: geblokkeerd als deze medewerker bezet is OF totale capaciteit vol is
+                $medewerkerBezet = $overlappend->where('medewerker_id', $medewerkerId)->isNotEmpty();
+                $capaciteitVol   = $overlappend->count() >= $capaciteit;
+                if (!$medewerkerBezet && !$capaciteitVol) $slots[] = $slotStart;
+            } else {
+                if ($overlappend->count() < $capaciteit) $slots[] = $slotStart;
+            }
 
             $current->addMinutes(30);
         }
