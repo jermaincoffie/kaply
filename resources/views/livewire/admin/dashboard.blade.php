@@ -40,22 +40,14 @@
         </div>
 
         {{-- Nieuw aangemeld --}}
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5 col-span-2 lg:col-span-1 {{ $nieuw_aangemeld > 0 ? 'ring-2 ring-amber-400 dark:ring-amber-500' : '' }}">
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-5 {{ $nieuw_aangemeld > 0 ? 'ring-2 ring-amber-400 dark:ring-amber-500' : '' }}">
             <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3 flex items-center">
                 Nieuw aangemeld
                 <x-tooltip>Kappers die wachten op activatie.</x-tooltip>
             </p>
             <p class="text-3xl font-bold mb-1 {{ $nieuw_aangemeld > 0 ? 'text-amber-500' : 'text-gray-900 dark:text-neutral-100' }}">{{ $nieuw_aangemeld }}</p>
-            @if($wachtende_kappers->isNotEmpty())
-            <div class="mt-3 space-y-1.5">
-                @foreach($wachtende_kappers as $wk)
-                <div class="flex items-center justify-between gap-2">
-                    <span class="text-xs text-gray-600 dark:text-neutral-300 truncate">{{ $wk->salon_naam ?? $wk->user?->name }}</span>
-                    <span class="text-[10px] text-gray-400 dark:text-neutral-500 flex-shrink-0">{{ $wk->created_at->diffForHumans() }}</span>
-                </div>
-                @endforeach
-            </div>
-            <a href="{{ route('admin.kappers') }}" class="inline-block mt-3 text-xs font-medium text-amber-600 dark:text-amber-400 hover:underline">Activeer nu →</a>
+            @if($nieuw_aangemeld > 0)
+            <a href="{{ route('admin.kappers') }}" class="text-xs font-medium text-amber-600 dark:text-amber-400 hover:underline">Activeer nu →</a>
             @else
             <p class="text-xs text-gray-400 dark:text-neutral-500">geen wachtenden</p>
             @endif
@@ -75,6 +67,27 @@
         </div>
 
     </div>
+
+    {{-- Wachtende kappers --}}
+    @if($wachtende_kappers->isNotEmpty())
+    <div class="bg-white dark:bg-neutral-800 border border-amber-200 dark:border-amber-700 rounded-xl overflow-hidden mb-4">
+        <div class="px-6 py-3 border-b border-amber-100 dark:border-amber-800 flex items-center justify-between">
+            <p class="text-sm font-semibold text-amber-700 dark:text-amber-400">Wachten op activatie</p>
+            <a href="{{ route('admin.kappers') }}" class="text-xs text-amber-600 dark:text-amber-400 hover:underline font-medium">Beheer kappers →</a>
+        </div>
+        <div class="divide-y divide-gray-50 dark:divide-neutral-700">
+            @foreach($wachtende_kappers as $wk)
+            <div class="px-6 py-3 flex items-center justify-between gap-4">
+                <div class="min-w-0">
+                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $wk->salon_naam ?? $wk->user?->name }}</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $wk->user?->email }}</p>
+                </div>
+                <span class="text-xs text-gray-400 dark:text-neutral-500 flex-shrink-0">{{ $wk->created_at->diffForHumans() }}</span>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
 
     {{-- Trial kappers + Recente aanmeldingen --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
