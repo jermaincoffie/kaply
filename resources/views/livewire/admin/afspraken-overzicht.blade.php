@@ -8,8 +8,8 @@
     </div>
 
     {{-- Filters --}}
-    <div class="flex gap-3 mb-4">
-        <div class="relative flex-1">
+    <div class="flex flex-wrap gap-2 mb-4">
+        <div class="relative flex-1 min-w-40">
             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-neutral-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
             </svg>
@@ -17,12 +17,22 @@
                 class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
-        <x-select
-            wire-target="filterStatus"
-            :current="$filterStatus"
-            :options="['' => 'Alle statussen', 'gepland' => 'Gepland', 'voltooid' => 'Voltooid', 'geannuleerd' => 'Geannuleerd', 'no_show' => 'No-show']"
-            placeholder="Alle statussen"
-        />
+        <select wire:model.live="filterStatus"
+            class="px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Alle statussen</option>
+            <option value="gepland">Gepland</option>
+            <option value="voltooid">Voltooid</option>
+            <option value="geannuleerd">Geannuleerd</option>
+            <option value="no_show">No-show</option>
+        </select>
+
+        <select wire:model.live="filterKapper"
+            class="px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Alle kappers</option>
+            @foreach($kappers as $kapper)
+            <option value="{{ $kapper->id }}">{{ str($kapper->salon_naam)->title() }}</option>
+            @endforeach
+        </select>
     </div>
 
     {{-- Lijst --}}
