@@ -23,31 +23,24 @@
         {{-- Mobiel: cards --}}
         <div class="sm:hidden divide-y divide-gray-50 dark:divide-neutral-700">
             @forelse($klanten as $klant)
-            <div class="px-4 py-3">
-                <div class="flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                            <span class="text-blue-700 dark:text-blue-400 font-bold text-xs">{{ mb_strtoupper(mb_substr($klant->name, 0, 1)) }}</span>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ str($klant->name)->title() }}</p>
-                            <p class="text-xs text-gray-400 dark:text-neutral-500 truncate">{{ $klant->email }}</p>
-                            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
-                                {{ $klant->voltooide_afspraken }} voltooid
-                                @if($klant->totaal_afspraken > $klant->voltooide_afspraken)· {{ $klant->totaal_afspraken }} totaal @endif
-                                · lid {{ $klant->created_at->format('d-m-Y') }}
-                            </p>
-                        </div>
+            <button wire:click="selecteerKlant({{ $klant->id }})" type="button"
+                    class="w-full px-4 py-3 text-left {{ $geselecteerdeKlantId === $klant->id ? 'bg-blue-50 dark:bg-blue-900/10' : 'hover:bg-gray-50 dark:hover:bg-neutral-700/20' }} transition-colors">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                        <span class="text-blue-700 dark:text-blue-400 font-bold text-xs">{{ mb_strtoupper(mb_substr($klant->name, 0, 1)) }}</span>
                     </div>
-                    @php $heeftNotitie = $klant->klantNotitie?->notities; @endphp
-                    <button wire:click="openNotitie({{ $klant->id }})"
-                            class="flex-shrink-0 inline-flex items-center gap-1 text-xs font-medium transition-colors {{ $heeftNotitie ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-neutral-500' }}">
-                        <svg class="w-4 h-4" fill="{{ $heeftNotitie ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                    </button>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ str($klant->name)->title() }}</p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 truncate">{{ $klant->email }}</p>
+                        @if($klant->telefoon)
+                        <p class="text-xs text-blue-600 dark:text-blue-400 mt-0.5">{{ $klant->telefoon }}</p>
+                        @endif
+                    </div>
+                    <svg class="w-4 h-4 text-gray-300 dark:text-neutral-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
                 </div>
-            </div>
+            </button>
             @empty
             <div class="px-4 py-12 text-center text-sm text-gray-400 dark:text-neutral-500">
                 {{ $zoekterm ? 'Geen klanten gevonden' : 'Nog geen klanten' }}
@@ -68,7 +61,7 @@
             </thead>
             <tbody class="divide-y divide-gray-50 dark:divide-neutral-700">
                 @forelse($klanten as $klant)
-                <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
+                <tr wire:click="selecteerKlant({{ $klant->id }})" class="cursor-pointer transition-colors {{ $geselecteerdeKlantId === $klant->id ? 'bg-blue-50 dark:bg-blue-900/10' : 'hover:bg-gray-50/50 dark:hover:bg-neutral-700/20' }}">
                     <td class="px-6 py-3.5">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
@@ -79,6 +72,9 @@
                             <div>
                                 <p class="font-medium text-gray-800 dark:text-neutral-100">{{ str($klant->name)->title() }}</p>
                                 <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $klant->email }}</p>
+                                @if($klant->telefoon)
+                                <p class="text-xs text-blue-600 dark:text-blue-400">{{ $klant->telefoon }}</p>
+                                @endif
                             </div>
                         </div>
                     </td>
@@ -96,14 +92,9 @@
                         {{ $klant->created_at->format('d-m-Y') }}
                     </td>
                     <td class="px-6 py-3.5 text-right">
-                        @php $heeftNotitie = $klant->klantNotitie?->notities; @endphp
-                        <button wire:click="openNotitie({{ $klant->id }})"
-                                class="inline-flex items-center gap-1 text-xs font-medium transition-colors {{ $heeftNotitie ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:hover:text-neutral-300' }}">
-                            <svg class="w-3.5 h-3.5" fill="{{ $heeftNotitie ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                            Notitie
-                        </button>
+                        <svg class="w-4 h-4 text-gray-300 dark:text-neutral-600 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
                     </td>
                 </tr>
                 @empty
@@ -124,6 +115,99 @@
         </div>
         @endif
     </div>
+
+    {{-- Klant detail modal --}}
+    @if($geselecteerdeKlant)
+    <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="absolute inset-0 bg-black/50" wire:click="$set('geselecteerdeKlantId', null)"></div>
+        <div class="relative w-full sm:max-w-md bg-white dark:bg-neutral-800 sm:rounded-2xl rounded-t-2xl shadow-2xl overflow-hidden">
+            <div class="sm:hidden flex justify-center pt-3 pb-1">
+                <div class="w-10 h-1 bg-gray-200 dark:bg-neutral-600 rounded-full"></div>
+            </div>
+            <div class="px-5 pt-4 pb-6">
+                {{-- Header --}}
+                <div class="flex items-start justify-between mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                            <span class="text-blue-700 dark:text-blue-400 font-bold text-sm">{{ mb_strtoupper(mb_substr($geselecteerdeKlant->name, 0, 1)) }}</span>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">{{ str($geselecteerdeKlant->name)->title() }}</h3>
+                            <p class="text-xs text-gray-400 dark:text-neutral-500">Klant sinds {{ $geselecteerdeKlant->created_at->format('d-m-Y') }}</p>
+                        </div>
+                    </div>
+                    <button wire:click="$set('geselecteerdeKlantId', null)" class="text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                {{-- Contact --}}
+                <div class="space-y-2 mb-5">
+                    <div class="flex items-center gap-2.5 p-2.5 rounded-lg bg-gray-50 dark:bg-neutral-700/40">
+                        <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <span class="text-sm text-gray-700 dark:text-neutral-300">{{ $geselecteerdeKlant->email }}</span>
+                    </div>
+                    @if($geselecteerdeKlant->telefoon)
+                    <a href="tel:{{ $geselecteerdeKlant->telefoon }}"
+                       class="flex items-center gap-2.5 p-2.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
+                        <svg class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                        <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">{{ $geselecteerdeKlant->telefoon }}</span>
+                    </a>
+                    @else
+                    <div class="flex items-center gap-2.5 p-2.5 rounded-lg bg-gray-50 dark:bg-neutral-700/40">
+                        <svg class="w-4 h-4 text-gray-300 dark:text-neutral-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                        <span class="text-sm text-gray-400 dark:text-neutral-600 italic">Geen telefoonnummer opgegeven</span>
+                    </div>
+                    @endif
+                </div>
+
+                {{-- Recente afspraken --}}
+                @if($geselecteerdeKlant->afspraken->isNotEmpty())
+                <div class="mb-5">
+                    <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-2">Recente afspraken</p>
+                    <div class="space-y-1.5">
+                        @foreach($geselecteerdeKlant->afspraken as $ap)
+                        @php
+                            $apBadge = match($ap->status) {
+                                'voltooid'    => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                                'geannuleerd' => 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400',
+                                'no_show'     => 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400',
+                                default       => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                            };
+                        @endphp
+                        <div class="flex items-center justify-between gap-2 py-1.5">
+                            <div class="min-w-0">
+                                <p class="text-xs font-medium text-gray-700 dark:text-neutral-300">{{ $ap->dienst->naam }}</p>
+                                <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $ap->datum->format('d-m-Y') }} · {{ $ap->start_tijd }}</p>
+                            </div>
+                            <span class="flex-shrink-0 inline-flex px-2 py-0.5 rounded-full text-xs font-medium {{ $apBadge }}">
+                                {{ ucfirst(str_replace('_', ' ', $ap->status)) }}
+                            </span>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                {{-- Notitie knop --}}
+                <button wire:click="openNotitie({{ $geselecteerdeKlant->id }})"
+                        class="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                    @php $heeftNotitie = $geselecteerdeKlant->klantNotitie?->notities; @endphp
+                    <svg class="w-4 h-4" fill="{{ $heeftNotitie ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    {{ $heeftNotitie ? 'Notitie bewerken' : 'Notitie toevoegen' }}
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
 
     {{-- Notitie modal --}}
     @if($notitieKlantId)

@@ -15,6 +15,12 @@ class KlantenOverzicht extends Component
     public string $zoekterm = '';
     public ?int $notitieKlantId = null;
     public string $notitieText = '';
+    public ?int $geselecteerdeKlantId = null;
+
+    public function selecteerKlant(int $id): void
+    {
+        $this->geselecteerdeKlantId = $this->geselecteerdeKlantId === $id ? null : $id;
+    }
 
     public function openNotitie(int $klantId): void
     {
@@ -57,7 +63,20 @@ class KlantenOverzicht extends Component
             ->orderByDesc('totaal_afspraken')
             ->paginate(20);
 
-        return view('livewire.kapper.klanten-overzicht', compact('klanten'))
+        $geselecteerdeKlant = null;
+        if ($this->geselecteerdeKlantId) {
+            $geselecteerdeKlant = User::where('id', $this->geselecteerdeKlantId)
+                ->with(['afspraken' => fn($q) => $q
+                    ->where('kapper_id', $kapperId)
+                    ->with('dienst')
+                    ->orderByDesc('datum')
+                    ->limit(5)
+                ])
+                ->with(['klantNotitie' => fn($q) => $q->where('kapper_id', $kapperId)])
+                ->first();
+        }
+
+        return view('livewire.kapper.klanten-overzicht', compact('klanten', 'geselecteerdeKlant'))
             ->layout('layouts.kapper', ['title' => 'Klanten']);
     }
 }
