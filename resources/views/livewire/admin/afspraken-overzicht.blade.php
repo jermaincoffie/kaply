@@ -8,8 +8,9 @@
     </div>
 
     {{-- Filters --}}
-    <div class="flex flex-wrap gap-2 mb-4">
-        <div class="relative flex-1 min-w-40">
+    <div class="mb-4 flex flex-col sm:flex-row gap-2">
+        {{-- Zoekbalk: volle breedte mobiel, flex-1 desktop --}}
+        <div class="relative sm:flex-1">
             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-neutral-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
             </svg>
@@ -17,19 +18,24 @@
                 class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
-        <x-select
-            wire-target="filterStatus"
-            :current="$filterStatus"
-            :options="['' => 'Alle statussen', 'gepland' => 'Gepland', 'voltooid' => 'Voltooid', 'geannuleerd' => 'Geannuleerd', 'no_show' => 'No-show']"
-            placeholder="Alle statussen"
-        />
+        {{-- Dropdowns: 50/50 naast elkaar op mobiel, auto-breedte op desktop --}}
+        <div class="flex gap-2">
+            <x-select
+                class="flex-1"
+                wire-target="filterStatus"
+                :current="$filterStatus"
+                :options="['' => 'Alle statussen', 'gepland' => 'Gepland', 'voltooid' => 'Voltooid', 'geannuleerd' => 'Geannuleerd', 'no_show' => 'No-show']"
+                placeholder="Alle statussen"
+            />
 
-        <x-select
-            wire-target="filterKapper"
-            :current="$filterKapper"
-            :options="$kapperOpties"
-            placeholder="Alle kappers"
-        />
+            <x-select
+                class="flex-1"
+                wire-target="filterKapper"
+                :current="$filterKapper"
+                :options="$kapperOpties"
+                placeholder="Alle kappers"
+            />
+        </div>
     </div>
 
     {{-- Lijst --}}
