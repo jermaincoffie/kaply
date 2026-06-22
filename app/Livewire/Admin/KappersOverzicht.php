@@ -7,6 +7,10 @@ use Livewire\Component;
 
 class KappersOverzicht extends Component
 {
+    public string $zoekterm = '';
+
+    public function updatingZoekterm(): void {}
+
     public function goedkeuren(int $id): void
     {
         Kapper::findOrFail($id)->update(['actief' => true, 'abonnement_status' => 'actief']);
@@ -40,6 +44,12 @@ class KappersOverzicht extends Component
 
         $kappers = Kapper::with('user')
             ->where(fn($q) => $q->where('actief', true)->orWhere('abonnement_status', '!=', 'geen'))
+            ->when($this->zoekterm, fn($q) => $q->where(fn($q2) =>
+                $q2->where('salon_naam', 'like', "%{$this->zoekterm}%")
+                   ->orWhere('stad', 'like', "%{$this->zoekterm}%")
+                   ->orWhereHas('user', fn($q3) => $q3->where('email', 'like', "%{$this->zoekterm}%")
+                       ->orWhere('name', 'like', "%{$this->zoekterm}%"))
+            ))
             ->withCount([
                 'afspraken as totaal_afspraken' => fn($q) => $q->whereIn('status', ['voltooid', 'no_show']),
                 'afspraken as no_show_count'    => fn($q) => $q->where('status', 'no_show'),

@@ -1,6 +1,6 @@
 <div>
     {{-- Header --}}
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-4">
         <div>
             <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100">Kappers</h1>
             <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Overzicht van alle geregistreerde kappers</p>
@@ -13,6 +13,24 @@
             <span class="hidden sm:inline">Kapper registreren</span>
             <span class="sm:hidden">Registreren</span>
         </a>
+    </div>
+
+    {{-- Zoekbalk --}}
+    <div class="relative mb-6">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-neutral-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input wire:model.live.debounce.300ms="zoekterm"
+               type="text"
+               placeholder="Zoek op naam, stad of e-mail…"
+               class="w-full pl-9 pr-4 py-2 text-sm bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 transition-colors">
+        @if($zoekterm)
+        <button wire:click="$set('zoekterm', '')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-neutral-500 dark:hover:text-neutral-300">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+        @endif
     </div>
 
     {{-- Wachtend op goedkeuring --}}
