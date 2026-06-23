@@ -376,14 +376,6 @@
                 </div>
             </div>
 
-            @guest
-            <div class="text-center mt-10 flex flex-wrap items-center justify-center gap-3">
-                <a href="{{ route('klant.inloggen') }}"
-                   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
-                    Inloggen of account aanmaken
-                </a>
-            </div>
-            @endguest
         </div>
     </div>
     @endif
