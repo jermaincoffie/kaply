@@ -140,12 +140,68 @@
     @if($geschiedenis->isNotEmpty())
     <div>
         <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Geschiedenis</p>
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
+
+        {{-- Mobiel: cards --}}
+        <div class="sm:hidden space-y-2">
+            @foreach($geschiedenis as $afspraak)
+            @php
+                $isVoltooide = in_array($afspraak->status, ['gepland', 'voltooid']);
+                $badge = match(true) {
+                    $isVoltooide                        => 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                    $afspraak->status === 'geannuleerd' => 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400',
+                    $afspraak->status === 'no_show'     => 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                    default                             => 'bg-gray-100 text-gray-500',
+                };
+                $statusLabel = match(true) {
+                    $isVoltooide                        => 'Voltooid',
+                    $afspraak->status === 'geannuleerd' => 'Geannuleerd',
+                    $afspraak->status === 'no_show'     => 'No-show',
+                    default                             => ucfirst(str_replace('_', ' ', $afspraak->status)),
+                };
+                $isFav = $favorietKapperIds->contains($afspraak->kapper_id);
+            @endphp
+            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl px-4 py-3">
+                <div class="flex items-start justify-between gap-2 mb-1.5">
+                    <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 leading-tight">{{ $afspraak->kapper->salon_naam }}</p>
+                    <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 {{ $badge }}">{{ $statusLabel }}</span>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-neutral-400">{{ $afspraak->datum->translatedFormat('d M Y') }} · {{ $afspraak->start_tijd }}</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $afspraak->dienst->naam }}</p>
+                <div class="flex items-center gap-3 mt-2.5 pt-2.5 border-t border-gray-50 dark:border-neutral-700">
+                    @if($isVoltooide)
+                        @if($afspraak->review)
+                        <span class="flex items-center gap-0.5">
+                            @for($i = 1; $i <= 5; $i++)
+                            <svg class="w-3 h-3 {{ $i <= $afspraak->review->rating ? 'text-amber-400' : 'text-gray-200 dark:text-neutral-600' }}" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                            @endfor
+                        </span>
+                        @else
+                        <button wire:click="openReview({{ $afspraak->id }})" class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline">Beoordeel</button>
+                        @endif
+                    @endif
+                    <a href="{{ route('kapper.profiel', $afspraak->kapper->slug) }}" class="text-xs font-medium text-gray-500 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:underline">Boek weer</a>
+                    <button wire:click="toggleFavoriet({{ $afspraak->kapper_id }})"
+                            title="{{ $isFav ? 'Verwijder uit favorieten' : 'Voeg toe aan favorieten' }}"
+                            class="ml-auto p-1 rounded hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors group">
+                        <svg class="w-3.5 h-3.5 transition-colors {{ $isFav ? 'text-red-500' : 'text-gray-300 dark:text-neutral-600 group-hover:text-red-400' }}"
+                             fill="{{ $isFav ? 'currentColor' : 'none' }}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        {{-- Desktop: tabel --}}
+        <div class="hidden sm:block bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-100 dark:border-neutral-700">
                         <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Datum</th>
-                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide hidden sm:table-cell">Salon</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Salon</th>
                         <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide hidden md:table-cell">Dienst</th>
                         <th class="px-5 py-3 text-left text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">Status</th>
                         <th class="px-5 py-3"></th>
@@ -167,18 +223,17 @@
                             $afspraak->status === 'no_show'     => 'No-show',
                             default                             => ucfirst(str_replace('_', ' ', $afspraak->status)),
                         };
+                        $isFav = $favorietKapperIds->contains($afspraak->kapper_id);
                     @endphp
                     <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
-                        <td class="px-5 py-3 text-gray-700 dark:text-neutral-300">
+                        <td class="px-5 py-3 text-gray-700 dark:text-neutral-300 whitespace-nowrap">
                             {{ $afspraak->datum->format('d-m-Y') }}
                             <span class="text-xs text-gray-400 dark:text-neutral-500 ml-1">{{ $afspraak->start_tijd }}</span>
                         </td>
-                        <td class="px-5 py-3 text-gray-500 dark:text-neutral-400 hidden sm:table-cell">{{ $afspraak->kapper->salon_naam }}</td>
+                        <td class="px-5 py-3 text-gray-500 dark:text-neutral-400">{{ $afspraak->kapper->salon_naam }}</td>
                         <td class="px-5 py-3 text-gray-500 dark:text-neutral-400 hidden md:table-cell">{{ $afspraak->dienst->naam }}</td>
                         <td class="px-5 py-3">
-                            <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badge }}">
-                                {{ $statusLabel }}
-                            </span>
+                            <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badge }}">{{ $statusLabel }}</span>
                         </td>
                         <td class="px-5 py-3 text-right">
                             <div class="flex items-center justify-end gap-3">
@@ -192,17 +247,10 @@
                                         @endfor
                                     </span>
                                     @else
-                                    <button wire:click="openReview({{ $afspraak->id }})"
-                                            class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline whitespace-nowrap">
-                                        Beoordeel
-                                    </button>
+                                    <button wire:click="openReview({{ $afspraak->id }})" class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline whitespace-nowrap">Beoordeel</button>
                                     @endif
                                 @endif
-                                <a href="{{ route('kapper.profiel', $afspraak->kapper->slug) }}"
-                                   class="text-xs font-medium text-gray-500 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:underline whitespace-nowrap">
-                                    Boek weer
-                                </a>
-                                @php $isFav = $favorietKapperIds->contains($afspraak->kapper_id); @endphp
+                                <a href="{{ route('kapper.profiel', $afspraak->kapper->slug) }}" class="text-xs font-medium text-gray-500 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:underline whitespace-nowrap">Boek weer</a>
                                 <button wire:click="toggleFavoriet({{ $afspraak->kapper_id }})"
                                         title="{{ $isFav ? 'Verwijder uit favorieten' : 'Voeg toe aan favorieten' }}"
                                         class="p-1 rounded hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors group">
