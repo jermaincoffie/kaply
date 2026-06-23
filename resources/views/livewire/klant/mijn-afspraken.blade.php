@@ -73,48 +73,50 @@
         <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Aankomend</p>
         <div class="space-y-3">
             @forelse($aankomend as $afspraak)
-            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4 flex items-center justify-between gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+            @php
+                $kanNietAnnuleren = $afspraak->kapper->annulering_uren
+                    && now()->isAfter(
+                        \Carbon\Carbon::parse($afspraak->datum->format('Y-m-d') . ' ' . $afspraak->start_tijd)
+                            ->subHours($afspraak->kapper->annulering_uren)
+                    );
+            @endphp
+            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                {{-- Info --}}
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
                         <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                     </div>
-                    <div>
-                        <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100">
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100">{{ $afspraak->kapper->salon_naam }}</p>
+                        <p class="text-sm text-gray-500 dark:text-neutral-400 mt-0.5">
                             {{ $afspraak->datum->isoFormat('dddd D MMMM') }} · {{ $afspraak->start_tijd }}
                         </p>
-                        <p class="text-sm text-gray-600 dark:text-neutral-300">{{ $afspraak->kapper->salon_naam }}</p>
                         <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
                             {{ $afspraak->dienst->naam }} · {{ $afspraak->betaalmethode === 'online' ? 'Online betaald' : 'Betalen in de zaak' }}
                         </p>
                     </div>
                 </div>
-                @php
-                    $kanNietAnnuleren = $afspraak->kapper->annulering_uren
-                        && now()->isAfter(
-                            \Carbon\Carbon::parse($afspraak->datum->format('Y-m-d') . ' ' . $afspraak->start_tijd)
-                                ->subHours($afspraak->kapper->annulering_uren)
-                        );
-                @endphp
-                <div class="flex items-center gap-2 flex-shrink-0">
+                {{-- Knoppen --}}
+                <div class="flex gap-2 sm:flex-shrink-0">
                     <button wire:click="openVerzetten({{ $afspraak->id }})"
-                            class="text-xs font-medium px-3 py-1.5 rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                            class="flex-1 sm:flex-none text-xs font-medium px-3 py-2 rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
                         Verzetten
                     </button>
                     @if($kanNietAnnuleren && $afspraak->kapper->annulering_kosten > 0)
                     <button wire:click="annuleer({{ $afspraak->id }})"
-                            class="text-xs font-medium px-3 py-1.5 rounded-lg border border-amber-300 dark:border-amber-700 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors">
+                            class="flex-1 sm:flex-none text-xs font-medium px-3 py-2 rounded-lg border border-amber-300 dark:border-amber-700 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors">
                         Annuleer (€ {{ number_format($afspraak->kapper->annulering_kosten / 100, 2, ',', '') }})
                     </button>
                     @elseif($kanNietAnnuleren)
                     <span title="Annuleren niet meer mogelijk vanwege het annuleringsbeleid"
-                          class="text-xs px-3 py-1.5 rounded-lg border border-gray-100 dark:border-neutral-800 text-gray-300 dark:text-neutral-600 cursor-not-allowed select-none">
+                          class="flex-1 sm:flex-none text-xs px-3 py-2 rounded-lg border border-gray-100 dark:border-neutral-800 text-gray-300 dark:text-neutral-600 cursor-not-allowed select-none text-center">
                         Annuleer
                     </span>
                     @else
                     <button @click.prevent="$dispatch('open-confirm', { title: 'Afspraak annuleren', message: 'Weet je zeker dat je de afspraak op {{ $afspraak->datum->isoFormat('D MMM') }} wilt annuleren?', action: () => $wire.annuleer({{ $afspraak->id }}) })"
-                            class="text-xs font-medium px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                            class="flex-1 sm:flex-none text-xs font-medium px-3 py-2 rounded-lg border border-red-200 dark:border-red-900 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                         Annuleer
                     </button>
                     @endif
