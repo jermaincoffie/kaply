@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Klant;
 
+use App\Mail\AfspraakBevestigingMail;
 use App\Models\Afspraak;
 use App\Models\Kapper;
 use App\Models\Dienst;
@@ -9,6 +10,7 @@ use App\Models\Review;
 use App\Models\Wachtlijst;
 use App\Services\BeschikbaarheidsService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class KapperProfiel extends Component
@@ -158,7 +160,7 @@ class KapperProfiel extends Component
             return;
         }
 
-        Afspraak::create([
+        $afspraak = Afspraak::create([
             'klant_id'      => auth()->id(),
             'kapper_id'     => $this->kapper->id,
             'dienst_id'     => $dienst->id,
@@ -170,6 +172,8 @@ class KapperProfiel extends Component
             'betaalmethode' => $this->betaalmethode,
             'notitie'       => trim($this->klantNotitie) ?: null,
         ]);
+
+        Mail::to(auth()->user()->email)->send(new AfspraakBevestigingMail($afspraak));
 
         // Klant heeft geboekt — verwijder van wachtlijst voor deze kapper
         if (auth()->id()) {

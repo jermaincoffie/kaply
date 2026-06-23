@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AfspraakBevestigingMail;
 use App\Mail\AfspraakGeannuleerdMail;
 use App\Models\Afspraak;
 use App\Models\Wachtlijst;
@@ -91,6 +92,8 @@ class AfspraakBetaalController extends Controller
                 'status'                   => 'gepland',
                 'stripe_payment_intent_id' => $session->payment_intent,
             ]);
+
+            Mail::to($afspraak->klant->email)->send(new AfspraakBevestigingMail($afspraak));
         }
 
         return view('afspraak.betaling-succes', compact('afspraak'));
