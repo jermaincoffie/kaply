@@ -52,9 +52,9 @@
 
                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
                             @if($kapper->stad)
-                            <span class="flex items-center gap-1 text-sm text-gray-500 dark:text-neutral-400">
+                            <span class="flex items-center gap-1 text-sm text-gray-500 dark:text-neutral-400 min-w-0">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                {{ str($kapper->stad)->title() }}{{ $kapper->adres ? ', ' . $kapper->adres : '' }}
+                                <span class="truncate">{{ str($kapper->stad)->title() }}{{ $kapper->adres ? ', ' . $kapper->adres : '' }}</span>
                             </span>
                             @endif
                             @if($kapper->telefoon)
@@ -75,7 +75,7 @@
                                 @endfor
                             </div>
                             <span class="text-sm font-semibold text-gray-700 dark:text-neutral-300">{{ number_format($gemiddeldRating, 1) }}</span>
-                            <span class="text-xs text-gray-400 dark:text-neutral-500">({{ $reviews->count() }} {{ $reviews->count() === 1 ? 'beoordeling' : 'beoordelingen' }})</span>
+                            <span class="text-xs text-gray-400 dark:text-neutral-500 whitespace-nowrap">({{ $reviews->count() }} {{ $reviews->count() === 1 ? 'beoordeling' : 'beoordelingen' }})</span>
                         </div>
                         @endif
                     </div>
