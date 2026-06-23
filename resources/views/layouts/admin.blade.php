@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin â€“ {{ config('app.name') }}</title>
+    <title>Admin &ndash; {{ config('app.name') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e1e22">
@@ -37,14 +37,10 @@
 
     {{-- Logo --}}
     <a href="{{ route('admin.dashboard') }}"
-       class="flex items-center gap-2 px-4 h-14 border-b border-gray-100 dark:border-neutral-700 flex-shrink-0 hover:opacity-80 transition-opacity">
-        <div class="min-w-0 flex flex-col">
-            <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-12 w-auto" alt="Kaply">
-            <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="hidden dark:block h-12 w-auto" alt="Kaply">
-            <div class="text-xs text-gray-500 dark:text-neutral-400 truncate leading-tight mt-0.5">
-                Admin Panel
-            </div>
-        </div>
+       class="flex items-center gap-3 px-4 h-14 border-b border-gray-100 dark:border-neutral-700 flex-shrink-0 hover:opacity-80 transition-opacity">
+        <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-8 w-auto flex-shrink-0" alt="Kaply">
+        <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="hidden dark:block h-8 w-auto flex-shrink-0" alt="Kaply">
+        <span class="text-xs font-medium text-gray-500 dark:text-neutral-400">Admin</span>
     </a>
 
     {{-- Nav --}}
