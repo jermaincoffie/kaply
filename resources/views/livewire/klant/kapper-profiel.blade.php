@@ -52,10 +52,10 @@
 
                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
                             @if($kapper->stad)
-                            <span class="flex items-center gap-1 text-sm text-gray-500 dark:text-neutral-400 min-w-0">
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(($kapper->adres ? $kapper->adres.', ' : '') . str($kapper->stad)->title()) }}" target="_blank" rel="noopener" class="flex items-center gap-1 text-sm text-gray-500 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors min-w-0">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                 <span class="truncate">{{ str($kapper->stad)->title() }}{{ $kapper->adres ? ', ' . $kapper->adres : '' }}</span>
-                            </span>
+                            </a>
                             @endif
                             @if($kapper->telefoon)
                             <a href="tel:{{ $kapper->telefoon }}" class="flex items-center gap-1 text-sm text-gray-500 dark:text-neutral-400 hover:text-blue-600 transition-colors">
@@ -75,7 +75,7 @@
                                 @endfor
                             </div>
                             <span class="text-sm font-semibold text-gray-700 dark:text-neutral-300">{{ number_format($gemiddeldRating, 1) }}</span>
-                            <span class="text-xs text-gray-400 dark:text-neutral-500 whitespace-nowrap">({{ $reviews->count() }} {{ $reviews->count() === 1 ? 'beoordeling' : 'beoordelingen' }})</span>
+                            <a href="#beoordelingen" class="text-xs text-gray-400 dark:text-neutral-500 whitespace-nowrap hover:text-blue-600 dark:hover:text-blue-400 transition-colors">({{ $reviews->count() }} {{ $reviews->count() === 1 ? 'beoordeling' : 'beoordelingen' }})</a>
                         </div>
                         @endif
                     </div>
@@ -371,7 +371,7 @@
                 'pct'   => $totalReviews > 0 ? round($reviews->where('rating', $s)->count() / $totalReviews * 100) : 0,
             ]);
         @endphp
-        <div class="order-5 lg:col-span-2 lg:row-start-4">
+        <div id="beoordelingen" class="order-5 lg:col-span-2 lg:row-start-4">
             <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl p-5">
                 <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-4">Beoordelingen</p>
 
