@@ -372,7 +372,7 @@
                         <span class="absolute -top-2 -right-2 w-6 h-6 bg-white dark:bg-neutral-700 border-2 border-emerald-500 rounded-full text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center justify-center leading-none">3</span>
                     </div>
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-2">Bevestig je afspraak</h3>
-                    <p class="text-sm text-gray-500 dark:text-neutral-400">Log in of maak een gratis account aan en bevestig je boeking. Je ontvangt een bevestiging.</p>
+                    <p class="text-sm text-gray-500 dark:text-neutral-400">Vul je e-mailadres in en ontvang een eenmalige code. Geen account nodig — je afspraak is direct bevestigd.</p>
                 </div>
             </div>
 
