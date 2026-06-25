@@ -11,4 +11,5 @@ class Medewerker extends Model
 
     public function kapper() { return $this->belongsTo(Kapper::class); }
     public function afspraken() { return $this->hasMany(Afspraak::class); }
+    public function beschikbaarheden() { return $this->hasMany(MedewerkerBeschikbaarheid::class); }
 }

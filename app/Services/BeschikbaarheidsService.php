@@ -6,6 +6,7 @@ use App\Models\Afspraak;
 use App\Models\Beschikbaarheid;
 use App\Models\Dienst;
 use App\Models\Kapper;
+use App\Models\MedewerkerBeschikbaarheid;
 use Carbon\Carbon;
 
 class BeschikbaarheidsService
@@ -54,6 +55,17 @@ class BeschikbaarheidsService
             ->first();
 
         if (!$beschikbaarheid) return [];
+
+        // Medewerker met eigen rooster → overschrijf start/eind tijden
+        if ($medewerkerId) {
+            $medewerkerSchema = MedewerkerBeschikbaarheid::where('medewerker_id', $medewerkerId)
+                ->where('dag_van_week', $dagVanWeek)
+                ->first();
+            if ($medewerkerSchema) {
+                $beschikbaarheid->start_tijd = $medewerkerSchema->start_tijd;
+                $beschikbaarheid->eind_tijd  = $medewerkerSchema->eind_tijd;
+            }
+        }
         $isGesloten = $kapper->sluitingsdagen()
             ->where(fn($q) => $q
                 // Losse dag: exacte datum match

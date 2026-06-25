@@ -65,50 +65,121 @@
     </div>
     @endif
 
+    {{-- Flash: rooster opgeslagen --}}
+    @if(session('rooster_opgeslagen'))
+    <div class="mb-4 px-4 py-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-400">
+        Rooster van {{ session('rooster_opgeslagen') }} opgeslagen.
+    </div>
+    @endif
+
     {{-- Lijst --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
         @forelse($medewerkers as $medewerker)
-        <div class="flex items-center gap-3 px-4 sm:px-5 py-3.5 {{ !$loop->last ? 'border-b border-gray-100 dark:border-neutral-700' : '' }}">
-            {{-- Avatar --}}
-            @if($medewerker->foto)
-            <img src="{{ asset('public/storage/' . $medewerker->foto) }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0">
-            @else
-            <div class="w-9 h-9 rounded-full bg-gray-100 dark:bg-neutral-700 border border-gray-200 dark:border-neutral-600 flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-gray-400 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                </svg>
-            </div>
-            @endif
+        <div class="{{ !$loop->last || $openRoosterId === $medewerker->id ? 'border-b border-gray-100 dark:border-neutral-700' : '' }}">
+            {{-- Rij --}}
+            <div class="flex items-center gap-3 px-4 sm:px-5 py-3.5">
+                {{-- Avatar --}}
+                @if($medewerker->foto)
+                <img src="{{ asset('public/storage/' . $medewerker->foto) }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0">
+                @else
+                <div class="w-9 h-9 rounded-full bg-gray-100 dark:bg-neutral-700 border border-gray-200 dark:border-neutral-600 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-gray-400 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                @endif
 
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $medewerker->naam }}</p>
-                {{-- Mobiel: controls onder naam --}}
-                <div class="flex items-center gap-3 mt-1.5 sm:hidden">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                        <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $medewerker->naam }}</p>
+                        @if($medewerker->beschikbaarheden_count > 0)
+                        <span class="hidden sm:inline text-xs px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium">Eigen rooster</span>
+                        @endif
+                    </div>
+                    {{-- Mobiel: controls onder naam --}}
+                    <div class="flex items-center gap-3 mt-1.5 sm:hidden">
+                        <button wire:click="toggleActief({{ $medewerker->id }})"
+                                class="text-xs px-2.5 py-0.5 rounded-full font-medium transition-colors
+                                    {{ $medewerker->actief ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400' }}">
+                            {{ $medewerker->actief ? 'Actief' : 'Inactief' }}
+                        </button>
+                        <button wire:click="openRooster({{ $medewerker->id }})"
+                                class="text-xs font-medium text-blue-600 dark:text-blue-400">
+                            {{ $openRoosterId === $medewerker->id ? 'Sluiten' : 'Rooster' }}
+                        </button>
+                        <button @click.prevent="$dispatch('open-confirm', { title: 'Medewerker verwijderen', message: 'Weet je zeker dat je {{ addslashes($medewerker->naam) }} wilt verwijderen?', action: () => $wire.verwijder({{ $medewerker->id }}) })"
+                                class="text-xs font-medium text-red-500 dark:text-red-400">
+                            Verwijder
+                        </button>
+                    </div>
+                </div>
+
+                {{-- Desktop: controls rechts --}}
+                <div class="hidden sm:flex items-center gap-3">
                     <button wire:click="toggleActief({{ $medewerker->id }})"
-                            class="text-xs px-2.5 py-0.5 rounded-full font-medium transition-colors
-                                {{ $medewerker->actief ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400' }}">
+                            class="text-xs px-2.5 py-1 rounded-full font-medium transition-colors
+                                {{ $medewerker->actief ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-100' : 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400 hover:bg-gray-200' }}">
                         {{ $medewerker->actief ? 'Actief' : 'Inactief' }}
                     </button>
+                    <button wire:click="openRooster({{ $medewerker->id }})"
+                            class="text-xs px-2.5 py-1 rounded-lg font-medium border transition-colors
+                                {{ $openRoosterId === $medewerker->id ? 'border-blue-300 text-blue-600 bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:bg-blue-900/20' : 'border-gray-200 text-gray-600 bg-white dark:border-neutral-700 dark:text-neutral-400 dark:bg-neutral-800 hover:border-blue-300 hover:text-blue-600' }}">
+                        {{ $openRoosterId === $medewerker->id ? 'Sluiten' : 'Rooster instellen' }}
+                    </button>
                     <button @click.prevent="$dispatch('open-confirm', { title: 'Medewerker verwijderen', message: 'Weet je zeker dat je {{ addslashes($medewerker->naam) }} wilt verwijderen?', action: () => $wire.verwijder({{ $medewerker->id }}) })"
-                            class="text-xs font-medium text-red-500 dark:text-red-400">
+                            class="text-xs font-medium text-red-500 hover:text-red-700 dark:text-red-400 transition-colors">
                         Verwijder
                     </button>
                 </div>
             </div>
 
-            {{-- Desktop: controls rechts --}}
-            <div class="hidden sm:flex items-center gap-4">
-                <button wire:click="toggleActief({{ $medewerker->id }})"
-                        class="text-xs px-2.5 py-1 rounded-full font-medium transition-colors
-                            {{ $medewerker->actief ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-100' : 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400 hover:bg-gray-200' }}">
-                    {{ $medewerker->actief ? 'Actief' : 'Inactief' }}
-                </button>
-                <button @click.prevent="$dispatch('open-confirm', { title: 'Medewerker verwijderen', message: 'Weet je zeker dat je {{ addslashes($medewerker->naam) }} wilt verwijderen?', action: () => $wire.verwijder({{ $medewerker->id }}) })"
-                        class="text-xs font-medium text-red-500 hover:text-red-700 dark:text-red-400 transition-colors">
-                    Verwijder
-                </button>
+            {{-- Inline rooster editor --}}
+            @if($openRoosterId === $medewerker->id)
+            <div class="px-4 sm:px-5 py-4 bg-gray-50 dark:bg-neutral-900 border-t border-gray-100 dark:border-neutral-700">
+                <p class="text-xs font-semibold text-gray-500 dark:text-neutral-400 uppercase tracking-wide mb-3">
+                    Eigen werkrooster voor {{ $medewerker->naam }}
+                </p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mb-4">Als geen dag aangevinkt, wordt het salonrooster gebruikt.</p>
+
+                <div class="space-y-2">
+                    @foreach($medewerkerRooster as $dag => $data)
+                    <div class="flex items-center gap-3">
+                        <label class="flex items-center gap-2 w-28 cursor-pointer">
+                            <input type="checkbox"
+                                   wire:model.live="medewerkerRooster.{{ $dag }}.actief"
+                                   class="rounded border-gray-300 dark:border-neutral-600 text-blue-600 focus:ring-blue-500">
+                            <span class="text-sm text-gray-700 dark:text-neutral-300">{{ $data['naam'] }}</span>
+                        </label>
+                        @if($data['actief'])
+                        <div class="flex items-center gap-2">
+                            <input type="time"
+                                   wire:model.live="medewerkerRooster.{{ $dag }}.start_tijd"
+                                   class="py-1 px-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm text-gray-700 dark:text-neutral-300 focus:outline-none focus:border-blue-500">
+                            <span class="text-xs text-gray-400 dark:text-neutral-500">tot</span>
+                            <input type="time"
+                                   wire:model.live="medewerkerRooster.{{ $dag }}.eind_tijd"
+                                   class="py-1 px-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm text-gray-700 dark:text-neutral-300 focus:outline-none focus:border-blue-500">
+                        </div>
+                        @else
+                        <span class="text-xs text-gray-400 dark:text-neutral-600">— vrij</span>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+
+                <div class="flex gap-2 mt-4">
+                    <button wire:click="slaRoosterOp"
+                            class="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                        Opslaan
+                    </button>
+                    <button wire:click="$set('openRoosterId', null)"
+                            class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                        Annuleer
+                    </button>
+                </div>
             </div>
+            @endif
         </div>
         @empty
         <div class="px-5 py-12 text-center">
