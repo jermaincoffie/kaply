@@ -144,21 +144,24 @@
 
                 <div class="space-y-2">
                     @foreach($medewerkerRooster as $dag => $data)
-                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                        {{-- Checkbox + dagnaam (altijd zichtbaar) --}}
-                        <input type="checkbox"
-                               wire:model.live="medewerkerRooster.{{ $dag }}.actief"
-                               class="w-4 h-4 flex-shrink-0 rounded border-gray-300 dark:border-neutral-600 text-blue-600 focus:ring-blue-500 cursor-pointer">
-                        <span class="w-28 flex-shrink-0 text-sm {{ $data['actief'] ? 'text-gray-800 dark:text-neutral-100' : 'text-gray-400 dark:text-neutral-500' }}">
-                            {{ $data['naam'] }}
-                        </span>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
 
-                        {{-- Tijdvelden: desktop altijd zichtbaar, mobiel alleen als actief --}}
-                        <div class="{{ $data['actief'] ? 'flex' : 'hidden sm:flex' }} items-center gap-2 sm:ml-0 ml-7">
+                        {{-- Checkbox + dagnaam --}}
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox"
+                                   wire:model.live="medewerkerRooster.{{ $dag }}.actief"
+                                   class="w-4 h-4 flex-shrink-0 rounded border-gray-300 dark:border-neutral-600 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                            <span class="sm:w-28 sm:flex-shrink-0 text-sm {{ $data['actief'] ? 'text-gray-800 dark:text-neutral-100' : 'text-gray-400 dark:text-neutral-500' }}">
+                                {{ $data['naam'] }}
+                            </span>
+                        </div>
+
+                        {{-- Tijdvelden: desktop altijd, mobiel alleen als actief --}}
+                        <div class="{{ $data['actief'] ? 'flex' : 'hidden sm:flex' }} items-center gap-2 ml-7 sm:ml-3">
                             <input type="time"
                                    wire:model.live="medewerkerRooster.{{ $dag }}.start_tijd"
                                    @if(!$data['actief']) disabled @endif
-                                   class="py-1 px-2 w-24 rounded-lg border text-sm focus:outline-none focus:border-blue-500
+                                   class="py-1 px-1.5 w-[4.5rem] sm:w-24 rounded-lg border text-xs sm:text-sm focus:outline-none focus:border-blue-500
                                        {{ $data['actief']
                                            ? 'border-gray-200 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-200'
                                            : 'border-gray-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-900 text-gray-300 dark:text-neutral-600 cursor-not-allowed' }}">
@@ -166,7 +169,7 @@
                             <input type="time"
                                    wire:model.live="medewerkerRooster.{{ $dag }}.eind_tijd"
                                    @if(!$data['actief']) disabled @endif
-                                   class="py-1 px-2 w-24 rounded-lg border text-sm focus:outline-none focus:border-blue-500
+                                   class="py-1 px-1.5 w-[4.5rem] sm:w-24 rounded-lg border text-xs sm:text-sm focus:outline-none focus:border-blue-500
                                        {{ $data['actief']
                                            ? 'border-gray-200 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-200'
                                            : 'border-gray-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-900 text-gray-300 dark:text-neutral-600 cursor-not-allowed' }}">
