@@ -56,15 +56,21 @@ class BeschikbaarheidsService
 
         if (!$beschikbaarheid) return [];
 
-        // Medewerker met eigen rooster → overschrijf start/eind tijden
+        // Medewerker met eigen rooster → gebruik dat; ongevinkte dagen = geen slots
         if ($medewerkerId) {
-            $medewerkerSchema = MedewerkerBeschikbaarheid::where('medewerker_id', $medewerkerId)
-                ->where('dag_van_week', $dagVanWeek)
-                ->first();
-            if ($medewerkerSchema) {
+            $heeftEigenRooster = MedewerkerBeschikbaarheid::where('medewerker_id', $medewerkerId)->exists();
+
+            if ($heeftEigenRooster) {
+                $medewerkerSchema = MedewerkerBeschikbaarheid::where('medewerker_id', $medewerkerId)
+                    ->where('dag_van_week', $dagVanWeek)
+                    ->first();
+
+                if (!$medewerkerSchema) return []; // dag niet aangevinkt = vrij
+
                 $beschikbaarheid->start_tijd = $medewerkerSchema->start_tijd;
                 $beschikbaarheid->eind_tijd  = $medewerkerSchema->eind_tijd;
             }
+            // Geen eigen rooster → salonrooster als fallback (geen wijziging)
         }
         $isGesloten = $kapper->sluitingsdagen()
             ->where(fn($q) => $q
