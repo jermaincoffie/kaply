@@ -29,12 +29,14 @@ use App\Http\Controllers\StripeWebhookController;
 use App\Livewire\Klant\AccountBeheer;
 use App\Livewire\Klant\Inloggen;
 use App\Livewire\Klant\KapperProfiel;
+use App\Livewire\Klant\KappersPerStad;
 use App\Livewire\Klant\KapperZoeken;
 use App\Livewire\Klant\MijnAfspraken;
 use Illuminate\Support\Facades\Route;
 
 // Publiek
 Route::get('/', KapperZoeken::class)->name('home');
+Route::get('/kappers/{stad}', KappersPerStad::class)->name('stad.kappers');
 Route::get('/voor-kappers', fn() => view('voor-kappers'))->name('voor-kappers');
 Route::get('/prijzen', fn() => view('prijzen'))->name('prijzen');
 Route::get('/privacy', fn() => view('legal.privacy'))->name('privacy');

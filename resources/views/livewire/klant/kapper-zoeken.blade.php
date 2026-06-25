@@ -324,6 +324,27 @@
         @endif
     </div>{{-- einde full-width carousel sectie --}}
 
+    {{-- Populaire steden --}}
+    @if(!$zoekterm && $steden->count() > 1)
+    <div class="relative z-10 py-10 px-4 border-t border-gray-100 dark:border-neutral-800">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-sm font-semibold text-gray-500 dark:text-neutral-400 uppercase tracking-widest mb-4">Kappers per stad</h2>
+            <div class="flex flex-wrap gap-2">
+                @foreach($steden as $stad)
+                <a href="{{ route('stad.kappers', Str::slug($stad)) }}"
+                   class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border border-gray-200 dark:border-neutral-700 text-gray-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 hover:border-blue-300 hover:text-blue-600 dark:hover:border-blue-600 dark:hover:text-blue-400 transition-colors">
+                    <svg class="w-3.5 h-3.5 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    {{ $stad }}
+                </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
+
     {{-- Hoe werkt het (alleen zonder zoekterm) --}}
     @if(!$zoekterm)
     <div id="hoe-werkt-het" class="relative z-10 py-14 px-4 border-t border-gray-100 dark:border-neutral-800">
