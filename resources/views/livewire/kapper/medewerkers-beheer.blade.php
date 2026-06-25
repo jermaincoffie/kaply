@@ -145,22 +145,28 @@
                 <div class="space-y-2">
                     @foreach($medewerkerRooster as $dag => $data)
                     <div class="flex items-center gap-3">
-                        <label class="flex items-center gap-2 w-28 cursor-pointer">
-                            <input type="checkbox"
-                                   wire:model.live="medewerkerRooster.{{ $dag }}.actief"
-                                   class="rounded border-gray-300 dark:border-neutral-600 text-blue-600 focus:ring-blue-500">
-                            <span class="text-sm text-gray-700 dark:text-neutral-300">{{ $data['naam'] }}</span>
-                        </label>
-                        <div class="flex items-center gap-2 {{ $data['actief'] ? '' : 'opacity-30 pointer-events-none select-none' }}">
+                        <input type="checkbox"
+                               wire:model.live="medewerkerRooster.{{ $dag }}.actief"
+                               class="w-4 h-4 flex-shrink-0 rounded border-gray-300 dark:border-neutral-600 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                        <span class="w-24 flex-shrink-0 text-sm {{ $data['actief'] ? 'text-gray-800 dark:text-neutral-100 font-medium' : 'text-gray-400 dark:text-neutral-500' }}">
+                            {{ $data['naam'] }}
+                        </span>
+                        <div class="flex items-center gap-2">
                             <input type="time"
                                    wire:model.live="medewerkerRooster.{{ $dag }}.start_tijd"
                                    @if(!$data['actief']) disabled @endif
-                                   class="py-1 px-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm text-gray-700 dark:text-neutral-300 focus:outline-none focus:border-blue-500">
-                            <span class="text-xs text-gray-400 dark:text-neutral-500">tot</span>
+                                   class="py-1 px-2 w-24 rounded-lg border text-sm focus:outline-none focus:border-blue-500
+                                       {{ $data['actief']
+                                           ? 'border-gray-200 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-200'
+                                           : 'border-gray-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-900 text-gray-300 dark:text-neutral-600 cursor-not-allowed' }}">
+                            <span class="text-xs {{ $data['actief'] ? 'text-gray-400 dark:text-neutral-500' : 'text-gray-200 dark:text-neutral-700' }}">tot</span>
                             <input type="time"
                                    wire:model.live="medewerkerRooster.{{ $dag }}.eind_tijd"
                                    @if(!$data['actief']) disabled @endif
-                                   class="py-1 px-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm text-gray-700 dark:text-neutral-300 focus:outline-none focus:border-blue-500">
+                                   class="py-1 px-2 w-24 rounded-lg border text-sm focus:outline-none focus:border-blue-500
+                                       {{ $data['actief']
+                                           ? 'border-gray-200 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-200'
+                                           : 'border-gray-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-900 text-gray-300 dark:text-neutral-600 cursor-not-allowed' }}">
                         </div>
                     </div>
                     @endforeach
