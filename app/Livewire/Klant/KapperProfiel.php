@@ -51,7 +51,11 @@ class KapperProfiel extends Component
             ->firstOrFail();
 
         if ($this->kapper->diensten->isNotEmpty()) {
-            $this->geselecteerdeDienstId = $this->kapper->diensten->first()->id;
+            $herboekDienstId = (int) request('dienst_id');
+            $heeftDienst = $herboekDienstId && $this->kapper->diensten->contains('id', $herboekDienstId);
+            $this->geselecteerdeDienstId = $heeftDienst
+                ? $herboekDienstId
+                : $this->kapper->diensten->first()->id;
         }
 
         $this->geselecteerdeDatum = today()->toDateString();

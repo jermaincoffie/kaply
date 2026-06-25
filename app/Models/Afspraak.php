@@ -16,7 +16,7 @@ class Afspraak extends Model
         'eind_tijd', 'status', 'verborgen_in_agenda', 'betaalmethode', 'notitie',
         'kortingscode_id', 'korting_bedrag',
         'stripe_payment_intent_id', 'stripe_setup_intent_id',
-        'herinnering_24u_verstuurd', 'herinnering_1u_verstuurd',
+        'herinnering_24u_verstuurd', 'herinnering_1u_verstuurd', 'review_uitnodiging_verstuurd',
     ];
 
     protected $casts = ['datum' => 'date'];

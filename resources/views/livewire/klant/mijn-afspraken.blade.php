@@ -181,7 +181,7 @@
                         <button wire:click="openReview({{ $afspraak->id }})" class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline">Beoordeel</button>
                         @endif
                     @endif
-                    <a href="{{ route('kapper.profiel', $afspraak->kapper->slug) }}" class="text-xs font-medium text-gray-500 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:underline">Boek weer</a>
+                    <a href="{{ route('kapper.profiel', $afspraak->kapper->slug) }}?dienst_id={{ $afspraak->dienst_id }}" class="text-xs font-medium text-gray-500 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:underline">Boek weer</a>
                     <button wire:click="toggleFavoriet({{ $afspraak->kapper_id }})"
                             title="{{ $isFav ? 'Verwijder uit favorieten' : 'Voeg toe aan favorieten' }}"
                             class="ml-auto p-1 rounded hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors group">
@@ -250,7 +250,7 @@
                                     <button wire:click="openReview({{ $afspraak->id }})" class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline whitespace-nowrap">Beoordeel</button>
                                     @endif
                                 @endif
-                                <a href="{{ route('kapper.profiel', $afspraak->kapper->slug) }}" class="text-xs font-medium text-gray-500 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:underline whitespace-nowrap">Boek weer</a>
+                                <a href="{{ route('kapper.profiel', $afspraak->kapper->slug) }}?dienst_id={{ $afspraak->dienst_id }}" class="text-xs font-medium text-gray-500 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:underline whitespace-nowrap">Boek weer</a>
                                 <button wire:click="toggleFavoriet({{ $afspraak->kapper_id }})"
                                         title="{{ $isFav ? 'Verwijder uit favorieten' : 'Voeg toe aan favorieten' }}"
                                         class="p-1 rounded hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors group">
