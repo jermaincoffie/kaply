@@ -200,6 +200,9 @@
                     @if(!$kapperWerktDag)
                         <p class="text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">Kapper werkt niet op deze dag.</p>
                         <p class="text-xs text-gray-400 dark:text-neutral-500">Selecteer een andere datum.</p>
+                    @elseif($medewerkerWerktNietDezeDag)
+                        <p class="text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1">{{ $geselecteerdeMedewerker?->naam ?? 'Deze medewerker' }} werkt niet op deze dag.</p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500">Kies een andere datum of selecteer een andere medewerker.</p>
                     @else
                     <p class="text-sm text-gray-500 dark:text-neutral-400 mb-3">Geen vrije tijdsloten op deze dag.</p>
 

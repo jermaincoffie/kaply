@@ -31,7 +31,8 @@ class KapperProfiel extends Component
     public bool $geboekt = false;
 
     // Beschikbaarheid
-    public bool $kapperWerktDag = false;
+    public bool $kapperWerktDag            = false;
+    public bool $medewerkerWerktNietDezeDag = false;
 
     // Wachtlijst
     public bool   $toonWachtlijstForm  = false;
@@ -250,7 +251,20 @@ class KapperProfiel extends Component
 
         $service = new BeschikbaarheidsService();
 
-        $this->kapperWerktDag = $service->heeftBeschikbaarheid($this->kapper, $this->geselecteerdeDatum);
+        $this->kapperWerktDag             = $service->heeftBeschikbaarheid($this->kapper, $this->geselecteerdeDatum);
+        $this->medewerkerWerktNietDezeDag = false;
+
+        // Detecteer: medewerker heeft eigen rooster maar werkt niet op deze dag
+        if ($this->geselecteerdeMedewerkerId && $this->kapperWerktDag) {
+            $dagVanWeek = \Carbon\Carbon::parse($this->geselecteerdeDatum)->dayOfWeekIso - 1;
+            $heeftEigenRooster = \App\Models\MedewerkerBeschikbaarheid::where('medewerker_id', $this->geselecteerdeMedewerkerId)->exists();
+            if ($heeftEigenRooster) {
+                $werktDezeDag = \App\Models\MedewerkerBeschikbaarheid::where('medewerker_id', $this->geselecteerdeMedewerkerId)
+                    ->where('dag_van_week', $dagVanWeek)
+                    ->exists();
+                $this->medewerkerWerktNietDezeDag = !$werktDezeDag;
+            }
+        }
 
         $sluitingsdag = $service->getSluitingsdag($this->kapper, $this->geselecteerdeDatum);
         $this->sluitingsdagReden = $sluitingsdag
