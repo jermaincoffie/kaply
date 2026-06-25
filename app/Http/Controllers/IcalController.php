@@ -44,7 +44,8 @@ class IcalController extends Controller
             $lines[] = 'DTSTAMP:' . now()->utc()->format('Ymd\THis\Z');
             $lines[] = 'DTSTART;TZID=Europe/Amsterdam:' . $start->format('Ymd\THis');
             $lines[] = 'DTEND;TZID=Europe/Amsterdam:' . $end->format('Ymd\THis');
-            $lines[] = 'SUMMARY:' . $this->esc($afspraak->klant->name . ' — ' . $afspraak->dienst->naam);
+            $klantNaam = $afspraak->klant?->name ?? $afspraak->walk_in_naam ?? 'Walk-in';
+            $lines[] = 'SUMMARY:' . $this->esc($klantNaam . ' — ' . $afspraak->dienst->naam);
             $lines[] = 'DESCRIPTION:' . $this->esc($beschrijving);
             $lines[] = 'STATUS:' . ($afspraak->status === 'gepland' ? 'CONFIRMED' : 'COMPLETED');
             $lines[] = 'END:VEVENT';

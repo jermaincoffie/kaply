@@ -26,6 +26,7 @@ class StuurHerinneringen extends Command
             )
             ->with(['kapper', 'dienst', 'klant'])
             ->each(function (Afspraak $afspraak) {
+                if (!$afspraak->klant) return;
                 Mail::to($afspraak->klant->email)->send(new AfspraakHerinneringMail($afspraak, '24 uur'));
                 $afspraak->update(['herinnering_24u_verstuurd' => true]);
                 $this->info("24u herinnering → {$afspraak->klant->email}");
@@ -41,6 +42,7 @@ class StuurHerinneringen extends Command
             )
             ->with(['kapper', 'dienst', 'klant'])
             ->each(function (Afspraak $afspraak) {
+                if (!$afspraak->klant) return;
                 Mail::to($afspraak->klant->email)->send(new AfspraakHerinneringMail($afspraak, '1 uur'));
                 $afspraak->update(['herinnering_1u_verstuurd' => true]);
                 $this->info("1u herinnering → {$afspraak->klant->email}");

@@ -28,6 +28,7 @@ class StuurReviewUitnodigingen extends Command
             ->whereDoesntHave('review')
             ->with(['kapper', 'dienst', 'klant'])
             ->each(function (Afspraak $afspraak) {
+                if (!$afspraak->klant) return;
                 Mail::to($afspraak->klant->email)->send(new ReviewUitnodigingMail($afspraak));
                 $afspraak->update(['review_uitnodiging_verstuurd' => true]);
                 $this->info("Review-uitnodiging → {$afspraak->klant->email} (afspraak #{$afspraak->id})");

@@ -242,8 +242,8 @@ class MijnAfspraken extends Component
                 ->with('kapper')
                 ->orderByDesc('created_at')
                 ->get(),
-            'favorieteKappers'  => auth()->user()->favorieteKappers()->get(),
-            'favorietKapperIds' => auth()->user()->favorieteKappers()->pluck('kappers.id'),
+            'favorieteKappers'  => $favorieteKappers = auth()->user()->favorieteKappers()->get(),
+            'favorietKapperIds' => $favorieteKappers->pluck('id'),
             'geschiedenis' => Afspraak::where('klant_id', auth()->id())
                 ->where(fn($q) => $q
                     ->where('datum', '<', today())
