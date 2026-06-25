@@ -151,19 +151,17 @@
                                    class="rounded border-gray-300 dark:border-neutral-600 text-blue-600 focus:ring-blue-500">
                             <span class="text-sm text-gray-700 dark:text-neutral-300">{{ $data['naam'] }}</span>
                         </label>
-                        @if($data['actief'])
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 {{ $data['actief'] ? '' : 'opacity-30 pointer-events-none select-none' }}">
                             <input type="time"
                                    wire:model.live="medewerkerRooster.{{ $dag }}.start_tijd"
+                                   @if(!$data['actief']) disabled @endif
                                    class="py-1 px-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm text-gray-700 dark:text-neutral-300 focus:outline-none focus:border-blue-500">
                             <span class="text-xs text-gray-400 dark:text-neutral-500">tot</span>
                             <input type="time"
                                    wire:model.live="medewerkerRooster.{{ $dag }}.eind_tijd"
+                                   @if(!$data['actief']) disabled @endif
                                    class="py-1 px-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm text-gray-700 dark:text-neutral-300 focus:outline-none focus:border-blue-500">
                         </div>
-                        @else
-                        <span class="text-xs text-gray-400 dark:text-neutral-600">— vrij</span>
-                        @endif
                     </div>
                     @endforeach
                 </div>
