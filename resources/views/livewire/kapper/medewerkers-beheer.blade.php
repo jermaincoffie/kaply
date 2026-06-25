@@ -144,14 +144,17 @@
 
                 <div class="space-y-2">
                     @foreach($medewerkerRooster as $dag => $data)
-                    <div class="flex items-center gap-3">
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                        {{-- Checkbox + dagnaam (altijd zichtbaar) --}}
                         <input type="checkbox"
                                wire:model.live="medewerkerRooster.{{ $dag }}.actief"
                                class="w-4 h-4 flex-shrink-0 rounded border-gray-300 dark:border-neutral-600 text-blue-600 focus:ring-blue-500 cursor-pointer">
-                        <span class="w-24 flex-shrink-0 text-sm {{ $data['actief'] ? 'text-gray-800 dark:text-neutral-100 font-medium' : 'text-gray-400 dark:text-neutral-500' }}">
+                        <span class="w-28 flex-shrink-0 text-sm {{ $data['actief'] ? 'text-gray-800 dark:text-neutral-100' : 'text-gray-400 dark:text-neutral-500' }}">
                             {{ $data['naam'] }}
                         </span>
-                        <div class="flex items-center gap-2">
+
+                        {{-- Tijdvelden: desktop altijd zichtbaar, mobiel alleen als actief --}}
+                        <div class="{{ $data['actief'] ? 'flex' : 'hidden sm:flex' }} items-center gap-2 sm:ml-0 ml-7">
                             <input type="time"
                                    wire:model.live="medewerkerRooster.{{ $dag }}.start_tijd"
                                    @if(!$data['actief']) disabled @endif
