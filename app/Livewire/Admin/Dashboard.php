@@ -61,6 +61,21 @@ class Dashboard extends Component
             ->limit(4)
             ->get();
 
+        // Churn: past_due (betaling mislukt) + inactief (opgezegd, laatste 60 dagen)
+        $churn_kappers = Kapper::with('user')
+            ->where(fn($q) => $q
+                ->where('abonnement_status', 'past_due')
+                ->orWhere(fn($q2) => $q2
+                    ->where('abonnement_status', 'inactief')
+                    ->where('updated_at', '>=', now()->subDays(60))
+                )
+            )
+            ->orderByRaw("FIELD(abonnement_status, 'past_due', 'inactief')")
+            ->orderByDesc('updated_at')
+            ->get();
+        $churn_count = $churn_kappers->count();
+        $past_due_count = $churn_kappers->where('abonnement_status', 'past_due')->count();
+
         $nieuw_aangemeld = Kapper::where('actief', false)
             ->where('abonnement_status', 'geen')
             ->count();
@@ -85,6 +100,9 @@ class Dashboard extends Component
             'conversieratio'          => $conversieratio,
             'recente_aanmeldingen'    => $recente_aanmeldingen,
             'wachtende_kappers'       => $wachtende_kappers,
+            'churn_kappers'           => $churn_kappers,
+            'churn_count'             => $churn_count,
+            'past_due_count'          => $past_due_count,
             'top_kappers'             => Kapper::withCount([
                 'afspraken as boekingen_maand' => fn($q) => $q
                     ->whereMonth('datum', now()->month)

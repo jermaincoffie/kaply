@@ -89,6 +89,49 @@
     </div>
     @endif
 
+    {{-- Churn signal --}}
+    @if($churn_kappers->isNotEmpty())
+    <div class="bg-white dark:bg-neutral-800 border border-red-200 dark:border-red-800/50 rounded-xl overflow-hidden mb-4">
+        <div class="px-6 py-3 border-b border-red-100 dark:border-red-900/40 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse flex-shrink-0"></span>
+                <p class="text-sm font-semibold text-red-700 dark:text-red-400">
+                    Churn signaal
+                    @if($past_due_count > 0)
+                        <span class="ml-1 text-xs font-normal text-red-500 dark:text-red-400">({{ $past_due_count }} betaling mislukt)</span>
+                    @endif
+                </p>
+            </div>
+            <a href="{{ route('admin.facturatie') }}" class="text-xs text-red-600 dark:text-red-400 hover:underline font-medium">Bekijk facturatie →</a>
+        </div>
+        <div class="divide-y divide-gray-50 dark:divide-neutral-700">
+            @foreach($churn_kappers as $ck)
+            @php
+                $isPastDue = $ck->abonnement_status === 'past_due';
+            @endphp
+            <div class="px-6 py-3 flex items-center justify-between gap-4">
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $ck->salon_naam }}</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $ck->user?->email }}</p>
+                </div>
+                <div class="flex items-center gap-3 flex-shrink-0">
+                    <span class="text-xs text-gray-400 dark:text-neutral-500">{{ $ck->updated_at->diffForHumans() }}</span>
+                    @if($isPastDue)
+                    <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                        Betaling mislukt
+                    </span>
+                    @else
+                    <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 dark:bg-neutral-700 text-gray-500 dark:text-neutral-400">
+                        Opgezegd
+                    </span>
+                    @endif
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     {{-- Trial kappers + Recente aanmeldingen --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
 
