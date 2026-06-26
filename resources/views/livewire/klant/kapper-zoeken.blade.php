@@ -74,7 +74,7 @@
     <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-10 pb-4 sm:pt-28 sm:pb-8 px-4">
         {{-- Aurora: alleen in hero --}}
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,#93c5fd_10%,#a5b4fc_15%,#bfdbfe_20%,#c4b5fd_25%,#60a5fa_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-[0.38] will-change-transform animate-aurora motion-reduce:animate-none"></div>
+            <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,#93c5fd_10%,#a5b4fc_15%,#bfdbfe_20%,#c4b5fd_25%,#60a5fa_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-[0.38] animate-aurora motion-reduce:animate-none"></div>
         </div>
         {{-- Fade onderaan hero naar wit --}}
         <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900"></div>
