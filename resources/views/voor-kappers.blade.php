@@ -5,8 +5,9 @@
 {{-- HERO --}}
 <section class="relative overflow-hidden bg-white">
     {{-- Aurora achtergrond (zelfde als homepage) --}}
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,#93c5fd_10%,#a5b4fc_15%,#bfdbfe_20%,#c4b5fd_25%,#60a5fa_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-[0.38] will-change-transform animate-aurora motion-reduce:animate-none"></div>
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute inset-0 animate-aurora motion-reduce:animate-none"
+             style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.55; background-size: 200% 200%;"></div>
     </div>
     <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white"></div>
 
@@ -122,8 +123,9 @@
 
 {{-- PRICING --}}
 <section class="relative overflow-hidden bg-white py-20 px-4 sm:px-6">
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="[--white-gradient:repeating-linear-gradient(100deg,white_0%,white_7%,transparent_10%,transparent_12%,white_16%)] [--aurora:repeating-linear-gradient(100deg,#93c5fd_10%,#a5b4fc_15%,#bfdbfe_20%,#c4b5fd_25%,#60a5fa_30%)] [background-image:var(--white-gradient),var(--aurora)] [background-size:300%,_200%] [background-position:50%_50%,50%_50%] blur-[80px] absolute -inset-[10px] opacity-[0.38] will-change-transform animate-aurora motion-reduce:animate-none"></div>
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute inset-0 animate-aurora motion-reduce:animate-none"
+             style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.55; background-size: 200% 200%;"></div>
     </div>
     <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[20%] to-white"></div>
     <div class="max-w-lg mx-auto relative">
