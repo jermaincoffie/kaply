@@ -73,9 +73,9 @@
     {{-- Hero --}}
     <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-10 pb-4 sm:pt-28 sm:pb-8 px-4">
         {{-- Aurora: alleen in hero --}}
-        <div class="absolute inset-0 pointer-events-none">
-            <div class="blur-[80px] absolute -inset-[10px] opacity-[0.38] animate-aurora motion-reduce:animate-none"
-                 style="background-image: repeating-linear-gradient(100deg, white 0%, white 7%, transparent 10%, transparent 12%, white 16%), repeating-linear-gradient(100deg, #93c5fd 10%, #a5b4fc 15%, #bfdbfe 20%, #c4b5fd 25%, #60a5fa 30%); background-size: 300%, 200%; background-position: 50% 50%, 50% 50%;"></div>
+        <div class="absolute inset-0 pointer-events-none overflow-hidden">
+            <div class="absolute inset-0 animate-aurora motion-reduce:animate-none"
+                 style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.55; background-size: 200% 200%;"></div>
         </div>
         {{-- Fade onderaan hero naar wit --}}
         <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900"></div>
