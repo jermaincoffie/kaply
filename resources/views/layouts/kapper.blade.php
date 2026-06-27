@@ -402,12 +402,17 @@
     });
 
     // ===== SIDEBAR =====
+    let _sidebarJustOpened = false;
+
     function openSidebar() {
+        _sidebarJustOpened = true;
         document.getElementById('sidebar').classList.remove('-translate-x-full');
         document.getElementById('sidebar-overlay').classList.remove('hidden');
+        setTimeout(() => { _sidebarJustOpened = false; }, 350);
     }
 
     function closeSidebar() {
+        if (_sidebarJustOpened) return;
         document.getElementById('sidebar').classList.add('-translate-x-full');
         document.getElementById('sidebar-overlay').classList.add('hidden');
     }
