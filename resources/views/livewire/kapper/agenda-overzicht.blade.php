@@ -186,7 +186,7 @@
         </div>
 
         {{-- Vandaag --}}
-        <div x-show="tab === 'vandaag'" class="grid grid-cols-3 divide-x divide-gray-100 dark:divide-neutral-700">
+        <div x-show="tab === 'vandaag'" class="grid grid-cols-2 sm:grid-cols-3 divide-x divide-gray-100 dark:divide-neutral-700">
             <div class="p-4">
                 <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-1.5">Omzet</p>
                 <span class="text-xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($omzet_vandaag / 100, 0, ',', '.') }}</span>
@@ -195,14 +195,14 @@
                 <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-1.5">Afspraken</p>
                 <span class="text-xl font-bold text-gray-900 dark:text-neutral-100">{{ $vandaagAfspraken->count() }}</span>
             </div>
-            <div class="p-4">
+            <div class="hidden sm:block p-4">
                 <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-1.5">Komende</p>
                 <span class="text-xl font-bold text-gray-900 dark:text-neutral-100">{{ $komende_afspraken }}</span>
             </div>
         </div>
 
         {{-- Maand --}}
-        <div x-show="tab === 'maand'" style="display:none" class="grid grid-cols-3 divide-x divide-gray-100 dark:divide-neutral-700">
+        <div x-show="tab === 'maand'" style="display:none" class="grid grid-cols-2 sm:grid-cols-3 divide-x divide-gray-100 dark:divide-neutral-700">
             <div class="p-4">
                 <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-1.5">Omzet</p>
                 <span class="text-xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($omzet_maand / 100, 0, ',', '.') }}</span>
@@ -222,7 +222,7 @@
                 <span class="text-xl font-bold text-gray-300 dark:text-neutral-600">—</span>
                 @endif
             </div>
-            <div class="p-4">
+            <div class="hidden sm:block p-4">
                 <div class="flex items-center mb-1.5">
                     <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide">No-show</p>
                     <x-tooltip position="below-right">Percentage van afgeronde afspraken waarbij de klant niet is komen opdagen. Boven 20% is een aandachtspunt.</x-tooltip>
@@ -369,20 +369,31 @@
     </div>
 
     {{-- ===== MOBIELE DAG VIEW (alleen zichtbaar op < lg) ===== --}}
-    @php $mobielDate = \Carbon\Carbon::parse($mobielDatum); @endphp
+    @php
+        $mobielDate = \Carbon\Carbon::parse($mobielDatum);
+
+        // Combineer afspraken + blokkeringen gesorteerd op start_tijd
+        $alleAgendaItems = collect();
+        foreach ($mobielAfspraken as $a) {
+            $alleAgendaItems->push(['type' => 'afspraak', 'start' => $a->start_tijd, 'data' => $a]);
+        }
+        foreach ($mobielBlokkeringen as $b) {
+            $alleAgendaItems->push(['type' => 'blokkering', 'start' => $b->start_tijd, 'data' => $b]);
+        }
+        $alleAgendaItems = $alleAgendaItems->sortBy('start')->values();
+    @endphp
     <div class="lg:hidden mb-6">
 
         {{-- Header: datum nav --}}
-        <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center justify-between mb-4">
             <button wire:click="vorigeDag"
                     class="p-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
             </button>
-
             <div class="text-center flex-1 px-3">
-                <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100">
+                <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 capitalize">
                     {{ $mobielDate->isoFormat('dddd') }}
                     @if($mobielDate->isToday())
                     <span class="ml-1.5 inline-flex px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-600 text-white">Vandaag</span>
@@ -390,7 +401,6 @@
                 </p>
                 <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $mobielDate->isoFormat('D MMMM YYYY') }}</p>
             </div>
-
             <button wire:click="volgendeDag"
                     class="p-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -399,8 +409,137 @@
             </button>
         </div>
 
+        {{-- Medewerker filter chips (mobiel) --}}
+        @if($medewerkers->count() > 0)
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 mb-3">
+            <button wire:click="filterMedewerker(null)"
+                    class="flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors
+                        {{ $gefilterdeMedewerkerId === null
+                            ? 'bg-gray-800 dark:bg-neutral-100 text-white dark:text-neutral-900'
+                            : 'bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300' }}">
+                Alle
+            </button>
+            @foreach($medewerkers as $mw)
+            <button wire:click="filterMedewerker({{ $mw->id }})"
+                    class="flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium capitalize transition-colors
+                        {{ $gefilterdeMedewerkerId === $mw->id
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300' }}">
+                {{ $mw->naam }}
+            </button>
+            @endforeach
+        </div>
+        @endif
+
+        {{-- Afsprakenskaart --}}
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden mb-3">
+
+            {{-- Kaart header --}}
+            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-neutral-700">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Afspraken</span>
+                    @if($mobielAfspraken->count() > 0)
+                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold">{{ $mobielAfspraken->count() }}</span>
+                    @endif
+                </div>
+                <button wire:click="openNieuwFormulier('{{ $mobielDatum }}', '09:00')"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Nieuwe afspraak
+                </button>
+            </div>
+
+            {{-- Gecombineerde gesorteerde lijst --}}
+            @forelse($alleAgendaItems as $item)
+
+                @if($item['type'] === 'blokkering')
+                @php $bl = $item['data']; $isPauzeM = ($bl->reden === 'Pauze'); @endphp
+                <button wire:click="selecteerBlokkering({{ $bl->id }})"
+                        class="w-full flex items-center gap-3 px-4 py-3 border-b border-gray-50 dark:border-neutral-700/50 text-left hover:bg-gray-50 dark:hover:bg-neutral-700/30 transition-colors">
+                    <div class="flex-shrink-0 w-12 text-center">
+                        <p class="text-xs font-bold text-gray-500 dark:text-neutral-400">{{ \Illuminate\Support\Str::substr($bl->start_tijd, 0, 5) }}</p>
+                        <p class="text-[10px] text-gray-300 dark:text-neutral-600">{{ \Illuminate\Support\Str::substr($bl->eind_tijd, 0, 5) }}</p>
+                    </div>
+                    <div class="w-1 rounded-full h-8 flex-shrink-0 {{ $isPauzeM ? 'bg-gray-300 dark:bg-neutral-600' : 'bg-red-400' }}"></div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-600 dark:text-neutral-300 truncate">{{ $isPauzeM ? 'Pauze' : ($bl->reden ?: 'Geblokkeerd') }}</p>
+                    </div>
+                    <span class="flex-shrink-0 text-xs font-medium px-2.5 py-1 rounded-full {{ $isPauzeM ? 'bg-gray-100 dark:bg-neutral-700 text-gray-500 dark:text-neutral-400' : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400' }}">
+                        {{ $isPauzeM ? 'Pauze' : 'Geblokkeerd' }}
+                    </span>
+                </button>
+
+                @else
+                @php
+                    $af = $item['data'];
+                    $isWalkInM   = !empty($af->walk_in_naam);
+                    $isToekomstM = \Carbon\Carbon::parse($af->datum->toDateString() . ' ' . $af->start_tijd)->isFuture();
+                    $isActiefM   = \Carbon\Carbon::parse($af->datum->toDateString() . ' ' . $af->start_tijd)->isPast()
+                                 && \Carbon\Carbon::parse($af->datum->toDateString() . ' ' . $af->eind_tijd)->isFuture();
+
+                    [$statusLabel, $statusKleur] = match(true) {
+                        $af->status === 'voltooid'    => ['Voltooid',    'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'],
+                        $af->status === 'no_show'     => ['No-show',     'bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400'],
+                        $af->status === 'geannuleerd' => ['Geannuleerd', 'bg-gray-100 dark:bg-neutral-700 text-gray-500 dark:text-neutral-400'],
+                        $isActiefM                    => ['Bezig',       'bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'],
+                        $isWalkInM                    => ['Walk-in',     'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400'],
+                        default                       => ['Bevestigd',   'bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400'],
+                    };
+
+                    $accentKleur = match(true) {
+                        $af->status === 'voltooid'    => 'bg-green-500',
+                        $af->status === 'no_show'     => 'bg-red-500',
+                        $af->status === 'geannuleerd' => 'bg-gray-300 dark:bg-neutral-600',
+                        $isWalkInM                    => 'bg-emerald-500',
+                        $isActiefM                    => 'bg-blue-500',
+                        default                       => 'bg-blue-400',
+                    };
+                @endphp
+                <button wire:click="selecteerAfspraak({{ $af->id }})"
+                        class="w-full flex items-center gap-3 px-4 py-3 border-b border-gray-50 dark:border-neutral-700/50 text-left hover:bg-gray-50 dark:hover:bg-neutral-700/30 transition-colors last:border-b-0">
+                    {{-- Tijdkolom --}}
+                    <div class="flex-shrink-0 w-12 text-center">
+                        <p class="text-sm font-bold {{ $isActiefM ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-neutral-200' }}">{{ \Illuminate\Support\Str::substr($af->start_tijd, 0, 5) }}</p>
+                        <p class="text-[10px] text-gray-300 dark:text-neutral-600">{{ \Illuminate\Support\Str::substr($af->eind_tijd, 0, 5) }}</p>
+                    </div>
+                    {{-- Kleuraccent --}}
+                    <div class="w-1 rounded-full h-10 flex-shrink-0 {{ $accentKleur }}"></div>
+                    {{-- Details --}}
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">{{ $af->klant_naam }}</p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 truncate">
+                            {{ $af->dienst->naam }}
+                            @if($medewerkers->count() > 0 && $af->medewerker)
+                            · {{ $af->medewerker->naam }}
+                            @endif
+                        </p>
+                    </div>
+                    {{-- Status badge --}}
+                    <span class="flex-shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full {{ $statusKleur }}">{{ $statusLabel }}</span>
+                    {{-- Chevron --}}
+                    <svg class="w-4 h-4 text-gray-300 dark:text-neutral-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
+                @endif
+
+            @empty
+            <div class="px-4 py-10 text-center">
+                <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-neutral-700 flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <p class="text-sm text-gray-400 dark:text-neutral-500 font-medium">Geen afspraken</p>
+                <p class="text-xs text-gray-300 dark:text-neutral-600 mt-1">Tik op "Nieuwe afspraak" om in te plannen</p>
+            </div>
+            @endforelse
+        </div>
+
         {{-- Actieknoppen --}}
-        <div class="flex items-center gap-2 mb-3">
+        <div class="flex items-center gap-2 flex-wrap">
             @if(!$mobielDate->isToday())
             <button wire:click="naarVandaagMobiel"
                     class="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
@@ -428,180 +567,6 @@
                 </svg>
                 Pauze
             </button>
-        </div>
-
-        {{-- Medewerker filter chips (mobiel) --}}
-        @if($medewerkers->count() > 0)
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 mb-3">
-            <button wire:click="filterMedewerker(null)"
-                    class="flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors
-                        {{ $gefilterdeMedewerkerId === null
-                            ? 'bg-gray-800 dark:bg-neutral-100 text-white dark:text-neutral-900'
-                            : 'bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300' }}">
-                Alle
-            </button>
-            @foreach($medewerkers as $mw)
-            <button wire:click="filterMedewerker({{ $mw->id }})"
-                    class="flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium capitalize transition-colors
-                        {{ $gefilterdeMedewerkerId === $mw->id
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300' }}">
-                {{ $mw->naam }}
-            </button>
-            @endforeach
-        </div>
-        @endif
-
-        {{-- Tijdlijn --}}
-        @php
-            $mDagStart = 8;
-            $mDagEind  = 19;
-            $mUren     = $mDagEind - $mDagStart;
-            $mPxPerUur = 120;
-            $mHoogte   = $mUren * $mPxPerUur;
-        @endphp
-
-        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
-            <div class="overflow-y-auto" style="max-height: 65vh">
-                <div class="flex" style="height: {{ $mHoogte }}px">
-
-                    {{-- Tijdlabels links --}}
-                    <div class="w-11 flex-shrink-0 relative border-r border-gray-100 dark:border-neutral-700/50">
-                        @for ($u = $mDagStart; $u < $mDagEind; $u++)
-                        <div class="absolute flex items-start justify-end pr-1.5 w-full"
-                             style="top: {{ ($u - $mDagStart) * $mPxPerUur }}px">
-                            <span class="text-[10px] text-gray-500 dark:text-neutral-400 -mt-2 leading-none font-medium">
-                                {{ str_pad($u, 2, '0', STR_PAD_LEFT) }}:00
-                            </span>
-                        </div>
-                        <div class="absolute flex items-start justify-end pr-1.5 w-full"
-                             style="top: {{ ($u - $mDagStart) * $mPxPerUur + $mPxPerUur / 2 }}px">
-                            <span class="text-[9px] text-gray-300 dark:text-neutral-600 -mt-1.5 leading-none">
-                                :30
-                            </span>
-                        </div>
-                        @endfor
-                    </div>
-
-                    {{-- Dag kolom --}}
-                    <div class="flex-1 relative"
-                         style="height: {{ $mHoogte }}px"
-                         x-data
-                         @click="
-                            const rect = $el.getBoundingClientRect();
-                            const scrollTop = $el.closest('.overflow-y-auto')?.scrollTop ?? 0;
-                            const y = $event.clientY - rect.top + scrollTop;
-                            const minFromTop = Math.floor(y / {{ $mPxPerUur }} * 60);
-                            const roundedMin = Math.round(minFromTop / 15) * 15;
-                            const hour = Math.floor(roundedMin / 60) + {{ $mDagStart }};
-                            const min = roundedMin % 60;
-                            if (hour < {{ $mDagStart }} || hour >= {{ $mDagEind }}) return;
-                            const tijd = String(hour).padStart(2,'0') + ':' + String(min).padStart(2,'0');
-                            $wire.openNieuwFormulier('{{ $mobielDatum }}', tijd);
-                         "
-                    >
-                        {{-- Uurlijnen + kwartierlijnen --}}
-                        @for ($u = 0; $u < $mUren; $u++)
-                        <div class="absolute w-full border-t pointer-events-none {{ $u === 0 ? 'border-gray-200 dark:border-neutral-600' : 'border-gray-100 dark:border-neutral-700/50' }}"
-                             style="top: {{ $u * $mPxPerUur }}px"></div>
-                        <div class="absolute w-full border-t pointer-events-none border-gray-100 dark:border-neutral-700/60"
-                             style="top: {{ $u * $mPxPerUur + $mPxPerUur / 2 }}px"></div>
-                        <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-100 dark:border-neutral-800"
-                             style="top: {{ $u * $mPxPerUur + $mPxPerUur / 4 }}px"></div>
-                        <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-100 dark:border-neutral-800"
-                             style="top: {{ $u * $mPxPerUur + $mPxPerUur * 3 / 4 }}px"></div>
-                        @endfor
-
-                        {{-- Huidig tijdstip --}}
-                        @if($mobielDate->isToday())
-                        @php
-                            $mNow = now();
-                            $mNowMin = ($mNow->hour - $mDagStart) * 60 + $mNow->minute;
-                            $mNowTop = ($mNowMin / 60) * $mPxPerUur;
-                        @endphp
-                        @if($mNowMin >= 0 && $mNowTop <= $mHoogte)
-                        <div class="absolute w-full z-10 flex items-center pointer-events-none" style="top: {{ $mNowTop }}px">
-                            <div class="w-2.5 h-2.5 rounded-full bg-blue-500 -ml-1.5 flex-shrink-0"></div>
-                            <div class="flex-1 h-px bg-blue-500"></div>
-                        </div>
-                        @endif
-                        @endif
-
-                        {{-- Blokkeringen --}}
-                        @foreach($mobielBlokkeringen as $blokkering)
-                        @php
-                            [$bsh, $bsm] = explode(':', $blokkering->start_tijd);
-                            $bStartMin = ((int)$bsh - $mDagStart) * 60 + (int)$bsm;
-                            [$beh, $bem] = explode(':', $blokkering->eind_tijd);
-                            $bEindMin  = ((int)$beh - $mDagStart) * 60 + (int)$bem;
-                            $bTop    = ($bStartMin / 60) * $mPxPerUur;
-                            $bHeight = max(24, (($bEindMin - $bStartMin) / 60) * $mPxPerUur - 2);
-                        @endphp
-                        @php $isPauzeM = ($blokkering->reden === 'Pauze'); @endphp
-                        <button wire:click="selecteerBlokkering({{ $blokkering->id }})" @click.stop
-                                class="absolute left-1 right-1 rounded-md px-2 py-1 text-left z-10 {{ $isPauzeM ? 'bg-gray-200 dark:bg-neutral-600 border border-gray-300 dark:border-neutral-500' : 'bg-gray-200 dark:bg-neutral-700 border border-gray-300 dark:border-neutral-600' }}"
-                                style="top: {{ $bTop }}px; height: {{ $bHeight }}px; {{ $isPauzeM ? '' : 'background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(0,0,0,0.05) 4px, rgba(0,0,0,0.05) 8px);' }}">
-                            <p class="text-xs font-semibold truncate leading-tight {{ $isPauzeM ? 'text-gray-600 dark:text-neutral-300' : 'text-gray-500 dark:text-neutral-400' }}">
-                                {{ $isPauzeM ? '☕ Pauze' : ('🚫 ' . ($blokkering->reden ?: 'Geblokkeerd')) }}
-                            </p>
-                        </button>
-                        @endforeach
-
-                        {{-- Afspraken --}}
-                        @foreach($mobielAfspraken as $afspraak)
-                        @php
-                            [$sh, $sm] = explode(':', $afspraak->start_tijd);
-                            $mStartMin = ((int)$sh - $mDagStart) * 60 + (int)$sm;
-                            $mTop    = ($mStartMin / 60) * $mPxPerUur;
-                            $mHeight = max(28, ($afspraak->dienst->duur_minuten / 60) * $mPxPerUur - 2);
-                            $isWalkInM  = !empty($afspraak->walk_in_naam);
-                            $isToekomstM = \Carbon\Carbon::parse($afspraak->datum->toDateString() . ' ' . $afspraak->start_tijd)->isFuture();
-                            $mKleur  = match(true) {
-                                $isWalkInM && $isToekomstM         => 'bg-emerald-100 border-emerald-300 text-emerald-800 dark:bg-emerald-900/20 dark:border-emerald-700 dark:text-emerald-300',
-                                $isWalkInM                         => 'bg-emerald-500 border-emerald-600 text-white',
-                                $afspraak->status === 'voltooid'    => 'bg-green-500 border-green-600 text-white',
-                                $afspraak->status === 'no_show'     => 'bg-red-400 border-red-500 text-white',
-                                $afspraak->status === 'geannuleerd' => 'bg-gray-300 border-gray-400 text-gray-600 dark:bg-neutral-600 dark:text-neutral-300',
-                                $isToekomstM                       => 'bg-blue-100 border-blue-300 text-blue-800 dark:bg-blue-900/20 dark:border-blue-700 dark:text-blue-300',
-                                default                            => 'bg-blue-500 border-blue-600 text-white',
-                            };
-                        @endphp
-                        @php
-                            $mColCount    = $mobielLayout[$afspraak->id]['col_count'] ?? 1;
-                            $mColIndex    = $mobielLayout[$afspraak->id]['col_index'] ?? 0;
-                            $mColWidthPct = 100 / $mColCount;
-                            $mColLeftPct  = $mColIndex * $mColWidthPct;
-                        @endphp
-                        <button wire:click="selecteerAfspraak({{ $afspraak->id }})" @click.stop
-                                class="absolute rounded-md border-l-2 px-2 py-1 text-left z-10 {{ $mKleur }}"
-                                style="top: {{ $mTop }}px; height: {{ $mHeight }}px; left: calc({{ $mColLeftPct }}% + 2px); width: calc({{ $mColWidthPct }}% - 4px);">
-                            <p class="text-xs font-semibold truncate leading-tight">
-                                {{ $afspraak->klant_naam }}
-                                @if($medewerkers->count() > 0)
-                                <span class="font-normal opacity-70 text-[10px]">({{ $afspraak->medewerker?->naam ?? 'Geen voorkeur' }})</span>
-                                @endif
-                            </p>
-                            @if($mHeight > 42)
-                            <p class="text-[11px] opacity-85 truncate leading-tight">{{ $afspraak->dienst->naam }}</p>
-                            @endif
-                            @if($mHeight > 58)
-                            <p class="text-[10px] opacity-70 leading-tight">{{ $afspraak->start_tijd }} – {{ $afspraak->eind_tijd }}</p>
-                            @endif
-                        </button>
-                        @endforeach
-
-                        {{-- Lege staat hint --}}
-                        @if($mobielAfspraken->isEmpty() && $mobielBlokkeringen->isEmpty())
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div class="text-center">
-                                <p class="text-sm text-gray-300 dark:text-neutral-600">Geen afspraken</p>
-                                <p class="text-xs text-gray-300 dark:text-neutral-700 mt-1">Tik op een tijdslot om in te plannen</p>
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
