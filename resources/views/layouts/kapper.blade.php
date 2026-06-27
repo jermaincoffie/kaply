@@ -208,7 +208,7 @@
      class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
 
 {{-- ===== HEADER ===== --}}
-<header class="sticky top-0 z-30 lg:ml-64 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700 h-14 flex items-center px-4 sm:px-6 gap-4">
+<header class="fixed top-0 left-0 right-0 z-30 lg:ml-64 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700 h-14 flex items-center px-4 sm:px-6 gap-4">
 
     <button onclick="openSidebar()" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-200 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -295,7 +295,7 @@
 </header>
 
 {{-- ===== MAIN CONTENT ===== --}}
-<main class="lg:ml-64 min-h-screen">
+<main class="lg:ml-64 min-h-screen pt-14">
     <div class="p-4 sm:p-6">
         @php
             $trialSub   = auth()->user()->subscription('default');
