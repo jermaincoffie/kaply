@@ -294,13 +294,13 @@
     </div>
 
     {{-- + Nieuwe afspraak --}}
-    <a href="{{ route('kapper.agenda') }}"
-       class="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-2xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 active:bg-blue-800 transition-colors mb-5 shadow-sm shadow-blue-200 dark:shadow-none">
+    <button wire:click="openNieuwFormulier"
+            class="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-2xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 active:bg-blue-800 transition-colors mb-5 shadow-sm shadow-blue-200 dark:shadow-none">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
         </svg>
         Nieuwe afspraak
-    </a>
+    </button>
 
     {{-- Stats 2×2 --}}
     <div class="grid grid-cols-2 gap-3">
@@ -380,4 +380,145 @@
             <p class="text-[11px] text-gray-400 dark:text-neutral-500 mt-0.5">Deze maand</p>
         </div>
     </div>
+
+    {{-- ===== NIEUW AFSPRAAK MODAL ===== --}}
+    @if($toonNieuwFormulier)
+    <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        {{-- Backdrop --}}
+        <div class="absolute inset-0 bg-black/50" wire:click="sluitFormulier"></div>
+
+        {{-- Modal --}}
+        <div class="relative w-full sm:max-w-md bg-white dark:bg-neutral-900 rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[92dvh] overflow-y-auto">
+
+            {{-- Header --}}
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-100 dark:border-neutral-800 sticky top-0 bg-white dark:bg-neutral-900 z-10">
+                <h3 class="text-base font-semibold text-gray-900 dark:text-neutral-100">Afspraak inplannen</h3>
+                <button wire:click="sluitFormulier"
+                        class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-neutral-800 dark:hover:text-neutral-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            {{-- Form --}}
+            <form wire:submit="afspraakOpslaan" class="px-5 py-5 space-y-4">
+
+                {{-- Walk-in toggle --}}
+                <div class="flex items-center gap-2 p-1.5 rounded-xl bg-gray-100 dark:bg-neutral-800">
+                    <button type="button" wire:click="$set('isWalkIn', false)"
+                            class="flex-1 py-2 rounded-lg text-sm font-semibold transition-colors {{ !$isWalkIn ? 'bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 shadow-sm' : 'text-gray-500 dark:text-neutral-400' }}">
+                        Bestaande klant
+                    </button>
+                    <button type="button" wire:click="$set('isWalkIn', true)"
+                            class="flex-1 py-2 rounded-lg text-sm font-semibold transition-colors {{ $isWalkIn ? 'bg-green-600 text-white shadow-sm' : 'text-gray-500 dark:text-neutral-400' }}">
+                        Walk-in
+                    </button>
+                </div>
+
+                {{-- Klant --}}
+                @if($isWalkIn)
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Naam klant</label>
+                    <input wire:model="walkInNaam" type="text" placeholder="Voornaam..."
+                           class="w-full py-2.5 px-3.5 rounded-xl border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    @error('walkInNaam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+                @else
+                <div class="relative">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Klant</label>
+                    <input wire:model.live="klantZoekterm" type="text" placeholder="Zoek op naam of email..."
+                           autocomplete="off"
+                           class="w-full py-2.5 px-3.5 rounded-xl border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    @error('klantZoekterm') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    @if($toonKlantDropdown && $zoekKlanten->count())
+                    <div class="absolute left-0 right-0 top-full mt-1 z-50 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-xl overflow-hidden">
+                        @foreach($zoekKlanten as $klant)
+                        <button type="button"
+                                wire:click="selecteerKlant({{ $klant->id }}, '{{ addslashes($klant->name) }}')"
+                                class="w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                            <div class="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                                <span class="text-blue-700 dark:text-blue-400 font-bold text-xs">{{ mb_strtoupper(mb_substr($klant->name, 0, 1)) }}</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">{{ $klant->name }}</p>
+                                <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $klant->email }}</p>
+                            </div>
+                        </button>
+                        @endforeach
+                    </div>
+                    @endif
+                    @if($geselecteerdeKlantId)
+                    <p class="text-xs text-green-600 dark:text-green-400 mt-1 flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Bestaande klant geselecteerd
+                    </p>
+                    @endif
+                </div>
+                @endif
+
+                {{-- Dienst --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Dienst</label>
+                    <x-select
+                        wire-target="nieuwDienstId"
+                        :current="$nieuwDienstId"
+                        :options="$eigenDiensten->mapWithKeys(fn($d) => [$d->id => $d->naam . ' — ' . $d->duur_minuten . ' min · €' . $d->prijs_in_euros])->toArray()"
+                        placeholder="Kies dienst"
+                    />
+                    @error('nieuwDienstId') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- Medewerker --}}
+                @if($medewerkers->count() > 0)
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Medewerker</label>
+                    <x-select
+                        wire-target="nieuwMedewerkerId"
+                        :current="$nieuwMedewerkerId"
+                        :options="array_merge(['' => 'Geen voorkeur'], $medewerkers->mapWithKeys(fn($m) => [$m->id => $m->naam])->toArray())"
+                        placeholder="Geen voorkeur"
+                    />
+                </div>
+                @endif
+
+                {{-- Datum + Tijd --}}
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Datum</label>
+                        <x-datepicker wire-model="nieuwDatum" :value="$nieuwDatum" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Begintijd</label>
+                        <input wire:model="nieuwTijd" type="time"
+                               class="w-full py-2.5 px-3.5 rounded-xl border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    </div>
+                </div>
+
+                {{-- Betaling --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Betaling</label>
+                    <x-select
+                        wire-target="nieuwBetaalmethode"
+                        :current="$nieuwBetaalmethode"
+                        :options="['in_zaak' => 'In de zaak', 'online' => 'Online']"
+                        placeholder="Betaalmethode"
+                    />
+                </div>
+
+                {{-- Knoppen --}}
+                <div class="flex gap-3 pt-2 pb-safe">
+                    <button type="button" wire:click="sluitFormulier"
+                            class="flex-1 py-3 text-sm font-medium rounded-xl border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                        Annuleer
+                    </button>
+                    <button type="submit"
+                            class="flex-1 py-3 text-sm font-semibold rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 transition-colors">
+                        Inplannen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
 </div>

@@ -4,17 +4,124 @@ namespace App\Livewire\Kapper;
 
 use App\Models\Afspraak;
 use App\Models\Blokkering;
+use App\Models\Dienst;
+use App\Models\User;
 use App\Models\Wachtlijst;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 
 class KapperDashboard extends Component
 {
     public ?int $geselecteerdeAfspraakId = null;
 
+    // Nieuw afspraak formulier
+    public bool $toonNieuwFormulier = false;
+    public string $nieuwDatum = '';
+    public string $nieuwTijd = '';
+    public ?int $nieuwDienstId = null;
+    public string $nieuwBetaalmethode = 'in_zaak';
+    public ?int $nieuwMedewerkerId = null;
+    public string $klantZoekterm = '';
+    public ?int $geselecteerdeKlantId = null;
+    public string $geselecteerdeKlantNaam = '';
+    public bool $toonKlantDropdown = false;
+    public bool $isWalkIn = false;
+    public string $walkInNaam = '';
+
+    public function openNieuwFormulier(): void
+    {
+        $this->geselecteerdeAfspraakId = null;
+        $this->toonNieuwFormulier = true;
+        $this->nieuwDatum = today()->toDateString();
+        $minuten = (int) now()->format('i');
+        $afgerond = $minuten < 30 ? '00' : '30';
+        $this->nieuwTijd = now()->format('H') . ':' . $afgerond;
+        $this->nieuwDienstId = auth()->user()->kapper->diensten()->first()?->id;
+        $this->nieuwBetaalmethode = 'in_zaak';
+        $this->nieuwMedewerkerId = null;
+        $this->klantZoekterm = '';
+        $this->geselecteerdeKlantId = null;
+        $this->geselecteerdeKlantNaam = '';
+        $this->toonKlantDropdown = false;
+        $this->isWalkIn = false;
+        $this->walkInNaam = '';
+    }
+
+    public function sluitFormulier(): void
+    {
+        $this->toonNieuwFormulier = false;
+    }
+
+    public function selecteerKlant(int $id, string $naam): void
+    {
+        $this->geselecteerdeKlantId = $id;
+        $this->geselecteerdeKlantNaam = $naam;
+        $this->klantZoekterm = $naam;
+        $this->toonKlantDropdown = false;
+    }
+
+    public function updatedKlantZoekterm(): void
+    {
+        $this->toonKlantDropdown = strlen($this->klantZoekterm) >= 2;
+        if ($this->geselecteerdeKlantNaam !== $this->klantZoekterm) {
+            $this->geselecteerdeKlantId = null;
+            $this->geselecteerdeKlantNaam = '';
+        }
+    }
+
+    public function afspraakOpslaan(): void
+    {
+        $this->validate([
+            'nieuwDatum'         => 'required|date',
+            'nieuwTijd'          => 'required',
+            'nieuwDienstId'      => 'required|integer',
+            'nieuwBetaalmethode' => 'required|in:in_zaak,online',
+        ]);
+
+        $klantId = null;
+        $walkInNaam = null;
+
+        if ($this->isWalkIn) {
+            $this->validate(['walkInNaam' => 'required|string|min:2']);
+            $walkInNaam = trim($this->walkInNaam);
+        } elseif ($this->geselecteerdeKlantId) {
+            $klantId = $this->geselecteerdeKlantId;
+        } else {
+            $naam = trim($this->klantZoekterm);
+            $this->validate(['klantZoekterm' => 'required|string|min:2']);
+            $klant = User::firstOrCreate(
+                ['email' => 'walkin-' . now()->timestamp . '@kapperplatform.nl'],
+                ['name' => $naam, 'password' => Hash::make(str()->random(16)), 'role' => 'klant']
+            );
+            $klantId = $klant->id;
+        }
+
+        $dienst = Dienst::findOrFail($this->nieuwDienstId);
+        $eind = Carbon::parse($this->nieuwDatum . ' ' . $this->nieuwTijd)
+            ->addMinutes($dienst->duur_minuten)
+            ->format('H:i');
+
+        Afspraak::create([
+            'klant_id'      => $klantId,
+            'walk_in_naam'  => $walkInNaam,
+            'kapper_id'     => auth()->user()->kapper->id,
+            'dienst_id'     => $dienst->id,
+            'medewerker_id' => $this->nieuwMedewerkerId,
+            'datum'         => $this->nieuwDatum,
+            'start_tijd'    => $this->nieuwTijd,
+            'eind_tijd'     => $eind,
+            'status'        => 'gepland',
+            'betaalmethode' => $this->nieuwBetaalmethode,
+        ]);
+
+        $this->toonNieuwFormulier = false;
+    }
+
     public function selecteerAfspraak(?int $id): void
     {
         $this->geselecteerdeAfspraakId = $this->geselecteerdeAfspraakId === $id ? null : $id;
+        $this->toonNieuwFormulier = false;
     }
 
     public function voltooid(int $id): void
@@ -137,6 +244,14 @@ class KapperDashboard extends Component
 
         $medewerkers = $kapper->medewerkers()->where('actief', true)->orderBy('id')->get();
 
+        $eigenDiensten = $kapper->diensten()->orderBy('naam')->get();
+
+        $zoekKlanten = $this->toonKlantDropdown && strlen($this->klantZoekterm) >= 2
+            ? User::where('role', 'klant')
+                ->where('name', 'like', "%{$this->klantZoekterm}%")
+                ->limit(6)->get()
+            : collect();
+
         $geselecteerdeAfspraak = $this->geselecteerdeAfspraakId
             ? $vandaagAfspraken->firstWhere('id', $this->geselecteerdeAfspraakId)
             : null;
@@ -159,7 +274,8 @@ class KapperDashboard extends Component
             'klanten_week', 'klanten_week_pct',
             'top_dienst_data',
             'onboarding', 'toonOnboarding', 'wachtlijst',
-            'medewerkers', 'geselecteerdeAfspraak'
+            'medewerkers', 'geselecteerdeAfspraak',
+            'eigenDiensten', 'zoekKlanten'
         ))->layout('layouts.kapper', ['title' => 'Dashboard']);
     }
 }
