@@ -286,19 +286,56 @@
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl overflow-hidden mb-4">
 
             {{-- Kaart header --}}
-            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-neutral-700">
-                <div class="flex items-center gap-2">
-                    <span class="text-sm font-bold text-gray-900 dark:text-neutral-100">
-                        {{ $mobielDate->isToday() ? 'Vandaag' : $mobielDate->isoFormat('dddd D MMM') }}
-                    </span>
-                    @if($mobielDate->isToday())
-                    <span class="text-xs text-gray-400 dark:text-neutral-500">{{ $mobielDate->isoFormat('D MMMM') }}</span>
-                    @endif
-                </div>
-                <div class="flex items-center gap-2">
+            <div class="border-b border-gray-100 dark:border-neutral-700">
+                <div class="flex items-center justify-between px-4 pt-3 pb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-bold text-gray-900 dark:text-neutral-100">
+                            {{ $mobielDate->isToday() ? 'Vandaag' : $mobielDate->isoFormat('dddd D MMM') }}
+                        </span>
+                        @if($mobielDate->isToday())
+                        <span class="text-xs text-gray-400 dark:text-neutral-500">{{ $mobielDate->isoFormat('D MMMM') }}</span>
+                        @endif
+                    </div>
                     @if($mobielAfspraken->count() > 0)
                     <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold">{{ $mobielAfspraken->count() }}</span>
                     @endif
+                </div>
+                {{-- Toolbar --}}
+                <div class="flex items-center gap-2 px-4 pb-3 overflow-x-auto">
+                    @if(!$mobielDate->isToday())
+                    <button wire:click="naarVandaagMobiel"
+                            class="flex-shrink-0 px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                        Vandaag
+                    </button>
+                    @endif
+                    <button wire:click="openNieuwFormulier('{{ $mobielDatum }}', '09:00')"
+                            class="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Nieuw
+                    </button>
+                    <button wire:click="openWalkIn"
+                            class="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        Walk-in
+                    </button>
+                    <button wire:click="openBlokkerenForm('{{ $mobielDatum }}')"
+                            class="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                        </svg>
+                        Blokkeer
+                    </button>
+                    <button wire:click="openPauzeForm('{{ $mobielDatum }}')"
+                            class="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Pauze
+                    </button>
                 </div>
             </div>
 
@@ -425,45 +462,6 @@
             </div>
         </div>
 
-        {{-- + Nieuwe afspraak knop --}}
-        <button wire:click="openNieuwFormulier('{{ $mobielDatum }}', '09:00')"
-                class="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-2xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 active:bg-blue-800 transition-colors mb-5 shadow-sm shadow-blue-200 dark:shadow-none">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-            </svg>
-            Nieuwe afspraak
-        </button>
-
-        {{-- Secundaire acties --}}
-        <div class="flex items-center gap-2 flex-wrap">
-            @if(!$mobielDate->isToday())
-            <button wire:click="naarVandaagMobiel"
-                    class="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
-                Vandaag
-            </button>
-            @endif
-            <button wire:click="openWalkIn"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                </svg>
-                Walk-in
-            </button>
-            <button wire:click="openBlokkerenForm('{{ $mobielDatum }}')"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
-                </svg>
-                Blokkeer
-            </button>
-            <button wire:click="openPauzeForm('{{ $mobielDatum }}')"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                Pauze
-            </button>
-        </div>
     </div>
 
     {{-- Week navigatie (alleen desktop) --}}
