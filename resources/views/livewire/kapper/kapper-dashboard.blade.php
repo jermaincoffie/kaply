@@ -137,17 +137,6 @@
         <p class="text-sm text-gray-500 dark:text-neutral-400 mt-1">Dit is je overzicht van vandaag.</p>
     </div>
 
-    {{-- Medewerker filter chips --}}
-    @if($medewerkers->count() > 0)
-    <div class="flex items-center gap-2 overflow-x-auto pb-1 mb-4">
-        @foreach($medewerkers as $mw)
-        <span class="flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300">
-            {{ $mw->naam }}
-        </span>
-        @endforeach
-    </div>
-    @endif
-
     {{-- Afspraken kaart --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl overflow-hidden mb-4">
 
