@@ -17,6 +17,19 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     @stack('head')
+    <style>
+        /* Sidebar slide – eigen CSS zodat we niet afhangen van Tailwind translate utilities */
+        #sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        #sidebar.sidebar-open {
+            transform: translateX(0);
+        }
+        @media (min-width: 1024px) {
+            #sidebar { transform: translateX(0) !important; }
+        }
+    </style>
     <script>
         // Zet dark mode vÃ³Ã³r render om flicker te voorkomen
         if (localStorage.getItem('darkMode') === 'true') {
@@ -34,7 +47,7 @@
 
 {{-- ===== SIDEBAR ===== --}}
 <aside id="sidebar"
-       class="fixed inset-y-0 left-0 z-[70] w-64 bg-white dark:bg-neutral-800 border-r border-gray-200 dark:border-neutral-700 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+       class="fixed inset-y-0 left-0 z-[70] w-64 bg-white dark:bg-neutral-800 border-r border-gray-200 dark:border-neutral-700 flex flex-col">
 
     {{-- Logo --}}
     <a href="{{ route('kapper.dashboard') }}"
@@ -210,7 +223,7 @@
 {{-- ===== HEADER ===== --}}
 <header class="fixed top-0 left-0 right-0 z-[55] lg:ml-64 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700 h-14 flex items-center px-4 sm:px-6 gap-4">
 
-    <button id="hamburger-btn" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-200 p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
+    <button id="hamburger-btn" onclick="openSidebar()" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-200 p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
@@ -402,45 +415,26 @@
     });
 
     // ===== SIDEBAR =====
-    // Tailwind v4 gebruikt `translate` CSS property ipv `transform`.
-    // Inline style.translate overschrijft de class betrouwbaar op alle browsers.
     let _sidebarBlocked = false;
 
     function openSidebar() {
         _sidebarBlocked = true;
         const sb = document.getElementById('sidebar');
         const ov = document.getElementById('sidebar-overlay');
-        if (sb) sb.style.translate = '0';
+        if (sb) sb.classList.add('sidebar-open');
         if (ov) ov.classList.remove('hidden');
-        setTimeout(() => { _sidebarBlocked = false; }, 500);
+        setTimeout(function () { _sidebarBlocked = false; }, 600);
     }
 
     function closeSidebar() {
         if (_sidebarBlocked) return;
         const sb = document.getElementById('sidebar');
         const ov = document.getElementById('sidebar-overlay');
-        if (sb) sb.style.translate = '-100%';
+        if (sb) sb.classList.remove('sidebar-open');
         if (ov) ov.classList.add('hidden');
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        let _lastTouch = 0;
-
-        const hamburger = document.getElementById('hamburger-btn');
-        if (hamburger) {
-            // touchstart + preventDefault blokkeert ALLE navolgende mouse events (incl. ghost click)
-            hamburger.addEventListener('touchstart', function (e) {
-                e.preventDefault();
-                _lastTouch = Date.now();
-                openSidebar();
-            }, { passive: false });
-            // click-fallback voor desktop muis; negeer als touch < 1s geleden vuorde
-            hamburger.addEventListener('click', function () {
-                if (Date.now() - _lastTouch < 1000) return;
-                openSidebar();
-            });
-        }
-
         const overlay = document.getElementById('sidebar-overlay');
         if (overlay) {
             overlay.addEventListener('touchstart', function (e) {
