@@ -424,19 +424,26 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        // touchend (non-passive) voorkomt ghost click betrouwbaar op iOS én Android
+        let _lastTouch = 0;
+
         const hamburger = document.getElementById('hamburger-btn');
         if (hamburger) {
-            hamburger.addEventListener('touchend', function (e) {
+            // touchstart + preventDefault blokkeert ALLE navolgende mouse events (incl. ghost click)
+            hamburger.addEventListener('touchstart', function (e) {
                 e.preventDefault();
+                _lastTouch = Date.now();
                 openSidebar();
             }, { passive: false });
-            hamburger.addEventListener('click', openSidebar);
+            // click-fallback voor desktop muis; negeer als touch < 1s geleden vuorde
+            hamburger.addEventListener('click', function () {
+                if (Date.now() - _lastTouch < 1000) return;
+                openSidebar();
+            });
         }
 
         const overlay = document.getElementById('sidebar-overlay');
         if (overlay) {
-            overlay.addEventListener('touchend', function (e) {
+            overlay.addEventListener('touchstart', function (e) {
                 e.preventDefault();
                 closeSidebar();
             }, { passive: false });
