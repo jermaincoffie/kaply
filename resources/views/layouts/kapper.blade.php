@@ -402,19 +402,25 @@
     });
 
     // ===== SIDEBAR =====
+    // Tailwind v4 gebruikt `translate` CSS property ipv `transform`.
+    // Inline style.translate overschrijft de class betrouwbaar op alle browsers.
     let _sidebarBlocked = false;
 
     function openSidebar() {
         _sidebarBlocked = true;
-        document.getElementById('sidebar')?.classList.remove('-translate-x-full');
-        document.getElementById('sidebar-overlay')?.classList.remove('hidden');
+        const sb = document.getElementById('sidebar');
+        const ov = document.getElementById('sidebar-overlay');
+        if (sb) sb.style.translate = '0';
+        if (ov) ov.classList.remove('hidden');
         setTimeout(() => { _sidebarBlocked = false; }, 500);
     }
 
     function closeSidebar() {
         if (_sidebarBlocked) return;
-        document.getElementById('sidebar')?.classList.add('-translate-x-full');
-        document.getElementById('sidebar-overlay')?.classList.add('hidden');
+        const sb = document.getElementById('sidebar');
+        const ov = document.getElementById('sidebar-overlay');
+        if (sb) sb.style.translate = '-100%';
+        if (ov) ov.classList.add('hidden');
     }
 
     document.addEventListener('DOMContentLoaded', function () {
