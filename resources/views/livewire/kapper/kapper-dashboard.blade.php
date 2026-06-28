@@ -34,40 +34,40 @@
         <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" class="px-4 pb-4">
             <div class="space-y-2">
                 @foreach($wachtlijst as $wachtende)
-                <div class="flex items-center justify-between bg-white dark:bg-neutral-800 rounded-lg px-3 py-2">
-                    <div class="min-w-0">
-                        <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $wachtende->naam }}</p>
-                        <p class="text-xs text-gray-400 dark:text-neutral-500">
-                            {{ $wachtende->email }}
-                            @if($wachtende->gewenste_datum)
-                                @if(\Carbon\Carbon::parse($wachtende->gewenste_datum)->isToday())
-                                · <span class="font-semibold text-red-600 dark:text-red-400">Vandaag — zelf bellen</span>
-                                @else
-                                · <span class="text-amber-600 dark:text-amber-400 font-medium">{{ \Carbon\Carbon::parse($wachtende->gewenste_datum)->translatedFormat('d M Y') }}</span>
-                                @endif
-                            @else
-                            · <span class="italic">geen datum opgegeven</span>
-                            @endif
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-2 flex-shrink-0 ml-3">
-                        @if($wachtende->telefoonnummer)
-                        <a href="tel:{{ $wachtende->telefoonnummer }}"
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-semibold hover:bg-amber-700 transition-colors">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                            </svg>
-                            {{ $wachtende->telefoonnummer }}
-                        </a>
-                        @endif
+                <div class="bg-white dark:bg-neutral-800 rounded-xl px-4 py-3">
+                    {{-- Naam + delete --}}
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 leading-tight">{{ $wachtende->naam }}</p>
                         <button type="button"
                                 @click.prevent="$dispatch('open-confirm', { title: 'Van wachtlijst verwijderen', message: 'Weet je zeker dat je {{ addslashes($wachtende->naam) }} van de wachtlijst wilt verwijderen?', action: () => $wire.wachtlijstVerwijderen({{ $wachtende->id }}) })"
-                                class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-lg text-gray-300 dark:text-neutral-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
                         </button>
                     </div>
+                    {{-- Email --}}
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 truncate mb-1">{{ $wachtende->email }}</p>
+                    {{-- Gewenste datum --}}
+                    @if($wachtende->gewenste_datum)
+                        @if(\Carbon\Carbon::parse($wachtende->gewenste_datum)->isToday())
+                        <p class="text-xs font-semibold text-red-600 dark:text-red-400 mb-2">Vandaag — zelf bellen</p>
+                        @else
+                        <p class="text-xs font-medium text-amber-600 dark:text-amber-400 mb-2">{{ \Carbon\Carbon::parse($wachtende->gewenste_datum)->translatedFormat('d M Y') }}</p>
+                        @endif
+                    @else
+                    <p class="text-xs text-gray-300 dark:text-neutral-600 italic mb-2">geen datum opgegeven</p>
+                    @endif
+                    {{-- Bel knop --}}
+                    @if($wachtende->telefoonnummer)
+                    <a href="tel:{{ $wachtende->telefoonnummer }}"
+                       class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-amber-600 text-white text-sm font-semibold hover:bg-amber-700 active:bg-amber-800 transition-colors">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                        {{ $wachtende->telefoonnummer }}
+                    </a>
+                    @endif
                 </div>
                 @endforeach
             </div>
