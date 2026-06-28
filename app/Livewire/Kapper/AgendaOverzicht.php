@@ -450,62 +450,6 @@ class AgendaOverzicht extends Component
             ? str_pad($druksteUur, 2, '0', STR_PAD_LEFT) . ':00 – ' . str_pad($druksteUur + 1, 2, '0', STR_PAD_LEFT) . ':00'
             : null;
 
-        // Week stats voor mobiel dashboard
-        $statWeekBegin = now()->startOfWeek(Carbon::MONDAY)->toDateString();
-        $statWeekEind  = now()->endOfWeek(Carbon::SUNDAY)->toDateString();
-        $statVorigeBegin = now()->subWeek()->startOfWeek(Carbon::MONDAY)->toDateString();
-        $statVorigeEind  = now()->subWeek()->endOfWeek(Carbon::SUNDAY)->toDateString();
-
-        $omzet_week = Afspraak::where('afspraken.kapper_id', $kapper_id)
-            ->where('afspraken.status', 'voltooid')
-            ->whereBetween('afspraken.datum', [$statWeekBegin, $statWeekEind])
-            ->join('diensten', 'afspraken.dienst_id', '=', 'diensten.id')
-            ->sum('diensten.prijs');
-
-        $omzet_vorige_week = Afspraak::where('afspraken.kapper_id', $kapper_id)
-            ->where('afspraken.status', 'voltooid')
-            ->whereBetween('afspraken.datum', [$statVorigeBegin, $statVorigeEind])
-            ->join('diensten', 'afspraken.dienst_id', '=', 'diensten.id')
-            ->sum('diensten.prijs');
-
-        $afspraken_week = Afspraak::where('kapper_id', $kapper_id)
-            ->whereBetween('datum', [$statWeekBegin, $statWeekEind])
-            ->whereIn('status', ['gepland', 'voltooid'])
-            ->count();
-
-        $afspraken_vorige_week = Afspraak::where('kapper_id', $kapper_id)
-            ->whereBetween('datum', [$statVorigeBegin, $statVorigeEind])
-            ->whereIn('status', ['gepland', 'voltooid'])
-            ->count();
-
-        $klanten_week = Afspraak::where('kapper_id', $kapper_id)
-            ->whereBetween('datum', [$statWeekBegin, $statWeekEind])
-            ->whereIn('status', ['gepland', 'voltooid'])
-            ->whereNotNull('klant_id')
-            ->distinct('klant_id')
-            ->count('klant_id');
-
-        $klanten_vorige_week = Afspraak::where('kapper_id', $kapper_id)
-            ->whereBetween('datum', [$statVorigeBegin, $statVorigeEind])
-            ->whereIn('status', ['gepland', 'voltooid'])
-            ->whereNotNull('klant_id')
-            ->distinct('klant_id')
-            ->count('klant_id');
-
-        $omzet_week_pct    = $omzet_vorige_week > 0 ? round(($omzet_week - $omzet_vorige_week) / $omzet_vorige_week * 100) : null;
-        $afspraken_week_pct = $afspraken_vorige_week > 0 ? round(($afspraken_week - $afspraken_vorige_week) / $afspraken_vorige_week * 100) : null;
-        $klanten_week_pct  = $klanten_vorige_week > 0 ? round(($klanten_week - $klanten_vorige_week) / $klanten_vorige_week * 100) : null;
-
-        $top_dienst_data = Afspraak::where('afspraken.kapper_id', $kapper_id)
-            ->whereMonth('afspraken.datum', now()->month)
-            ->whereYear('afspraken.datum', now()->year)
-            ->whereIn('afspraken.status', ['gepland', 'voltooid'])
-            ->join('diensten', 'afspraken.dienst_id', '=', 'diensten.id')
-            ->selectRaw('diensten.naam, COUNT(*) as aantal, SUM(diensten.prijs) as omzet')
-            ->groupBy('diensten.naam', 'diensten.id')
-            ->orderByDesc('omzet')
-            ->first();
-
         $blokkeringen = Blokkering::where('kapper_id', $kapper_id)
             ->whereBetween('datum', [$weekStartDate->toDateString(), $weekEndDate->toDateString()])
             ->orderBy('start_tijd')
@@ -538,23 +482,7 @@ class AgendaOverzicht extends Component
 
         $kapper = auth()->user()->kapper;
         $medewerkers = $kapper->medewerkers()->where('actief', true)->orderBy('id')->get();
-        $medewerkerKolom = $medewerkers->pluck('id')->values()->flip()->toArray(); // medewerker_id => 0-based column index
-
-        $onboarding = [
-            'beschikbaarheid' => $kapper->beschikbaarheden()->exists(),
-            'diensten'        => $kapper->diensten()->exists(),
-            'medewerkers'     => $kapper->medewerkers()->where('actief', true)->exists(),
-        ];
-        $toonOnboarding = !$onboarding['beschikbaarheid'] || !$onboarding['diensten'];
-
-        $wachtlijst = Wachtlijst::where('kapper_id', $kapper->id)
-            ->where('status', 'wachtend')
-            ->where(fn($q) => $q
-                ->whereNull('gewenste_datum')
-                ->orWhere('gewenste_datum', '>=', today())
-            )
-            ->orderByDesc('created_at')
-            ->get();
+        $medewerkerKolom = $medewerkers->pluck('id')->values()->flip()->toArray();
 
         // Overlap-gebaseerde kolom layout per dag
         $afspraakLayout = [];
@@ -569,14 +497,9 @@ class AgendaOverzicht extends Component
             'eigenDiensten', 'zoekKlanten', 'mobielAfspraken',
             'vandaagAfspraken', 'volgendeAfspraak', 'omzet_vandaag',
             'blokkeringenPerDag', 'mobielBlokkeringen', 'geselecteerdeblokkering',
-            'onboarding', 'toonOnboarding',
             'no_show_pct', 'bezettingsgraad', 'druksteUurLabel',
-            'wachtlijst', 'medewerkers', 'medewerkerKolom',
-            'afspraakLayout', 'mobielLayout',
-            'omzet_week', 'omzet_week_pct',
-            'afspraken_week', 'afspraken_week_pct',
-            'klanten_week', 'klanten_week_pct',
-            'top_dienst_data'
+            'medewerkers', 'medewerkerKolom',
+            'afspraakLayout', 'mobielLayout'
         ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }

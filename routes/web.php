@@ -8,6 +8,7 @@ use App\Livewire\Admin\KappersOverzicht;
 use App\Livewire\Admin\KlantenOverzicht as AdminKlanten;
 use App\Livewire\Kapper\AfsprakenOverzicht as KapperAfspraken;
 use App\Livewire\Kapper\AgendaOverzicht;
+use App\Livewire\Kapper\KapperDashboard;
 use App\Livewire\Kapper\BeschikbaarheidBeheer;
 use App\Livewire\Kapper\DienstenBeheer;
 use App\Livewire\Kapper\KlantenOverzicht as KapperKlanten;
@@ -67,7 +68,8 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
 
         // Overige routes — vereisen actief abonnement
         Route::middleware(['abonnement'])->group(function () {
-            Route::get('/dashboard', AgendaOverzicht::class)->name('dashboard');
+            Route::get('/dashboard', KapperDashboard::class)->name('dashboard');
+            Route::get('/agenda', AgendaOverzicht::class)->name('agenda');
             Route::get('/afspraken', KapperAfspraken::class)->name('afspraken');
             Route::get('/klanten', KapperKlanten::class)->name('klanten');
             Route::get('/diensten', DienstenBeheer::class)->name('diensten');

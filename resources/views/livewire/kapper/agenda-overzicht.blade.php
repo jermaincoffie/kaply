@@ -1,173 +1,4 @@
 <div>
-    {{-- Welkomstbanner na onboarding --}}
-    @if(session('onboarding_klaar'))
-    <div class="flex items-center gap-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-5 py-4 rounded-xl mb-6">
-        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-        </svg>
-        <div>
-            <p class="text-sm font-semibold">Jouw salon is live! 🎉</p>
-            <p class="text-xs mt-0.5 text-green-600 dark:text-green-500">Klanten kunnen nu afspraken boeken bij {{ auth()->user()->kapper?->salon_naam }}.</p>
-        </div>
-    </div>
-    @endif
-
-    {{-- Wachtlijst kaart (alleen tonen als er wachtenden zijn) --}}
-    @if($wachtlijst->isNotEmpty())
-    <div x-data="{ open: false }" class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl mb-6 overflow-hidden">
-        <button type="button" @click="open = !open"
-                class="w-full flex items-center justify-between px-4 py-3 text-left">
-            <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                </svg>
-                <p class="text-sm font-semibold text-amber-800 dark:text-amber-300">
-                    Wachtlijst — {{ $wachtlijst->count() }} {{ $wachtlijst->count() === 1 ? 'persoon' : 'personen' }} wacht{{ $wachtlijst->count() === 1 ? '' : 'en' }} op een plek
-                </p>
-            </div>
-            <svg class="w-4 h-4 text-amber-600 dark:text-amber-400 transition-transform duration-200 flex-shrink-0"
-                 :class="open ? 'rotate-180' : ''"
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-        </button>
-
-        <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="px-4 pb-4">
-            <div class="space-y-2">
-                @foreach($wachtlijst as $wachtende)
-                <div class="flex items-center justify-between bg-white dark:bg-neutral-800 rounded-lg px-3 py-2">
-                    <div class="min-w-0">
-                        <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $wachtende->naam }}</p>
-                        <p class="text-xs text-gray-400 dark:text-neutral-500">
-                            {{ $wachtende->email }}
-                            @if($wachtende->gewenste_datum)
-                                @if(\Carbon\Carbon::parse($wachtende->gewenste_datum)->isToday())
-                                · <span class="font-semibold text-red-600 dark:text-red-400">Vandaag — zelf bellen</span>
-                                @else
-                                · <span class="text-amber-600 dark:text-amber-400 font-medium">{{ \Carbon\Carbon::parse($wachtende->gewenste_datum)->translatedFormat('d M Y') }}</span>
-                                @endif
-                            @else
-                            · <span class="italic">geen datum opgegeven</span>
-                            @endif
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-2 flex-shrink-0 ml-3">
-                        @if($wachtende->telefoonnummer)
-                        <a href="tel:{{ $wachtende->telefoonnummer }}"
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-semibold hover:bg-amber-700 transition-colors">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                            </svg>
-                            {{ $wachtende->telefoonnummer }}
-                        </a>
-                        @endif
-                        <button type="button"
-                                @click.prevent="$dispatch('open-confirm', { title: 'Van wachtlijst verwijderen', message: 'Weet je zeker dat je {{ addslashes($wachtende->naam) }} van de wachtlijst wilt verwijderen?', action: () => $wire.wachtlijstVerwijderen({{ $wachtende->id }}) })"
-                                class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-            <p class="text-xs text-amber-600 dark:text-amber-500 mt-3">Bij een annulering vandaag worden zij niet automatisch gemaild — bel ze zelf op.</p>
-        </div>
-    </div>
-    @endif
-
-    {{-- Onboarding checklist --}}
-    @if($toonOnboarding)
-    <div class="bg-white dark:bg-neutral-800 border border-blue-200 dark:border-blue-800 rounded-xl p-5 mb-6">
-        <div class="flex items-start gap-3 mb-4">
-            <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                </svg>
-            </div>
-            <div>
-                <p class="text-sm font-semibold text-gray-900 dark:text-neutral-100">Stel je account in zodat klanten kunnen boeken</p>
-                <p class="text-xs text-gray-500 dark:text-neutral-400 mt-0.5">Voltooi de onderstaande stappen om live te gaan.</p>
-            </div>
-        </div>
-
-        <div class="space-y-2">
-            {{-- Stap 1: Beschikbaarheid --}}
-            <a href="{{ route('kapper.beschikbaarheid') }}"
-               class="flex items-center gap-3 p-3 rounded-lg border {{ $onboarding['beschikbaarheid'] ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700/50' }} transition-colors group">
-                <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 {{ $onboarding['beschikbaarheid'] ? 'bg-green-500' : 'bg-gray-200 dark:bg-neutral-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30' }}">
-                    @if($onboarding['beschikbaarheid'])
-                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    @else
-                    <span class="text-xs font-bold text-gray-500 dark:text-neutral-400">1</span>
-                    @endif
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium {{ $onboarding['beschikbaarheid'] ? 'text-green-700 dark:text-green-400 line-through' : 'text-gray-800 dark:text-neutral-200' }}">Beschikbaarheid instellen</p>
-                    <p class="text-xs text-gray-400 dark:text-neutral-500">Geef aan op welke dagen en tijden je werkt</p>
-                </div>
-                @if(!$onboarding['beschikbaarheid'])
-                <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 group-hover:text-blue-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-                @endif
-            </a>
-
-            {{-- Stap 2: Diensten --}}
-            <a href="{{ route('kapper.diensten') }}"
-               class="flex items-center gap-3 p-3 rounded-lg border {{ $onboarding['diensten'] ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700/50' }} transition-colors group">
-                <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 {{ $onboarding['diensten'] ? 'bg-green-500' : 'bg-gray-200 dark:bg-neutral-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30' }}">
-                    @if($onboarding['diensten'])
-                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    @else
-                    <span class="text-xs font-bold text-gray-500 dark:text-neutral-400">2</span>
-                    @endif
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium {{ $onboarding['diensten'] ? 'text-green-700 dark:text-green-400 line-through' : 'text-gray-800 dark:text-neutral-200' }}">Diensten toevoegen</p>
-                    <p class="text-xs text-gray-400 dark:text-neutral-500">Voeg je knippen, kleuren en andere diensten toe</p>
-                </div>
-                @if(!$onboarding['diensten'])
-                <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 group-hover:text-blue-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-                @endif
-            </a>
-
-            {{-- Stap 3: Medewerkers (optioneel) --}}
-            <a href="{{ route('kapper.medewerkers') }}"
-               class="flex items-center gap-3 p-3 rounded-lg border {{ $onboarding['medewerkers'] ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/10' : 'border-gray-200 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700/50' }} transition-colors group">
-                <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 {{ $onboarding['medewerkers'] ? 'bg-green-500' : 'bg-gray-200 dark:bg-neutral-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30' }}">
-                    @if($onboarding['medewerkers'])
-                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    @else
-                    <span class="text-xs font-bold text-gray-500 dark:text-neutral-400">3</span>
-                    @endif
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                        <p class="text-sm font-medium {{ $onboarding['medewerkers'] ? 'text-green-700 dark:text-green-400 line-through' : 'text-gray-800 dark:text-neutral-200' }}">Medewerkers toevoegen</p>
-                        <span class="text-xs font-medium px-1.5 py-0.5 rounded bg-gray-100 dark:bg-neutral-700 text-gray-500 dark:text-neutral-400">Optioneel</span>
-                    </div>
-                    <p class="text-xs text-gray-400 dark:text-neutral-500">Voeg medewerkers toe zodat klanten bij hen kunnen boeken</p>
-                </div>
-                @if(!$onboarding['medewerkers'])
-                <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 group-hover:text-blue-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-                @endif
-            </a>
-        </div>
-    </div>
-    @endif
-
     {{-- Stats (tabbed) — alleen desktop --}}
     <div class="hidden lg:block bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl mb-6"
          x-data="{ tab: 'vandaag' }">
@@ -368,7 +199,7 @@
         @endif
     </div>
 
-    {{-- ===== MOBIELE DASHBOARD VIEW (alleen zichtbaar op < lg) ===== --}}
+    {{-- ===== MOBIELE AGENDA VIEW (alleen zichtbaar op < lg) ===== --}}
     @php
         $mobielDate = \Carbon\Carbon::parse($mobielDatum);
         $alleAgendaItems = collect();
@@ -379,15 +210,8 @@
             $alleAgendaItems->push(['type' => 'blokkering', 'start' => $b->start_tijd, 'data' => $b]);
         }
         $alleAgendaItems = $alleAgendaItems->sortBy('start')->values();
-        $voornaam = explode(' ', trim(auth()->user()->name))[0];
     @endphp
     <div class="lg:hidden mb-6">
-
-        {{-- Welcome header --}}
-        <div class="mb-5">
-            <h1 class="text-xl font-bold text-gray-900 dark:text-neutral-100">Welkom terug, {{ $voornaam }} 👋</h1>
-            <p class="text-sm text-gray-500 dark:text-neutral-400 mt-1">Dit is je overzicht van vandaag.</p>
-        </div>
 
         {{-- Medewerker filter chips --}}
         @if($medewerkers->count() > 0)
@@ -540,85 +364,6 @@
             </svg>
             Nieuwe afspraak
         </button>
-
-        {{-- Stats 2×2 --}}
-        <div class="grid grid-cols-2 gap-3 mb-5">
-
-            {{-- Afspraken --}}
-            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl p-4">
-                <div class="flex items-center gap-1.5 mb-2">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                    <span class="text-xs font-medium text-gray-500 dark:text-neutral-400">Afspraken</span>
-                </div>
-                <p class="text-2xl font-bold text-gray-900 dark:text-neutral-100">{{ $afspraken_week }}</p>
-                @if($afspraken_week_pct !== null)
-                <p class="text-xs mt-0.5 {{ $afspraken_week_pct >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400' }}">
-                    {{ $afspraken_week_pct >= 0 ? '↗' : '↘' }} {{ abs($afspraken_week_pct) }}%
-                </p>
-                @else
-                <div class="h-4 mt-0.5"></div>
-                @endif
-                <p class="text-[11px] text-gray-400 dark:text-neutral-500 mt-0.5">Deze week</p>
-            </div>
-
-            {{-- Klanten --}}
-            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl p-4">
-                <div class="flex items-center gap-1.5 mb-2">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                    <span class="text-xs font-medium text-gray-500 dark:text-neutral-400">Klanten</span>
-                </div>
-                <p class="text-2xl font-bold text-gray-900 dark:text-neutral-100">{{ $klanten_week }}</p>
-                @if($klanten_week_pct !== null)
-                <p class="text-xs mt-0.5 {{ $klanten_week_pct >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400' }}">
-                    {{ $klanten_week_pct >= 0 ? '↗' : '↘' }} {{ abs($klanten_week_pct) }}%
-                </p>
-                @else
-                <div class="h-4 mt-0.5"></div>
-                @endif
-                <p class="text-[11px] text-gray-400 dark:text-neutral-500 mt-0.5">Deze week</p>
-            </div>
-
-            {{-- Omzet --}}
-            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl p-4">
-                <div class="flex items-center gap-1.5 mb-2">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <span class="text-xs font-medium text-gray-500 dark:text-neutral-400">Omzet</span>
-                </div>
-                <p class="text-2xl font-bold text-gray-900 dark:text-neutral-100">€ {{ number_format($omzet_week / 100, 0, ',', '.') }}</p>
-                @if($omzet_week_pct !== null)
-                <p class="text-xs mt-0.5 {{ $omzet_week_pct >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400' }}">
-                    {{ $omzet_week_pct >= 0 ? '↗' : '↘' }} {{ abs($omzet_week_pct) }}%
-                </p>
-                @else
-                <div class="h-4 mt-0.5"></div>
-                @endif
-                <p class="text-[11px] text-gray-400 dark:text-neutral-500 mt-0.5">Deze week</p>
-            </div>
-
-            {{-- Top dienst --}}
-            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl p-4">
-                <div class="flex items-center gap-1.5 mb-2">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                    <span class="text-xs font-medium text-gray-500 dark:text-neutral-400">Top dienst</span>
-                </div>
-                @if($top_dienst_data)
-                <p class="text-base font-bold text-gray-900 dark:text-neutral-100 truncate leading-tight">{{ $top_dienst_data->naam }}</p>
-                <p class="text-xs text-green-600 dark:text-green-400 mt-0.5">€ {{ number_format($top_dienst_data->omzet / 100, 0, ',', '.') }}</p>
-                @else
-                <p class="text-2xl font-bold text-gray-300 dark:text-neutral-600">—</p>
-                <div class="h-4 mt-0.5"></div>
-                @endif
-                <p class="text-[11px] text-gray-400 dark:text-neutral-500 mt-0.5">Deze maand</p>
-            </div>
-        </div>
 
         {{-- Secundaire acties --}}
         <div class="flex items-center gap-2 flex-wrap">
