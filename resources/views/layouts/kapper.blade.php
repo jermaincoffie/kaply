@@ -17,19 +17,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     @stack('head')
-    <style>
-        /* Sidebar slide – eigen CSS zodat we niet afhangen van Tailwind translate utilities */
-        #sidebar {
-            transform: translateX(-100%);
-            transition: transform 0.3s ease-in-out;
-        }
-        #sidebar.sidebar-open {
-            transform: translateX(0);
-        }
-        @media (min-width: 1024px) {
-            #sidebar { transform: translateX(0) !important; }
-        }
-    </style>
     <script>
         // Zet dark mode vÃ³Ã³r render om flicker te voorkomen
         if (localStorage.getItem('darkMode') === 'true') {
@@ -47,7 +34,7 @@
 
 {{-- ===== SIDEBAR ===== --}}
 <aside id="sidebar"
-       class="fixed inset-y-0 left-0 z-[70] w-64 bg-white dark:bg-neutral-800 border-r border-gray-200 dark:border-neutral-700 flex flex-col">
+       class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-neutral-800 border-r border-gray-200 dark:border-neutral-700 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
 
     {{-- Logo --}}
     <a href="{{ route('kapper.dashboard') }}"
@@ -217,13 +204,13 @@
 </aside>
 
 {{-- Overlay (mobile) --}}
-<div id="sidebar-overlay"
-     class="fixed inset-0 bg-black bg-opacity-50 z-[65] hidden lg:hidden"></div>
+<div id="sidebar-overlay" onclick="closeSidebar()"
+     class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
 
 {{-- ===== HEADER ===== --}}
-<header class="fixed top-0 left-0 right-0 z-[55] lg:ml-64 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700 h-14 flex items-center px-4 sm:px-6 gap-4">
+<header class="sticky top-0 z-30 lg:ml-64 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700 h-14 flex items-center px-4 sm:px-6 gap-4">
 
-    <button id="hamburger-btn" onclick="openSidebar()" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-200 p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
+    <button onclick="openSidebar()" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-200 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
@@ -308,7 +295,7 @@
 </header>
 
 {{-- ===== MAIN CONTENT ===== --}}
-<main class="lg:ml-64 min-h-screen pt-14">
+<main class="lg:ml-64 min-h-screen">
     <div class="p-4 sm:p-6">
         @php
             $trialSub   = auth()->user()->subscription('default');
@@ -415,35 +402,15 @@
     });
 
     // ===== SIDEBAR =====
-    let _sidebarBlocked = false;
-
     function openSidebar() {
-        _sidebarBlocked = true;
-        const sb = document.getElementById('sidebar');
-        const ov = document.getElementById('sidebar-overlay');
-        if (sb) sb.classList.add('sidebar-open');
-        if (ov) ov.classList.remove('hidden');
-        setTimeout(function () { _sidebarBlocked = false; }, 600);
+        document.getElementById('sidebar').classList.remove('-translate-x-full');
+        document.getElementById('sidebar-overlay').classList.remove('hidden');
     }
 
     function closeSidebar() {
-        if (_sidebarBlocked) return;
-        const sb = document.getElementById('sidebar');
-        const ov = document.getElementById('sidebar-overlay');
-        if (sb) sb.classList.remove('sidebar-open');
-        if (ov) ov.classList.add('hidden');
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+        document.getElementById('sidebar-overlay').classList.add('hidden');
     }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const overlay = document.getElementById('sidebar-overlay');
-        if (overlay) {
-            overlay.addEventListener('touchstart', function (e) {
-                e.preventDefault();
-                closeSidebar();
-            }, { passive: false });
-            overlay.addEventListener('click', closeSidebar);
-        }
-    });
 </script>
 
 </body>
