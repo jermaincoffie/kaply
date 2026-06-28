@@ -6,7 +6,6 @@ use App\Models\Afspraak;
 use App\Models\Blokkering;
 use App\Models\Dienst;
 use App\Models\User;
-use App\Models\Wachtlijst;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
@@ -142,11 +141,6 @@ class KapperDashboard extends Component
         $this->geselecteerdeAfspraakId = null;
     }
 
-    public function wachtlijstVerwijderen(int $id): void
-    {
-        Wachtlijst::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->delete();
-    }
-
     public function render()
     {
         $kapper    = auth()->user()->kapper;
@@ -236,12 +230,6 @@ class KapperDashboard extends Component
         ];
         $toonOnboarding = !$onboarding['beschikbaarheid'] || !$onboarding['diensten'];
 
-        $wachtlijst = Wachtlijst::where('kapper_id', $kapper_id)
-            ->where('status', 'wachtend')
-            ->where(fn($q) => $q->whereNull('gewenste_datum')->orWhere('gewenste_datum', '>=', today()))
-            ->orderByDesc('created_at')
-            ->get();
-
         $medewerkers = $kapper->medewerkers()->where('actief', true)->orderBy('id')->get();
 
         $eigenDiensten = $kapper->diensten()->orderBy('naam')->get();
@@ -273,7 +261,7 @@ class KapperDashboard extends Component
             'afspraken_week', 'afspraken_week_pct',
             'klanten_week', 'klanten_week_pct',
             'top_dienst_data',
-            'onboarding', 'toonOnboarding', 'wachtlijst',
+            'onboarding', 'toonOnboarding',
             'medewerkers', 'geselecteerdeAfspraak',
             'eigenDiensten', 'zoekKlanten'
         ))->layout('layouts.kapper', ['title' => 'Dashboard']);

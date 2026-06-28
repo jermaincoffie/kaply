@@ -498,6 +498,12 @@ class AgendaOverzicht extends Component
             ->map->count()
             ->toArray();
 
+        $wachtlijst = Wachtlijst::where('kapper_id', $kapper_id)
+            ->where('status', 'wachtend')
+            ->where(fn($q) => $q->whereNull('gewenste_datum')->orWhere('gewenste_datum', '>=', today()))
+            ->orderByDesc('created_at')
+            ->get();
+
         $geselecteerdeAfspraak = $this->geselecteerdeAfspraakId
             ? $afspraken->firstWhere('id', $this->geselecteerdeAfspraakId)
                 ?? $mobielAfspraken->firstWhere('id', $this->geselecteerdeAfspraakId)
@@ -536,7 +542,8 @@ class AgendaOverzicht extends Component
             'no_show_pct', 'bezettingsgraad', 'druksteUurLabel',
             'medewerkers', 'medewerkerKolom',
             'afspraakLayout', 'mobielLayout',
-            'mobielWeekDays', 'stripAfspraakCounts'
+            'mobielWeekDays', 'stripAfspraakCounts',
+            'wachtlijst'
         ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }
