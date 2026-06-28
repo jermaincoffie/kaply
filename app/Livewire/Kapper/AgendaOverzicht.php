@@ -65,6 +65,24 @@ class AgendaOverzicht extends Component
         $this->sluitAlles();
     }
 
+    public function selecteerDagMobiel(string $datum): void
+    {
+        $this->mobielDatum = $datum;
+        $this->sluitAlles();
+    }
+
+    public function vorigeWeekMobiel(): void
+    {
+        $this->mobielDatum = Carbon::parse($this->mobielDatum)->subWeek()->toDateString();
+        $this->sluitAlles();
+    }
+
+    public function volgendeWeekMobiel(): void
+    {
+        $this->mobielDatum = Carbon::parse($this->mobielDatum)->addWeek()->toDateString();
+        $this->sluitAlles();
+    }
+
     public function vorigeWeek(): void
     {
         $this->weekStart = Carbon::parse($this->weekStart)->subWeek()->toDateString();
@@ -462,6 +480,24 @@ class AgendaOverzicht extends Component
             ->orderBy('start_tijd')
             ->get();
 
+        // Week-strip voor mobiel
+        $mobielWeekStartDate = Carbon::parse($this->mobielDatum)->startOfWeek(Carbon::MONDAY);
+        $mobielWeekDays = collect();
+        for ($i = 0; $i < 7; $i++) {
+            $mobielWeekDays->push($mobielWeekStartDate->copy()->addDays($i));
+        }
+        $stripAfspraakCounts = Afspraak::where('kapper_id', $kapper_id)
+            ->whereBetween('datum', [
+                $mobielWeekStartDate->toDateString(),
+                $mobielWeekStartDate->copy()->endOfWeek(Carbon::SUNDAY)->toDateString(),
+            ])
+            ->where('verborgen_in_agenda', false)
+            ->whereNotIn('status', ['geannuleerd'])
+            ->get()
+            ->groupBy(fn($a) => $a->datum->toDateString())
+            ->map->count()
+            ->toArray();
+
         $geselecteerdeAfspraak = $this->geselecteerdeAfspraakId
             ? $afspraken->firstWhere('id', $this->geselecteerdeAfspraakId)
                 ?? $mobielAfspraken->firstWhere('id', $this->geselecteerdeAfspraakId)
@@ -499,7 +535,8 @@ class AgendaOverzicht extends Component
             'blokkeringenPerDag', 'mobielBlokkeringen', 'geselecteerdeblokkering',
             'no_show_pct', 'bezettingsgraad', 'druksteUurLabel',
             'medewerkers', 'medewerkerKolom',
-            'afspraakLayout', 'mobielLayout'
+            'afspraakLayout', 'mobielLayout',
+            'mobielWeekDays', 'stripAfspraakCounts'
         ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }

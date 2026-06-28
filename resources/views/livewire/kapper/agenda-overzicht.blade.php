@@ -231,11 +231,55 @@
         </div>
         @endif
 
+        {{-- Week-strip --}}
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl overflow-hidden mb-3">
+            <div class="flex items-center justify-between px-3 py-2 border-b border-gray-100 dark:border-neutral-700">
+                <button wire:click="vorigeWeekMobiel"
+                        class="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <span class="text-xs font-medium text-gray-500 dark:text-neutral-400">
+                    {{ $mobielWeekDays[0]->isoFormat('D MMM') }} – {{ $mobielWeekDays[6]->isoFormat('D MMM') }}
+                </span>
+                <button wire:click="volgendeWeekMobiel"
+                        class="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="grid grid-cols-7 px-1 py-2">
+                @foreach($mobielWeekDays as $wdag)
+                @php
+                    $wdagStr = $wdag->toDateString();
+                    $isGeselecteerd = $wdagStr === $mobielDatum;
+                    $isVandaag = $wdag->isToday();
+                    $heeftAfspraken = ($stripAfspraakCounts[$wdagStr] ?? 0) > 0;
+                @endphp
+                <button wire:click="selecteerDagMobiel('{{ $wdagStr }}')"
+                        class="flex flex-col items-center py-1.5 mx-0.5 rounded-xl transition-colors
+                            {{ $isGeselecteerd ? 'bg-blue-600' : 'hover:bg-gray-50 dark:hover:bg-neutral-700' }}">
+                    <span class="text-[10px] font-semibold uppercase tracking-wide
+                        {{ $isGeselecteerd ? 'text-blue-200' : 'text-gray-400 dark:text-neutral-500' }}">
+                        {{ $wdag->isoFormat('dd') }}
+                    </span>
+                    <span class="text-sm font-bold mt-0.5
+                        {{ $isGeselecteerd ? 'text-white' : ($isVandaag ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-neutral-300') }}">
+                        {{ $wdag->format('d') }}
+                    </span>
+                    <div class="mt-1 w-1 h-1 rounded-full {{ $heeftAfspraken ? ($isGeselecteerd ? 'bg-blue-200' : 'bg-blue-400 dark:bg-blue-500') : 'invisible' }}"></div>
+                </button>
+                @endforeach
+            </div>
+        </div>
+
         {{-- Afspraken kaart --}}
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl overflow-hidden mb-4">
 
             {{-- Kaart header --}}
-            <div class="flex items-center justify-between px-4 py-3.5 border-b border-gray-100 dark:border-neutral-700">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-neutral-700">
                 <div class="flex items-center gap-2">
                     <span class="text-sm font-bold text-gray-900 dark:text-neutral-100">
                         {{ $mobielDate->isToday() ? 'Vandaag' : $mobielDate->isoFormat('dddd D MMM') }}
@@ -243,18 +287,10 @@
                     @if($mobielDate->isToday())
                     <span class="text-xs text-gray-400 dark:text-neutral-500">{{ $mobielDate->isoFormat('D MMMM') }}</span>
                     @endif
-                    @if($mobielAfspraken->count() > 0)
-                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold">{{ $mobielAfspraken->count() }}</span>
-                    @endif
                 </div>
-                <div class="flex items-center gap-1">
-                    <button wire:click="vorigeDag" class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    </button>
-                    <button wire:click="volgendeDag" class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </button>
-                </div>
+                @if($mobielAfspraken->count() > 0)
+                <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold">{{ $mobielAfspraken->count() }}</span>
+                @endif
             </div>
 
             {{-- Afsprakenlijst --}}
