@@ -23,7 +23,7 @@
                 get label() { return this.options[$wire.periode] ?? '...'; },
                 choose(val) { $wire.set('periode', val); this.open = false; }
              }"
-             class="relative" @click.outside="open = false">
+             class="relative self-start" @click.outside="open = false">
             <button @click="open = !open"
                     class="flex items-center gap-2 px-3 py-2 text-sm bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg text-gray-700 dark:text-neutral-300 hover:border-gray-300 dark:hover:border-neutral-600 shadow-sm transition-colors cursor-pointer">
                 <span x-text="label"></span>
