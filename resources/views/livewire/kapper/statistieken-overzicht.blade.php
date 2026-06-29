@@ -175,17 +175,23 @@
                 </div>
                 <div class="flex-1 space-y-2">
                     @foreach($omzetPerDienst->take(5) as $i => $dienst)
-                    @php $kleur = $dienstKleuren[$i] ?? '#E2E8F0'; @endphp
-                    <div class="flex items-center justify-between gap-2">
+                    @php
+                        $kleur = $dienstKleuren[$i] ?? '#E2E8F0';
+                        $pctDienst = round($dienst->totaal / $totaalOmzetDienst * 100);
+                        $bedragEuros = round($dienst->totaal / 100, 2);
+                    @endphp
+                    <button type="button"
+                            onclick="document.dispatchEvent(new CustomEvent('kaply-dienst-popup', { detail: { naam: {{ Js::from($dienst->naam) }}, bedrag: {{ $bedragEuros }}, pct: {{ $pctDienst }} } }))"
+                            class="w-full flex items-center justify-between gap-2 text-left active:bg-gray-50 dark:active:bg-neutral-700/30 rounded-lg -mx-1 px-1 py-0.5 transition-colors">
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:{{ $kleur }}"></span>
                             <span class="text-xs text-gray-600 dark:text-neutral-400 truncate">{{ $dienst->naam }}</span>
                         </div>
                         <div class="text-right flex-shrink-0">
                             <span class="text-xs font-semibold text-gray-800 dark:text-neutral-200">{{ $euro($dienst->totaal) }}</span>
-                            <span class="text-xs text-gray-400 dark:text-neutral-500 ml-1">{{ round($dienst->totaal / $totaalOmzetDienst * 100) }}%</span>
+                            <span class="text-xs text-gray-400 dark:text-neutral-500 ml-1">{{ $pctDienst }}%</span>
                         </div>
-                    </div>
+                    </button>
                     @endforeach
                 </div>
             </div>
@@ -222,6 +228,44 @@
             @endif
         </div>
 
+    </div>
+
+    {{-- Dienst detail popup --}}
+    <div x-data="{ open: false, naam: '', bedrag: 0, pct: 0 }"
+         @kaply-dienst-popup.document="open = true; naam = $event.detail.naam; bedrag = $event.detail.bedrag; pct = $event.detail.pct"
+         x-show="open"
+         x-transition:enter="transition ease-out duration-150"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-100"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="open = false"
+         class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+         style="display:none">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+        <div @click.stop
+             x-transition:enter="transition ease-out duration-150"
+             x-transition:enter-start="opacity-0 translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             class="relative bg-white dark:bg-neutral-900 rounded-2xl p-6 w-full max-w-xs shadow-2xl">
+            <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
+                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                </svg>
+            </div>
+            <p class="text-base font-semibold text-gray-900 dark:text-neutral-100 leading-snug" x-text="naam"></p>
+            <p class="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-2">
+                € <span x-text="bedrag.toLocaleString('nl-NL', { minimumFractionDigits: 2 })"></span>
+            </p>
+            <p class="text-sm text-gray-400 dark:text-neutral-500 mt-1">
+                <span x-text="pct"></span>% van totale omzet deze periode
+            </p>
+            <button @click="open = false"
+                    class="mt-5 w-full py-2.5 rounded-xl bg-gray-100 dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 text-sm font-medium hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors">
+                Sluiten
+            </button>
+        </div>
     </div>
 
     <script>
@@ -265,10 +309,23 @@
         var labels = JSON.parse(canvas.dataset.labels || '[]');
         var data   = JSON.parse(canvas.dataset.data   || '[]');
         if (!data.length) return;
+        var total = data.reduce(function(a, b) { return a + b; }, 0);
         _dienstChart = new Chart(canvas.getContext('2d'), {
             type: 'doughnut',
             data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#3B82F6','#60A5FA','#93C5FD','#BFDBFE','#DBEAFE','#EFF6FF'], borderWidth: 0, hoverOffset: 4 }] },
-            options: { responsive: false, cutout: '65%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c) { return c.label + ': €' + c.parsed.toLocaleString('nl-NL', { minimumFractionDigits: 2 }); } } } } }
+            options: {
+                responsive: false, cutout: '65%',
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                onClick: function(event, elements) {
+                    if (!elements.length) return;
+                    var idx = elements[0].index;
+                    document.dispatchEvent(new CustomEvent('kaply-dienst-popup', { detail: {
+                        naam: labels[idx],
+                        bedrag: data[idx],
+                        pct: Math.round(data[idx] / total * 100)
+                    }}));
+                }
+            }
         });
     };
 
