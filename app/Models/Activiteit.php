@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Activiteit extends Model
 {
+    protected $table = 'activiteiten';
     protected $fillable = ['kapper_id', 'afspraak_id', 'datum', 'type', 'tekst'];
 }
