@@ -49,6 +49,8 @@ class SubscriptionController extends Controller
                 ],
                 'success_url' => route('kapper.subscription.succes') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url'  => route('kapper.abonnement'),
+            ], [
+                'idempotency_key' => 'subscribe_' . $user->id . '_' . now()->format('YmdHi'),
             ]);
 
             return redirect($session->url);

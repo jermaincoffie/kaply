@@ -60,7 +60,9 @@ class AfspraakBetaalController extends Controller
             $params['transfer_data'] = ['destination' => $kapper->stripe_connect_id];
         }
 
-        $session = StripeSession::create($params);
+        $session = StripeSession::create($params, [
+            'idempotency_key' => 'afspraak_checkout_' . $afspraak->id,
+        ]);
 
         return redirect($session->url);
     }
@@ -128,7 +130,9 @@ class AfspraakBetaalController extends Controller
                 if ($kapper->stripe_connect_onboarded) {
                     $intentParams['transfer_data'] = ['destination' => $kapper->stripe_connect_id];
                 }
-                $intent = PaymentIntent::create($intentParams);
+                $intent = PaymentIntent::create($intentParams, [
+                    'idempotency_key' => 'annulering_intent_' . $afspraak->id,
+                ]);
 
                 if ($intent->status === 'succeeded') {
                     $this->verwerkAnnulering($afspraak);
@@ -153,7 +157,7 @@ class AfspraakBetaalController extends Controller
                 'quantity' => 1,
             ]],
             'mode'                 => 'payment',
-            'payment_method_types' => ['card'],
+            'payment_method_types' => ['card', 'ideal'],
             'setup_future_usage'   => 'off_session',
             'metadata'             => [
                 'type'        => 'annulering_fee',
@@ -173,7 +177,9 @@ class AfspraakBetaalController extends Controller
             $params['transfer_data'] = ['destination' => $kapper->stripe_connect_id];
         }
 
-        $session = StripeSession::create($params);
+        $session = StripeSession::create($params, [
+            'idempotency_key' => 'annulering_checkout_' . $afspraak->id . '_' . $afspraak->updated_at->timestamp,
+        ]);
 
         return redirect($session->url);
     }

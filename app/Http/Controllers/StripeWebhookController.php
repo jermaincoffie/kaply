@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AbonnementBetalingMisluktMail;
 use App\Models\Kapper;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Cashier\Http\Controllers\WebhookController as CashierWebhookController;
 
 class StripeWebhookController extends CashierWebhookController
@@ -24,6 +26,24 @@ class StripeWebhookController extends CashierWebhookController
     {
         parent::handleCustomerSubscriptionDeleted($payload);
         $this->syncAbonnementStatus($payload);
+    }
+
+    public function handleInvoicePaymentFailed(array $payload): void
+    {
+        $customerId = $payload['data']['object']['customer'] ?? null;
+        if (!$customerId) return;
+
+        $user = User::where('stripe_id', $customerId)->first();
+        if (!$user?->kapper) return;
+
+        if ($user->kapper->abonnement_status === 'actief') {
+            $user->kapper->update([
+                'abonnement_status'         => 'past_due',
+                'abonnement_past_due_since' => $user->kapper->abonnement_past_due_since ?? now(),
+            ]);
+        }
+
+        Mail::to($user->email)->send(new AbonnementBetalingMisluktMail($user->kapper));
     }
 
     public function handleCheckoutSessionCompleted(array $payload): void
