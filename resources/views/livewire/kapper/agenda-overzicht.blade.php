@@ -1198,10 +1198,14 @@
                     </div>
                 </div>
                 @elseif($a->status === 'geannuleerd')
-                <div class="pt-4 border-t border-gray-100 dark:border-neutral-700 mt-4">
+                <div class="pt-4 border-t border-gray-100 dark:border-neutral-700 mt-4 flex gap-2">
                     <button @click.prevent="$dispatch('open-confirm', { title: 'Uit agenda verwijderen', message: 'Afspraak verbergen uit de agenda? De afspraak blijft zichtbaar in het klantprofiel.', action: () => $wire.verbergUitAgenda({{ $a->id }}) })"
-                            class="w-full py-2.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-neutral-600 text-gray-500 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
-                        Verwijder uit agenda
+                            class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-neutral-600 text-gray-500 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                        Verberg uit agenda
+                    </button>
+                    <button @click.prevent="$dispatch('open-confirm', { title: 'Afspraak verwijderen', message: 'Afspraak permanent verwijderen? Dit kan niet ongedaan worden gemaakt.', action: () => $wire.verwijderAfspraak({{ $a->id }}) })"
+                            class="flex-1 py-2.5 text-sm font-medium rounded-lg border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                        Permanent verwijderen
                     </button>
                 </div>
                 @endif

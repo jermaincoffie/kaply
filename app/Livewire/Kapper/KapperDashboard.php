@@ -141,6 +141,12 @@ class KapperDashboard extends Component
         $this->geselecteerdeAfspraakId = null;
     }
 
+    public function verwijderAfspraak(int $id): void
+    {
+        Afspraak::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->delete();
+        $this->geselecteerdeAfspraakId = null;
+    }
+
     public function render()
     {
         $kapper    = auth()->user()->kapper;
