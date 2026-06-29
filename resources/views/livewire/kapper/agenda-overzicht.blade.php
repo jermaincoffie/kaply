@@ -398,7 +398,7 @@
             $mDagStart = 8;
             $mDagEind  = 19;
             $mUren     = $mDagEind - $mDagStart;
-            $mPxPerUur = 80;
+            $mPxPerUur = 120;
             $mHoogte   = $mUren * $mPxPerUur;
         @endphp
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl overflow-hidden mb-4">
@@ -468,6 +468,12 @@
                             {{ str_pad($u, 2, '0', STR_PAD_LEFT) }}:00
                         </span>
                     </div>
+                    <div class="absolute w-full flex items-start justify-end pr-1.5"
+                         style="top: {{ ($u - $mDagStart) * $mPxPerUur + $mPxPerUur / 2 }}px">
+                        <span class="text-[9px] text-gray-300 dark:text-neutral-600 -mt-1.5">
+                            :30
+                        </span>
+                    </div>
                     @endfor
                 </div>
 
@@ -480,7 +486,7 @@
                         const scrollTop = $el.closest('.overflow-y-auto')?.scrollTop ?? 0;
                         const y = $event.clientY - rect.top + scrollTop;
                         const minFromTop = Math.floor(y / {{ $mPxPerUur }} * 60);
-                        const roundedMin = Math.round(minFromTop / 15) * 15;
+                        const roundedMin = Math.round(minFromTop / 5) * 5;
                         const hour = Math.floor(roundedMin / 60) + {{ $mDagStart }};
                         const min = roundedMin % 60;
                         if (hour < {{ $mDagStart }} || hour >= {{ $mDagEind }}) return;
@@ -488,12 +494,16 @@
                         $wire.openNieuwFormulier('{{ $mobielDatum }}', tijd);
                      ">
 
-                    {{-- Uurlijnen --}}
+                    {{-- Uurlijnen + kwartierlijnen --}}
                     @for ($u = 0; $u < $mUren; $u++)
                     <div class="absolute w-full border-t pointer-events-none {{ $u === 0 ? 'border-gray-200 dark:border-neutral-600' : 'border-gray-100 dark:border-neutral-700/50' }}"
                          style="top: {{ $u * $mPxPerUur }}px"></div>
-                    <div class="absolute w-full border-t pointer-events-none border-gray-100 dark:border-neutral-700/30"
+                    <div class="absolute w-full border-t pointer-events-none border-gray-100 dark:border-neutral-700/60"
                          style="top: {{ $u * $mPxPerUur + $mPxPerUur / 2 }}px"></div>
+                    <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-50 dark:border-neutral-800"
+                         style="top: {{ $u * $mPxPerUur + $mPxPerUur / 4 }}px"></div>
+                    <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-50 dark:border-neutral-800"
+                         style="top: {{ $u * $mPxPerUur + $mPxPerUur * 3 / 4 }}px"></div>
                     @endfor
 
                     {{-- Huidig tijdstip --}}
@@ -713,7 +723,7 @@
                     const scrollTop = $el.closest('.overflow-y-auto')?.scrollTop ?? 0;
                     const y = $event.clientY - rect.top + scrollTop;
                     const minFromTop = Math.floor(y / {{ $pxPerUur }} * 60);
-                    const roundedMin = Math.round(minFromTop / 15) * 15;
+                    const roundedMin = Math.round(minFromTop / 5) * 5;
                     const hour = Math.floor(roundedMin / 60) + {{ $dagStart }};
                     const min = roundedMin % 60;
                     if (hour < {{ $dagStart }} || hour >= {{ $dagEind }}) return;
