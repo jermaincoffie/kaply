@@ -137,7 +137,7 @@
                     $af->status === 'geannuleerd' => ['Geannuleerd', 'bg-gray-100 dark:bg-neutral-700 text-gray-500 dark:text-neutral-400'],
                     $isActief                     => ['Bezig',       'bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'],
                     $isWalkIn                     => ['Walk-in',     'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400'],
-                    default                       => ['Bevestigd',   'bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400'],
+                    default                       => ['Bevestigd',   'bg-green-50 dark:bg-green-900/10 text-green-600 dark:text-green-400'],
                 };
                 $avatarKleur = match(true) {
                     $af->status === 'voltooid'    => 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400',
