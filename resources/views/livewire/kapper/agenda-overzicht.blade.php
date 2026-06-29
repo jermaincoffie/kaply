@@ -398,7 +398,7 @@
             $mDagStart = 8;
             $mDagEind  = 19;
             $mUren     = $mDagEind - $mDagStart;
-            $mPxPerUur = 120;
+            $mPxPerUur = 150;
             $mHoogte   = $mUren * $mPxPerUur;
         @endphp
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl overflow-hidden mb-4">
@@ -462,17 +462,18 @@
                 {{-- Tijdas --}}
                 <div class="w-11 flex-shrink-0 relative bg-gray-50 dark:bg-neutral-900/20 border-r border-gray-100 dark:border-neutral-700/50" style="height: {{ $mHoogte }}px">
                     @for ($u = $mDagStart; $u < $mDagEind; $u++)
-                    <div class="absolute w-full flex items-start justify-end pr-1.5"
-                         style="top: {{ ($u - $mDagStart) * $mPxPerUur }}px">
-                        <span class="text-[10px] text-gray-400 dark:text-neutral-500 -mt-2 font-medium">
-                            {{ str_pad($u, 2, '0', STR_PAD_LEFT) }}:00
-                        </span>
+                    @php $uOffset = ($u - $mDagStart) * $mPxPerUur; @endphp
+                    <div class="absolute w-full flex items-start justify-end pr-1.5" style="top: {{ $uOffset }}px">
+                        <span class="text-[10px] text-gray-500 dark:text-neutral-400 -mt-2 font-semibold">{{ str_pad($u, 2, '0', STR_PAD_LEFT) }}</span>
                     </div>
-                    <div class="absolute w-full flex items-start justify-end pr-1.5"
-                         style="top: {{ ($u - $mDagStart) * $mPxPerUur + $mPxPerUur / 2 }}px">
-                        <span class="text-[9px] text-gray-300 dark:text-neutral-600 -mt-1.5">
-                            :30
-                        </span>
+                    <div class="absolute w-full flex items-start justify-end pr-1.5" style="top: {{ $uOffset + $mPxPerUur / 4 }}px">
+                        <span class="text-[8px] text-gray-300 dark:text-neutral-600 -mt-1.5">:15</span>
+                    </div>
+                    <div class="absolute w-full flex items-start justify-end pr-1.5" style="top: {{ $uOffset + $mPxPerUur / 2 }}px">
+                        <span class="text-[9px] text-gray-400 dark:text-neutral-500 -mt-1.5">:30</span>
+                    </div>
+                    <div class="absolute w-full flex items-start justify-end pr-1.5" style="top: {{ $uOffset + $mPxPerUur * 3 / 4 }}px">
+                        <span class="text-[8px] text-gray-300 dark:text-neutral-600 -mt-1.5">:45</span>
                     </div>
                     @endfor
                 </div>
@@ -494,16 +495,20 @@
                         $wire.openNieuwFormulier('{{ $mobielDatum }}', tijd);
                      ">
 
-                    {{-- Uurlijnen + kwartierlijnen --}}
+                    {{-- 5-min raster --}}
                     @for ($u = 0; $u < $mUren; $u++)
-                    <div class="absolute w-full border-t pointer-events-none {{ $u === 0 ? 'border-gray-200 dark:border-neutral-600' : 'border-gray-100 dark:border-neutral-700/50' }}"
-                         style="top: {{ $u * $mPxPerUur }}px"></div>
-                    <div class="absolute w-full border-t pointer-events-none border-gray-100 dark:border-neutral-700/60"
-                         style="top: {{ $u * $mPxPerUur + $mPxPerUur / 2 }}px"></div>
-                    <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-50 dark:border-neutral-800"
-                         style="top: {{ $u * $mPxPerUur + $mPxPerUur / 4 }}px"></div>
-                    <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-50 dark:border-neutral-800"
-                         style="top: {{ $u * $mPxPerUur + $mPxPerUur * 3 / 4 }}px"></div>
+                        @for ($m = 0; $m < 12; $m++)
+                        @php $top = $u * $mPxPerUur + $m * ($mPxPerUur / 12); @endphp
+                        @if($m === 0)
+                        <div class="absolute w-full border-t pointer-events-none {{ $u === 0 ? 'border-gray-300 dark:border-neutral-600' : 'border-gray-200 dark:border-neutral-700' }}" style="top: {{ $top }}px"></div>
+                        @elseif($m === 6)
+                        <div class="absolute w-full border-t pointer-events-none border-gray-200 dark:border-neutral-700/70" style="top: {{ $top }}px"></div>
+                        @elseif($m % 3 === 0)
+                        <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-100 dark:border-neutral-700/40" style="top: {{ $top }}px"></div>
+                        @else
+                        <div class="absolute w-full border-t pointer-events-none border-gray-50 dark:border-neutral-800/60" style="top: {{ $top }}px"></div>
+                        @endif
+                        @endfor
                     @endfor
 
                     {{-- Huidig tijdstip --}}
@@ -686,27 +691,26 @@
             $dagStart = 8;   // 08:00
             $dagEind  = 19;  // 19:00
             $uren     = $dagEind - $dagStart;
-            $pxPerUur = 120;
-            $hoogte   = $uren * $pxPerUur; // totaal px
+            $pxPerUur = 150;
+            $hoogte   = $uren * $pxPerUur;
         @endphp
 
         <div class="flex overflow-y-auto" style="max-height: 600px">
             {{-- Tijdlijn --}}
             <div class="w-14 flex-shrink-0 relative" style="height: {{ $hoogte }}px">
                 @for ($u = $dagStart; $u < $dagEind; $u++)
-                {{-- Volledig uur --}}
-                <div class="absolute w-full flex items-start justify-end pr-2"
-                     style="top: {{ ($u - $dagStart) * $pxPerUur }}px">
-                    <span class="text-xs text-gray-500 dark:text-neutral-400 -mt-2 font-medium">
-                        {{ str_pad($u, 2, '0', STR_PAD_LEFT) }}:00
-                    </span>
+                @php $uOffset = ($u - $dagStart) * $pxPerUur; @endphp
+                <div class="absolute w-full flex items-start justify-end pr-2" style="top: {{ $uOffset }}px">
+                    <span class="text-xs text-gray-500 dark:text-neutral-400 -mt-2 font-semibold">{{ str_pad($u, 2, '0', STR_PAD_LEFT) }}</span>
                 </div>
-                {{-- Half uur --}}
-                <div class="absolute w-full flex items-start justify-end pr-2"
-                     style="top: {{ ($u - $dagStart) * $pxPerUur + $pxPerUur / 2 }}px">
-                    <span class="text-[10px] text-gray-300 dark:text-neutral-600 -mt-1.5">
-                        {{ str_pad($u, 2, '0', STR_PAD_LEFT) }}:30
-                    </span>
+                <div class="absolute w-full flex items-start justify-end pr-2" style="top: {{ $uOffset + $pxPerUur / 4 }}px">
+                    <span class="text-[9px] text-gray-300 dark:text-neutral-600 -mt-1.5">:15</span>
+                </div>
+                <div class="absolute w-full flex items-start justify-end pr-2" style="top: {{ $uOffset + $pxPerUur / 2 }}px">
+                    <span class="text-[10px] text-gray-400 dark:text-neutral-500 -mt-1.5">:30</span>
+                </div>
+                <div class="absolute w-full flex items-start justify-end pr-2" style="top: {{ $uOffset + $pxPerUur * 3 / 4 }}px">
+                    <span class="text-[9px] text-gray-300 dark:text-neutral-600 -mt-1.5">:45</span>
                 </div>
                 @endfor
             </div>
@@ -732,20 +736,20 @@
                  "
             >
 
-                {{-- Uurlijnen (pointer-events-none zodat klikken doorgaan naar parent) --}}
+                {{-- 5-min raster --}}
                 @for ($u = 0; $u < $uren; $u++)
-                <div class="absolute w-full border-t pointer-events-none {{ $u === 0 ? 'border-gray-200 dark:border-neutral-600' : 'border-gray-100 dark:border-neutral-700/50' }}"
-                     style="top: {{ $u * $pxPerUur }}px"></div>
-                @endfor
-
-                {{-- Kwartierlijnen (15, 30, 45 min) --}}
-                @for ($u = 0; $u < $uren; $u++)
-                <div class="absolute w-full border-t pointer-events-none border-gray-100 dark:border-neutral-700/60"
-                     style="top: {{ $u * $pxPerUur + $pxPerUur / 2 }}px"></div>
-                <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-100 dark:border-neutral-800"
-                     style="top: {{ $u * $pxPerUur + $pxPerUur / 4 }}px"></div>
-                <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-100 dark:border-neutral-800"
-                     style="top: {{ $u * $pxPerUur + $pxPerUur * 3 / 4 }}px"></div>
+                    @for ($m = 0; $m < 12; $m++)
+                    @php $top = $u * $pxPerUur + $m * ($pxPerUur / 12); @endphp
+                    @if($m === 0)
+                    <div class="absolute w-full border-t pointer-events-none {{ $u === 0 ? 'border-gray-300 dark:border-neutral-600' : 'border-gray-200 dark:border-neutral-700' }}" style="top: {{ $top }}px"></div>
+                    @elseif($m === 6)
+                    <div class="absolute w-full border-t pointer-events-none border-gray-200 dark:border-neutral-700/70" style="top: {{ $top }}px"></div>
+                    @elseif($m % 3 === 0)
+                    <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-100 dark:border-neutral-700/40" style="top: {{ $top }}px"></div>
+                    @else
+                    <div class="absolute w-full border-t pointer-events-none border-gray-50 dark:border-neutral-800/60" style="top: {{ $top }}px"></div>
+                    @endif
+                    @endfor
                 @endfor
 
                 {{-- Huidig tijdstip lijn --}}
