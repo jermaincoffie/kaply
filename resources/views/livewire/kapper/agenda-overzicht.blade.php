@@ -398,7 +398,7 @@
             $mDagStart = 8;
             $mDagEind  = 19;
             $mUren     = $mDagEind - $mDagStart;
-            $mPxPerUur = 200;
+            $mPxPerUur = 300;
             $mHoogte   = $mUren * $mPxPerUur;
         @endphp
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl overflow-hidden mb-4">
@@ -507,13 +507,13 @@
                         @for ($m = 0; $m < 12; $m++)
                         @php $top = $u * $mPxPerUur + $m * ($mPxPerUur / 12); @endphp
                         @if($m === 0)
-                        <div class="absolute w-full border-t pointer-events-none {{ $u === 0 ? 'border-gray-300 dark:border-neutral-600' : 'border-gray-200 dark:border-neutral-700' }}" style="top: {{ $top }}px"></div>
+                        <div class="absolute w-full border-t pointer-events-none border-gray-300 dark:border-neutral-600" style="top: {{ $top }}px"></div>
                         @elseif($m === 6)
-                        <div class="absolute w-full border-t pointer-events-none border-gray-200 dark:border-neutral-700/70" style="top: {{ $top }}px"></div>
+                        <div class="absolute w-full border-t pointer-events-none border-gray-200 dark:border-neutral-700" style="top: {{ $top }}px"></div>
                         @elseif($m % 3 === 0)
-                        <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-100 dark:border-neutral-700/40" style="top: {{ $top }}px"></div>
+                        <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-200 dark:border-neutral-700/60" style="top: {{ $top }}px"></div>
                         @else
-                        <div class="absolute w-full border-t pointer-events-none border-gray-50 dark:border-neutral-800/60" style="top: {{ $top }}px"></div>
+                        <div class="absolute w-full border-t pointer-events-none border-gray-100 dark:border-neutral-800" style="top: {{ $top }}px"></div>
                         @endif
                         @endfor
                     @endfor
@@ -698,7 +698,7 @@
             $dagStart = 8;   // 08:00
             $dagEind  = 19;  // 19:00
             $uren     = $dagEind - $dagStart;
-            $pxPerUur = 200;
+            $pxPerUur = 300;
             $hoogte   = $uren * $pxPerUur;
         @endphp
 
@@ -755,13 +755,13 @@
                     @for ($m = 0; $m < 12; $m++)
                     @php $top = $u * $pxPerUur + $m * ($pxPerUur / 12); @endphp
                     @if($m === 0)
-                    <div class="absolute w-full border-t pointer-events-none {{ $u === 0 ? 'border-gray-300 dark:border-neutral-600' : 'border-gray-200 dark:border-neutral-700' }}" style="top: {{ $top }}px"></div>
+                    <div class="absolute w-full border-t pointer-events-none border-gray-300 dark:border-neutral-600" style="top: {{ $top }}px"></div>
                     @elseif($m === 6)
-                    <div class="absolute w-full border-t pointer-events-none border-gray-200 dark:border-neutral-700/70" style="top: {{ $top }}px"></div>
+                    <div class="absolute w-full border-t pointer-events-none border-gray-200 dark:border-neutral-700" style="top: {{ $top }}px"></div>
                     @elseif($m % 3 === 0)
-                    <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-100 dark:border-neutral-700/40" style="top: {{ $top }}px"></div>
+                    <div class="absolute w-full border-t pointer-events-none border-dashed border-gray-200 dark:border-neutral-700/60" style="top: {{ $top }}px"></div>
                     @else
-                    <div class="absolute w-full border-t pointer-events-none border-gray-50 dark:border-neutral-800/60" style="top: {{ $top }}px"></div>
+                    <div class="absolute w-full border-t pointer-events-none border-gray-100 dark:border-neutral-800" style="top: {{ $top }}px"></div>
                     @endif
                     @endfor
                 @endfor
