@@ -38,7 +38,7 @@
                  x-transition:leave="transition ease-in duration-75"
                  x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-95"
-                 class="absolute right-0 top-full mt-1 z-50 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-xl overflow-hidden min-w-[140px]"
+                 class="absolute left-0 sm:left-auto sm:right-0 top-full mt-1 z-50 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-xl overflow-hidden min-w-[140px]"
                  style="display:none">
                 <template x-for="key in Object.keys(options)" :key="key">
                     <button @click="choose(key)"
