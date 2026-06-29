@@ -21,12 +21,12 @@
             <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100">Statistieken</h1>
             <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $periodeLabel }}</p>
         </div>
-        <select wire:model.live="periode"
-                class="text-sm border border-gray-200 dark:border-neutral-700 rounded-lg px-3 py-1.5 bg-white dark:bg-neutral-800 text-gray-700 dark:text-neutral-300 focus:outline-none focus:border-blue-500 cursor-pointer">
-            <option value="week">Deze week</option>
-            <option value="maand">Deze maand</option>
-            <option value="jaar">Dit jaar</option>
-        </select>
+        <x-select
+            wire-target="periode"
+            :current="$periode"
+            :options="['week' => 'Deze week', 'maand' => 'Deze maand', 'jaar' => 'Dit jaar']"
+            placeholder="Periode"
+        />
     </div>
 
     {{-- 4 stat kaarten --}}
