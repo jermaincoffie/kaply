@@ -21,10 +21,16 @@
             <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100">Statistieken</h1>
             <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">{{ $periodeLabel }}</p>
         </div>
-        <div x-data="{ open: false }" class="relative" @click.outside="open = false">
+        <div x-data="{
+                open: false,
+                options: { week: 'Deze week', maand: 'Deze maand', jaar: 'Dit jaar' },
+                get label() { return this.options[$wire.periode] ?? '...'; },
+                choose(val) { $wire.set('periode', val); this.open = false; }
+             }"
+             class="relative" @click.outside="open = false">
             <button @click="open = !open"
                     class="flex items-center gap-2 px-3 py-2 text-sm bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg text-gray-700 dark:text-neutral-300 hover:border-gray-300 dark:hover:border-neutral-600 shadow-sm transition-colors cursor-pointer">
-                <span>{{ ['week' => 'Deze week', 'maand' => 'Deze maand', 'jaar' => 'Dit jaar'][$periode] }}</span>
+                <span x-text="label"></span>
                 <svg class="w-4 h-4 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                 </svg>
@@ -38,17 +44,19 @@
                  x-transition:leave-end="opacity-0 scale-95"
                  class="absolute right-0 top-full mt-1 z-50 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-xl overflow-hidden min-w-[140px]"
                  style="display:none">
-                @foreach(['week' => 'Deze week', 'maand' => 'Deze maand', 'jaar' => 'Dit jaar'] as $val => $label)
-                <button wire:click="$set('periode', '{{ $val }}')" @click="open = false"
-                        class="w-full text-left flex items-center gap-2 px-4 py-2.5 text-sm transition-colors {{ $periode === $val ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-neutral-800' }}">
-                    @if($periode === $val)
-                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                    @else
-                    <span class="w-3.5 inline-block flex-shrink-0"></span>
-                    @endif
-                    {{ $label }}
-                </button>
-                @endforeach
+                <template x-for="key in Object.keys(options)" :key="key">
+                    <button @click="choose(key)"
+                            :class="$wire.periode === key
+                                ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium'
+                                : 'text-gray-700 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-neutral-800'"
+                            class="w-full text-left flex items-center gap-2 px-4 py-2.5 text-sm transition-colors">
+                        <svg x-show="$wire.periode === key" class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span x-show="$wire.periode !== key" class="w-3.5 inline-block flex-shrink-0"></span>
+                        <span x-text="options[key]"></span>
+                    </button>
+                </template>
             </div>
         </div>
     </div>
