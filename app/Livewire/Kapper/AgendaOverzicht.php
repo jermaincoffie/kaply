@@ -218,15 +218,16 @@ class AgendaOverzicht extends Component
             'betaalmethode' => $this->nieuwBetaalmethode,
         ]);
 
-        $logNaam = $walkInNaam ?? (User::find($klantId)?->name ?? 'Onbekend');
+        $kapperNaam = auth()->user()->name;
+        $klantNaam  = $walkInNaam ?? (User::find($klantId)?->name ?? 'Onbekend');
         Activiteit::create([
             'kapper_id'   => auth()->user()->kapper->id,
             'afspraak_id' => $afspraak->id,
             'datum'       => $this->nieuwDatum,
             'type'        => $walkInNaam ? 'walk_in' : 'geboekt',
             'tekst'       => $walkInNaam
-                ? "{$logNaam} is ingeboekt als walk-in voor {$dienst->naam} om {$this->nieuwTijd}"
-                : "{$logNaam} heeft een afspraak gemaakt voor {$dienst->naam} om {$this->nieuwTijd}",
+                ? "{$kapperNaam} heeft {$klantNaam} ingeboekt als walk-in voor {$dienst->naam} om {$this->nieuwTijd}"
+                : "{$kapperNaam} heeft een afspraak voor {$klantNaam} gemaakt voor {$dienst->naam} om {$this->nieuwTijd}",
         ]);
 
         $this->toonNieuwFormulier = false;
