@@ -468,18 +468,20 @@
                             $mMin      = $m * 5;
                             $mLabel    = str_pad($u, 2, '0', STR_PAD_LEFT) . ':' . str_pad($mMin, 2, '0', STR_PAD_LEFT);
                         @endphp
-                        @if($m === 0)
-                        <div class="absolute w-full flex items-start justify-end pr-1.5" style="top: {{ $mLabelTop }}px">
-                            <span class="text-[9px] font-bold text-gray-600 dark:text-neutral-300 -mt-2">{{ $mLabel }}</span>
-                        </div>
-                        @elseif($m === 6)
-                        <div class="absolute w-full flex items-start justify-end pr-1.5" style="top: {{ $mLabelTop }}px">
-                            <span class="text-[8px] font-medium text-gray-400 dark:text-neutral-500 -mt-1.5">{{ $mLabel }}</span>
-                        </div>
-                        @else
-                        <div class="absolute w-full flex items-start justify-end pr-1.5" style="top: {{ $mLabelTop }}px">
-                            <span class="text-[7px] text-gray-300 dark:text-neutral-600 -mt-1.5">{{ $mLabel }}</span>
-                        </div>
+                        @if($mMin % 10 === 0)
+                            @if($m === 0)
+                            <div class="absolute w-full flex items-start justify-end pr-1.5" style="top: {{ $mLabelTop }}px">
+                                <span class="text-[9px] font-bold text-gray-600 dark:text-neutral-300 -mt-2">{{ $mLabel }}</span>
+                            </div>
+                            @elseif($m === 6)
+                            <div class="absolute w-full flex items-start justify-end pr-1.5" style="top: {{ $mLabelTop }}px">
+                                <span class="text-[8px] font-medium text-gray-400 dark:text-neutral-500 -mt-1.5">{{ $mLabel }}</span>
+                            </div>
+                            @else
+                            <div class="absolute w-full flex items-start justify-end pr-1.5" style="top: {{ $mLabelTop }}px">
+                                <span class="text-[7px] text-gray-300 dark:text-neutral-600 -mt-1.5">{{ $mLabel }}</span>
+                            </div>
+                            @endif
                         @endif
                         @endfor
                     @endfor
@@ -712,18 +714,20 @@
                         $minVal   = $m * 5;
                         $label    = str_pad($u, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minVal, 2, '0', STR_PAD_LEFT);
                     @endphp
-                    @if($m === 0)
-                    <div class="absolute w-full flex items-start justify-end pr-2" style="top: {{ $labelTop }}px">
-                        <span class="text-[10px] font-bold text-gray-600 dark:text-neutral-300 -mt-2">{{ $label }}</span>
-                    </div>
-                    @elseif($m === 6)
-                    <div class="absolute w-full flex items-start justify-end pr-2" style="top: {{ $labelTop }}px">
-                        <span class="text-[9px] font-medium text-gray-400 dark:text-neutral-500 -mt-1.5">{{ $label }}</span>
-                    </div>
-                    @else
-                    <div class="absolute w-full flex items-start justify-end pr-2" style="top: {{ $labelTop }}px">
-                        <span class="text-[8px] text-gray-300 dark:text-neutral-600 -mt-1.5">{{ $label }}</span>
-                    </div>
+                    @if($minVal % 10 === 0)
+                        @if($m === 0)
+                        <div class="absolute w-full flex items-start justify-end pr-2" style="top: {{ $labelTop }}px">
+                            <span class="text-[10px] font-bold text-gray-600 dark:text-neutral-300 -mt-2">{{ $label }}</span>
+                        </div>
+                        @elseif($m === 6)
+                        <div class="absolute w-full flex items-start justify-end pr-2" style="top: {{ $labelTop }}px">
+                            <span class="text-[9px] font-medium text-gray-400 dark:text-neutral-500 -mt-1.5">{{ $label }}</span>
+                        </div>
+                        @else
+                        <div class="absolute w-full flex items-start justify-end pr-2" style="top: {{ $labelTop }}px">
+                            <span class="text-[8px] text-gray-300 dark:text-neutral-600 -mt-1.5">{{ $label }}</span>
+                        </div>
+                        @endif
                     @endif
                     @endfor
                 @endfor
