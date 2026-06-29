@@ -42,6 +42,8 @@ class AgendaOverzicht extends Component
     public ?int $gefilterdeMedewerkerId = null;
     public string $afspraakNotitie = '';
 
+    public bool $toonBijzonderheden = false;
+
     // Wachtlijst suggestie na annulering
     public bool $toonWachtlijstSuggestie = false;
     public string $suggestieDatum = '';
@@ -303,6 +305,11 @@ class AgendaOverzicht extends Component
         $this->geselecteerdeBlokkeringId = null;
         $this->toonNieuwFormulier = false;
         $this->toonBlokkerenForm = false;
+    }
+
+    public function toggleBijzonderheden(): void
+    {
+        $this->toonBijzonderheden = !$this->toonBijzonderheden;
     }
 
     public function noShow(int $id): void

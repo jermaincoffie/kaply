@@ -271,7 +271,7 @@
         }
         $alleAgendaItems = $alleAgendaItems->sortBy('start')->values();
     @endphp
-    <div class="lg:hidden mb-6" x-data="{ wachtOpen: false, bijzond: false }">
+    <div class="lg:hidden mb-6" x-data="{ wachtOpen: false }">
 
         {{-- Medewerker filter chips + wachtlijst pill --}}
         <div class="flex items-center gap-2 pb-1 mb-1">
@@ -433,20 +433,19 @@
                         </svg>
                         Nieuw
                     </button>
-                    <button @click="bijzond = !bijzond"
-                            :class="bijzond ? 'bg-gray-800 dark:bg-neutral-100 text-white dark:text-neutral-900' : 'border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-600 dark:text-neutral-400'"
-                            class="flex-shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors">
+                    <button wire:click="toggleBijzonderheden"
+                            class="flex-shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors {{ $toonBijzonderheden ? 'bg-gray-800 dark:bg-neutral-100 text-white dark:text-neutral-900' : 'border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-600 dark:text-neutral-400' }}">
                         Bijzonderheden
                         @if($mobielActiviteiten->isNotEmpty())
-                        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-bold"
-                              :class="bijzond ? 'bg-white/20 text-white' : 'bg-gray-200 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300'">{{ $mobielActiviteiten->count() }}</span>
+                        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-bold {{ $toonBijzonderheden ? 'bg-white/20 text-white' : 'bg-gray-200 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300' }}">{{ $mobielActiviteiten->count() }}</span>
                         @endif
                     </button>
                 </div>
             </div>
 
             {{-- Tijdlijn --}}
-            <div x-show="!bijzond" class="flex overflow-y-auto" style="max-height: 520px">
+            @if(!$toonBijzonderheden)
+            <div class="flex overflow-y-auto" style="max-height: 520px">
                 {{-- Tijdas --}}
                 <div class="w-14 flex-shrink-0 relative bg-gray-50 dark:bg-neutral-900/20 border-r border-gray-100 dark:border-neutral-700/50" style="height: {{ $mHoogte }}px">
                     @for ($u = $mDagStart; $u < $mDagEind; $u++)
@@ -590,9 +589,11 @@
                     @endforeach
                 </div>
             </div>
+            @endif
 
             {{-- Bijzonderheden panel --}}
-            <div x-show="bijzond" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="overflow-y-auto" style="max-height: 520px">
+            @if($toonBijzonderheden)
+            <div class="overflow-y-auto" style="max-height: 520px">
                 @if($mobielActiviteiten->isEmpty())
                 <div class="flex flex-col items-center justify-center py-12 text-center px-4">
                     <svg class="w-8 h-8 text-gray-200 dark:text-neutral-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -625,6 +626,7 @@
                 </div>
                 @endif
             </div>
+            @endif
         </div>
 
     </div>
