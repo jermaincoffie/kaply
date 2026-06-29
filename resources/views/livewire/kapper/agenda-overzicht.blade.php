@@ -271,7 +271,7 @@
         }
         $alleAgendaItems = $alleAgendaItems->sortBy('start')->values();
     @endphp
-    <div class="lg:hidden mb-6" x-data="{ wachtOpen: false }">
+    <div class="lg:hidden mb-6" x-data="{ wachtOpen: false, bijzond: false }">
 
         {{-- Medewerker filter chips + wachtlijst pill --}}
         <div class="flex items-center gap-2 pb-1 mb-1">
@@ -433,11 +433,28 @@
                         </svg>
                         Nieuw
                     </button>
+                    @php
+                        $bijzonderhedenItems = $alleAgendaItems->filter(fn($i) =>
+                            $i['type'] === 'blokkering' ||
+                            in_array($i['data']->status ?? '', ['geannuleerd', 'no_show', 'voltooid']) ||
+                            !empty($i['data']->walk_in_naam ?? '')
+                        );
+                        $bijzCount = $alleAgendaItems->count();
+                    @endphp
+                    <button @click="bijzond = !bijzond"
+                            :class="bijzond ? 'bg-gray-800 dark:bg-neutral-100 text-white dark:text-neutral-900' : 'border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-600 dark:text-neutral-400'"
+                            class="flex-shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors">
+                        Bijzonderheden
+                        @if($bijzCount > 0)
+                        <span class="inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-bold"
+                              :class="bijzond ? 'bg-white/20 text-white' : 'bg-gray-200 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300'">{{ $bijzCount }}</span>
+                        @endif
+                    </button>
                 </div>
             </div>
 
             {{-- Tijdlijn --}}
-            <div class="flex overflow-y-auto" style="max-height: 520px">
+            <div x-show="!bijzond" class="flex overflow-y-auto" style="max-height: 520px">
                 {{-- Tijdas --}}
                 <div class="w-14 flex-shrink-0 relative bg-gray-50 dark:bg-neutral-900/20 border-r border-gray-100 dark:border-neutral-700/50" style="height: {{ $mHoogte }}px">
                     @for ($u = $mDagStart; $u < $mDagEind; $u++)
@@ -580,6 +597,55 @@
                     </button>
                     @endforeach
                 </div>
+            </div>
+
+            {{-- Bijzonderheden panel --}}
+            <div x-show="bijzond" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="overflow-y-auto" style="max-height: 520px">
+                @if($alleAgendaItems->isEmpty())
+                <div class="flex flex-col items-center justify-center py-12 text-center">
+                    <svg class="w-8 h-8 text-gray-200 dark:text-neutral-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <p class="text-sm text-gray-400 dark:text-neutral-500">Geen afspraken voor deze dag</p>
+                </div>
+                @else
+                <div class="divide-y divide-gray-100 dark:divide-neutral-700">
+                    @foreach($alleAgendaItems as $item)
+                    @if($item['type'] === 'afspraak')
+                    @php
+                        $baf = $item['data'];
+                        $bIsWalkIn = !empty($baf->walk_in_naam);
+                        $bNaam = $bIsWalkIn ? $baf->walk_in_naam : $baf->klant_naam;
+                        [$bBadgeText, $bBadgeClass] = match(true) {
+                            $baf->status === 'geannuleerd' => ['Geannuleerd', 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'],
+                            $baf->status === 'no_show'     => ['No-show',     'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'],
+                            $baf->status === 'voltooid'    => ['Voltooid',    'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'],
+                            $bIsWalkIn                     => ['Walk-in',     'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'],
+                            default                        => ['Bevestigd',   'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'],
+                        };
+                    @endphp
+                    <div class="flex items-center gap-3 px-4 py-3">
+                        <span class="text-xs font-mono font-semibold text-gray-400 dark:text-neutral-500 w-10 flex-shrink-0">{{ substr($baf->start_tijd, 0, 5) }}</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">{{ $bNaam }}</p>
+                            <p class="text-xs text-gray-400 dark:text-neutral-500 truncate">{{ $baf->dienst->naam }}</p>
+                        </div>
+                        <span class="flex-shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full {{ $bBadgeClass }}">{{ $bBadgeText }}</span>
+                    </div>
+                    @else
+                    @php $bbl = $item['data']; @endphp
+                    <div class="flex items-center gap-3 px-4 py-3">
+                        <span class="text-xs font-mono font-semibold text-gray-400 dark:text-neutral-500 w-10 flex-shrink-0">{{ substr($bbl->start_tijd, 0, 5) }}</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">{{ $bbl->reden ?? 'Blokkering' }}</p>
+                            <p class="text-xs text-gray-400 dark:text-neutral-500">{{ substr($bbl->start_tijd, 0, 5) }} – {{ substr($bbl->eind_tijd, 0, 5) }}</p>
+                        </div>
+                        <span class="flex-shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400">{{ $bbl->reden === 'Pauze' ? 'Pauze' : 'Geblokkeerd' }}</span>
+                    </div>
+                    @endif
+                    @endforeach
+                </div>
+                @endif
             </div>
         </div>
 
