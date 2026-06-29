@@ -433,6 +433,13 @@
                         </svg>
                         Nieuw
                     </button>
+                    <button wire:click="openBlokkerenForm('{{ $mobielDatum }}')"
+                            class="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                        </svg>
+                        Blokkeer
+                    </button>
                     <button wire:click="toggleBijzonderheden"
                             class="flex-shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors {{ $toonBijzonderheden ? 'bg-gray-800 dark:bg-neutral-100 text-white dark:text-neutral-900' : 'border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-600 dark:text-neutral-400' }}">
                         Bijzonderheden
