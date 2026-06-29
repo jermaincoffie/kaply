@@ -92,7 +92,7 @@ Route::get('/kapper/{slug}', KapperProfiel::class)->name('kapper.profiel')->midd
 // Algemeen dashboard (Jetstream redirect na login)
 Route::middleware(['auth'])->get('/dashboard', function () {
     if (auth()->user()->isKapper()) {
-        return redirect()->route('kapper.dashboard');
+        return redirect()->route('kapper.agenda');
     }
     if (auth()->user()->isAdmin()) {
         return redirect()->route('admin.dashboard');
