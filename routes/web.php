@@ -17,6 +17,7 @@ use App\Livewire\Kapper\GalerijBeheer;
 use App\Livewire\Kapper\ProfielBeheer;
 use App\Livewire\Kapper\Registratie as KapperRegistratie;
 use App\Livewire\Kapper\AbonnementBeheer;
+use App\Livewire\Kapper\StatistiekenOverzicht;
 use App\Livewire\Kapper\AbonnementSucces;
 use App\Livewire\Kapper\AbonnementCancel;
 use App\Livewire\Kapper\KortingscodesBeheer;
@@ -72,6 +73,7 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
             Route::get('/agenda', AgendaOverzicht::class)->name('agenda');
             Route::get('/afspraken', KapperAfspraken::class)->name('afspraken');
             Route::get('/klanten', KapperKlanten::class)->name('klanten');
+            Route::get('/statistieken', StatistiekenOverzicht::class)->name('statistieken');
             Route::get('/diensten', DienstenBeheer::class)->name('diensten');
             Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
             Route::get('/medewerkers', MedewerkersBeheer::class)->name('medewerkers');
