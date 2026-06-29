@@ -3,6 +3,7 @@
 namespace App\Livewire\Klant;
 
 use App\Mail\AfspraakBevestigingMail;
+use App\Models\Activiteit;
 use App\Models\Afspraak;
 use App\Models\Kapper;
 use App\Models\Dienst;
@@ -161,6 +162,13 @@ class KapperProfiel extends Component
                 'betaalmethode' => 'online',
                 'notitie'       => trim($this->klantNotitie) ?: null,
             ]);
+            Activiteit::create([
+                'kapper_id'   => $this->kapper->id,
+                'afspraak_id' => $afspraak->id,
+                'datum'       => $this->geselecteerdeDatum,
+                'type'        => 'geboekt',
+                'tekst'       => auth()->user()->name . " heeft een afspraak gemaakt voor {$dienst->naam} om {$this->geselecteerdeTijd}",
+            ]);
             $this->redirect(route('afspraak.betaling.checkout', ['afspraak_id' => $afspraak->id]));
             return;
         }
@@ -176,6 +184,14 @@ class KapperProfiel extends Component
             'status'        => 'gepland',
             'betaalmethode' => $this->betaalmethode,
             'notitie'       => trim($this->klantNotitie) ?: null,
+        ]);
+
+        Activiteit::create([
+            'kapper_id'   => $this->kapper->id,
+            'afspraak_id' => $afspraak->id,
+            'datum'       => $this->geselecteerdeDatum,
+            'type'        => 'geboekt',
+            'tekst'       => auth()->user()->name . " heeft een afspraak gemaakt voor {$dienst->naam} om {$this->geselecteerdeTijd}",
         ]);
 
         Mail::to(auth()->user()->email)->send(new AfspraakBevestigingMail($afspraak));
