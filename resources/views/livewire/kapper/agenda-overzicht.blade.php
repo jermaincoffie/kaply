@@ -1210,4 +1210,99 @@
         </div>
     </div>
     @endif
+
+    {{-- ===== WACHTLIJST SUGGESTIE MODAL ===== --}}
+    @if($toonWachtlijstSuggestie && $wachtlijst->isNotEmpty())
+    <div
+        x-data
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+    >
+        <div class="absolute inset-0 bg-black/50" wire:click="sluitWachtlijstSuggestie"></div>
+
+        <div
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 translate-y-4 sm:scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+            x-transition:leave-end="opacity-0 translate-y-4 sm:scale-95"
+            class="relative w-full sm:max-w-md bg-white dark:bg-neutral-800 sm:rounded-2xl rounded-t-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80dvh]"
+        >
+            {{-- Drag handle (mobiel) --}}
+            <div class="sm:hidden flex justify-center pt-3 pb-1 flex-shrink-0">
+                <div class="w-10 h-1 bg-gray-200 dark:bg-neutral-600 rounded-full"></div>
+            </div>
+
+            {{-- Header --}}
+            <div class="px-5 pt-4 pb-3 border-b border-gray-100 dark:border-neutral-700 flex-shrink-0">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                            <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Wachtlijst</h3>
+                        </div>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500">
+                            Wil je iemand inplannen op <span class="font-medium text-gray-600 dark:text-neutral-300">{{ \Carbon\Carbon::parse($suggestieDatum)->isoFormat('dddd D MMMM') }}</span> om <span class="font-medium text-gray-600 dark:text-neutral-300">{{ $suggestieTijd }}</span>?
+                        </p>
+                    </div>
+                    <button wire:click="sluitWachtlijstSuggestie"
+                            class="text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors flex-shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            {{-- Wachtenden --}}
+            <div class="overflow-y-auto flex-1 px-5 py-3 space-y-2">
+                @foreach($wachtlijst as $wachtende)
+                <div class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-700/30">
+                    <div class="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+                        <span class="text-amber-700 dark:text-amber-400 font-bold text-sm">{{ mb_strtoupper(mb_substr($wachtende->naam, 0, 1)) }}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">{{ $wachtende->naam }}</p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 truncate">
+                            @if($wachtende->gewenste_datum)
+                            Wil: {{ \Carbon\Carbon::parse($wachtende->gewenste_datum)->translatedFormat('d M') }}
+                            @else
+                            {{ $wachtende->email }}
+                            @endif
+                        </p>
+                    </div>
+                    @if($wachtende->telefoonnummer)
+                    <a href="tel:{{ $wachtende->telefoonnummer }}"
+                       class="flex-shrink-0 p-2 rounded-lg bg-gray-100 dark:bg-neutral-700 text-gray-500 dark:text-neutral-400 hover:bg-gray-200 dark:hover:bg-neutral-600 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                    </a>
+                    @endif
+                    <button wire:click="planWachtlijstIn({{ $wachtende->id }})"
+                            class="flex-shrink-0 px-3 py-2 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors">
+                        Plan in
+                    </button>
+                </div>
+                @endforeach
+            </div>
+
+            {{-- Footer --}}
+            <div class="px-5 py-4 border-t border-gray-100 dark:border-neutral-700 flex-shrink-0">
+                <button wire:click="sluitWachtlijstSuggestie"
+                        class="w-full py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                    Overslaan
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>

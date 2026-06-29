@@ -41,6 +41,11 @@ class AgendaOverzicht extends Component
     public ?int $gefilterdeMedewerkerId = null;
     public string $afspraakNotitie = '';
 
+    // Wachtlijst suggestie na annulering
+    public bool $toonWachtlijstSuggestie = false;
+    public string $suggestieDatum = '';
+    public string $suggestieTijd = '';
+
     public function mount(): void
     {
         $this->weekStart   = today()->startOfWeek(Carbon::MONDAY)->toDateString();
@@ -287,8 +292,50 @@ class AgendaOverzicht extends Component
 
     public function annuleren(int $id): void
     {
-        Afspraak::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->update(['status' => 'geannuleerd']);
+        $afspraak = Afspraak::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->first();
+        if (!$afspraak) return;
+
+        $afspraak->update(['status' => 'geannuleerd']);
         $this->geselecteerdeAfspraakId = null;
+
+        $heeftWachtenden = Wachtlijst::where('kapper_id', auth()->user()->kapper->id)
+            ->where('status', 'wachtend')
+            ->where(fn($q) => $q->whereNull('gewenste_datum')->orWhere('gewenste_datum', '>=', today()))
+            ->exists();
+
+        if ($heeftWachtenden) {
+            $this->suggestieDatum          = $afspraak->datum->toDateString();
+            $this->suggestieTijd           = substr($afspraak->start_tijd, 0, 5);
+            $this->toonWachtlijstSuggestie = true;
+        }
+    }
+
+    public function sluitWachtlijstSuggestie(): void
+    {
+        $this->toonWachtlijstSuggestie = false;
+    }
+
+    public function planWachtlijstIn(int $id): void
+    {
+        $wachtende = Wachtlijst::find($id);
+        if (!$wachtende) return;
+
+        $this->toonWachtlijstSuggestie = false;
+        $this->toonNieuwFormulier      = true;
+        $this->geselecteerdeAfspraakId = null;
+        $this->nieuwDatum              = $this->suggestieDatum;
+        $this->nieuwTijd               = $this->suggestieTijd;
+        $this->nieuwDienstId           = auth()->user()->kapper->diensten()->first()?->id;
+        $this->nieuwBetaalmethode      = 'in_zaak';
+        $this->nieuwMedewerkerId       = null;
+        $this->klantZoekterm           = '';
+        $this->geselecteerdeKlantId    = null;
+        $this->geselecteerdeKlantNaam  = '';
+        $this->toonKlantDropdown       = false;
+        $this->isWalkIn                = true;
+        $this->walkInNaam              = $wachtende->naam;
+
+        $wachtende->update(['status' => 'ingepland']);
     }
 
     public function voltooid(int $id): void
