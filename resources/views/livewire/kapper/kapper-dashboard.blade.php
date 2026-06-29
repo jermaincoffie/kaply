@@ -86,11 +86,14 @@
                 <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold">{{ $vandaagAfspraken->count() }}</span>
                 @endif
             </div>
-            @if($omzet_vandaag > 0)
-            <span class="text-xs text-gray-500 dark:text-neutral-400">
-                Omzet: <span class="font-semibold text-gray-700 dark:text-neutral-200">€ {{ number_format($omzet_vandaag / 100, 0, ',', '.') }}</span>
-            </span>
-            @endif
+            <div class="flex items-center gap-3">
+                @if($omzet_vandaag > 0)
+                <span class="text-xs text-gray-500 dark:text-neutral-400">
+                    Omzet: <span class="font-semibold text-gray-700 dark:text-neutral-200">€ {{ number_format($omzet_vandaag / 100, 0, ',', '.') }}</span>
+                </span>
+                @endif
+                <a href="{{ route('kapper.agenda') }}" class="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline">Bekijk agenda</a>
+            </div>
         </div>
 
         {{-- Afsprakenlijst --}}
