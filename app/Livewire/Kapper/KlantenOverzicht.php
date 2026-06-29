@@ -4,7 +4,10 @@ namespace App\Livewire\Kapper;
 
 use App\Models\Afspraak;
 use App\Models\KlantNotitie;
+use App\Models\Review;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class KlantenOverzicht extends Component
@@ -63,6 +66,23 @@ class KlantenOverzicht extends Component
         $klanten   = $query->limit($this->limite)->get();
         $heeftMeer = $totaal > $this->limite;
 
+        $totaalKlanten = User::whereHas('afspraken', fn($q) => $q->where('kapper_id', $kapperId))->count();
+
+        $klantenDezeWeek = User::whereHas('afspraken', fn($q) => $q
+            ->where('kapper_id', $kapperId)
+            ->whereBetween('datum', [
+                today()->startOfWeek(Carbon::MONDAY)->toDateString(),
+                today()->endOfWeek(Carbon::SUNDAY)->toDateString(),
+            ])
+        )->count();
+
+        $gemBeoordeling = Review::where('kapper_id', $kapperId)->avg('rating');
+
+        $totaleOmzet = Afspraak::where('afspraken.kapper_id', $kapperId)
+            ->where('afspraken.status', 'voltooid')
+            ->join('diensten', 'afspraken.dienst_id', '=', 'diensten.id')
+            ->sum('diensten.prijs');
+
         $geselecteerdeKlant = null;
         if ($this->geselecteerdeKlantId) {
             $geselecteerdeKlant = User::where('id', $this->geselecteerdeKlantId)
@@ -76,7 +96,9 @@ class KlantenOverzicht extends Component
                 ->first();
         }
 
-        return view('livewire.kapper.klanten-overzicht', compact('klanten', 'geselecteerdeKlant', 'heeftMeer'))
-            ->layout('layouts.kapper', ['title' => 'Klanten']);
+        return view('livewire.kapper.klanten-overzicht', compact(
+            'klanten', 'geselecteerdeKlant', 'heeftMeer',
+            'totaalKlanten', 'klantenDezeWeek', 'gemBeoordeling', 'totaleOmzet'
+        ))->layout('layouts.kapper', ['title' => 'Klanten']);
     }
 }

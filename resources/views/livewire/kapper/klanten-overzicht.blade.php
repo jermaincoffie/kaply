@@ -6,6 +6,54 @@
         </div>
     </div>
 
+    {{-- Stat kaartjes --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/>
+                </svg>
+            </div>
+            <div>
+                <p class="text-xl font-bold text-gray-900 dark:text-neutral-100 leading-none">{{ $totaalKlanten }}</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Totaal klanten</p>
+            </div>
+        </div>
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+            </div>
+            <div>
+                <p class="text-xl font-bold text-gray-900 dark:text-neutral-100 leading-none">{{ $klantenDezeWeek }}</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Deze week</p>
+            </div>
+        </div>
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-amber-500 dark:text-amber-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+            </div>
+            <div>
+                <p class="text-xl font-bold text-gray-900 dark:text-neutral-100 leading-none">{{ $gemBeoordeling ? number_format($gemBeoordeling, 1) : '—' }}</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Gem. beoordeling</p>
+            </div>
+        </div>
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5l5-5 4 4 5-6 4 3"/>
+                </svg>
+            </div>
+            <div>
+                <p class="text-xl font-bold text-gray-900 dark:text-neutral-100 leading-none">€ {{ number_format($totaleOmzet / 100, 0, ',', '.') }}</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Totale omzet</p>
+            </div>
+        </div>
+    </div>
+
     {{-- Zoekbalk --}}
     <div class="relative mb-4 max-w-xs">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
