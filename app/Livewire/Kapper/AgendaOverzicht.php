@@ -44,6 +44,11 @@ class AgendaOverzicht extends Component
 
     public bool $toonBijzonderheden = false;
 
+    // Walk-in koppelen aan klant
+    public bool $toonKoppelenForm = false;
+    public string $koppelenZoekterm = '';
+    public bool $toonKoppelenDropdown = false;
+
     // Wachtlijst suggestie na annulering
     public bool $toonWachtlijstSuggestie = false;
     public string $suggestieDatum = '';
@@ -306,6 +311,56 @@ class AgendaOverzicht extends Component
         $this->geselecteerdeBlokkeringId = null;
         $this->toonNieuwFormulier = false;
         $this->toonBlokkerenForm = false;
+        $this->toonKoppelenForm = false;
+        $this->koppelenZoekterm = '';
+        $this->toonKoppelenDropdown = false;
+    }
+
+    public function openKoppelenForm(): void
+    {
+        $this->toonKoppelenForm = true;
+        $this->koppelenZoekterm = '';
+        $this->toonKoppelenDropdown = false;
+    }
+
+    public function sluitKoppelenForm(): void
+    {
+        $this->toonKoppelenForm = false;
+        $this->koppelenZoekterm = '';
+        $this->toonKoppelenDropdown = false;
+    }
+
+    public function updatedKoppelenZoekterm(): void
+    {
+        $this->toonKoppelenDropdown = strlen($this->koppelenZoekterm) >= 2;
+    }
+
+    public function koppelAanKlant(int $klantId): void
+    {
+        $afspraak = Afspraak::where('id', $this->geselecteerdeAfspraakId)
+            ->where('kapper_id', auth()->user()->kapper->id)
+            ->whereNotNull('walk_in_naam')
+            ->first();
+
+        if (!$afspraak) return;
+
+        $klant = User::find($klantId);
+        if (!$klant) return;
+
+        $walkInNaam = $afspraak->walk_in_naam;
+        $afspraak->update(['klant_id' => $klantId, 'walk_in_naam' => null]);
+
+        Activiteit::create([
+            'kapper_id'   => $afspraak->kapper_id,
+            'afspraak_id' => $afspraak->id,
+            'datum'       => $afspraak->datum->toDateString(),
+            'type'        => 'geboekt',
+            'tekst'       => "Walk-in '{$walkInNaam}' gekoppeld aan klant {$klant->name}",
+        ]);
+
+        $this->toonKoppelenForm = false;
+        $this->koppelenZoekterm = '';
+        $this->toonKoppelenDropdown = false;
     }
 
     public function toggleBijzonderheden(): void
@@ -629,6 +684,15 @@ class AgendaOverzicht extends Component
                 ->limit(6)->get()
             : collect();
 
+        $zoekKoppelenKlanten = $this->toonKoppelenDropdown && strlen($this->koppelenZoekterm) >= 2
+            ? User::where('role', 'klant')
+                ->where(fn($q) => $q
+                    ->where('name', 'like', "%{$this->koppelenZoekterm}%")
+                    ->orWhere('email', 'like', "%{$this->koppelenZoekterm}%")
+                )
+                ->limit(6)->get()
+            : collect();
+
         $kapper = auth()->user()->kapper;
         $medewerkers = $kapper->medewerkers()->where('actief', true)->orderBy('id')->get();
         $medewerkerKolom = $medewerkers->pluck('id')->values()->flip()->toArray();
@@ -643,7 +707,7 @@ class AgendaOverzicht extends Component
         return view('livewire.kapper.agenda-overzicht', compact(
             'days', 'afsprakenPerDag', 'omzet_maand', 'afspraken_maand',
             'komende_afspraken', 'geselecteerdeAfspraak', 'weekStartDate',
-            'eigenDiensten', 'zoekKlanten', 'mobielAfspraken',
+            'eigenDiensten', 'zoekKlanten', 'zoekKoppelenKlanten', 'mobielAfspraken',
             'vandaagAfspraken', 'volgendeAfspraak', 'omzet_vandaag',
             'blokkeringenPerDag', 'mobielBlokkeringen', 'geselecteerdeblokkering',
             'no_show_pct', 'bezettingsgraad', 'druksteUurLabel',

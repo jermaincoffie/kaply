@@ -1279,6 +1279,59 @@
                 </div>
                 @endif
 
+                {{-- Walk-in: koppel aan bestaand klantprofiel --}}
+                @if($a->walk_in_naam)
+                <div class="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 mb-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400">Walk-in</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-neutral-300">{{ $a->walk_in_naam }}</span>
+                        </div>
+                        @if(!$toonKoppelenForm)
+                        <button wire:click="openKoppelenForm"
+                                class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline flex-shrink-0">
+                            Koppel aan klant
+                        </button>
+                        @endif
+                    </div>
+
+                    @if($toonKoppelenForm)
+                    <div class="mt-3 relative">
+                        <input wire:model.live="koppelenZoekterm"
+                               type="text"
+                               placeholder="Zoek op naam of email..."
+                               autocomplete="off"
+                               class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+
+                        @if($toonKoppelenDropdown && $zoekKoppelenKlanten->count())
+                        <div class="absolute left-0 right-0 top-full mt-1 z-50 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-xl overflow-hidden">
+                            @foreach($zoekKoppelenKlanten as $klant)
+                            <button type="button"
+                                    wire:click="koppelAanKlant({{ $klant->id }})"
+                                    class="w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                                <div class="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-blue-700 dark:text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">{{ $klant->name }}</p>
+                                    <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $klant->email }}</p>
+                                </div>
+                            </button>
+                            @endforeach
+                        </div>
+                        @elseif($toonKoppelenDropdown)
+                        <p class="mt-2 text-xs text-gray-400 dark:text-neutral-500">Geen klanten gevonden.</p>
+                        @endif
+
+                        <button wire:click="sluitKoppelenForm"
+                                class="mt-2 text-xs text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:hover:text-neutral-300">
+                            Annuleer
+                        </button>
+                    </div>
+                    @endif
+                </div>
+                @endif
+
                 {{-- Opmerking --}}
                 <div class="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-700" x-data="{ saved: false }">
                     <label class="block text-xs text-gray-400 dark:text-neutral-500 mb-1.5">Opmerking</label>

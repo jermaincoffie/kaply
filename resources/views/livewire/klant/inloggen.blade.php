@@ -42,8 +42,57 @@
                 </p>
             </div>
 
+            @elseif($stap === 'profiel')
+            {{-- Stap 2: profiel (alleen voor nieuwe gebruikers) --}}
+            <div>
+                <button type="button"
+                        onclick="kaplyLW(this,'terugNaarEmail')"
+                        class="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 mb-5 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    Terug
+                </button>
+
+                <h1 class="text-lg font-bold text-gray-900 dark:text-neutral-100 mb-1">Account aanmaken</h1>
+                <p class="text-sm text-gray-500 dark:text-neutral-400 mb-6">Vul je gegevens in. Daarna ontvang je een inlogcode op <span class="font-medium text-gray-700 dark:text-neutral-300">{{ $email }}</span>.</p>
+
+                @if($fout)
+                <div class="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-600 dark:text-red-400">
+                    {{ $fout }}
+                </div>
+                @endif
+
+                <form wire:submit="vulProfielIn" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Voornaam</label>
+                            <input wire:model="voornaam" type="text" autocomplete="given-name" autofocus placeholder="Jan"
+                                   class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            @error('voornaam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Achternaam</label>
+                            <input wire:model="achternaam" type="text" autocomplete="family-name" placeholder="Jansen"
+                                   class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            @error('achternaam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Telefoonnummer</label>
+                        <input wire:model="telefoon" type="tel" autocomplete="tel" placeholder="06 12345678"
+                               class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        @error('telefoon') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <button type="submit"
+                            wire:loading.attr="disabled"
+                            class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
+                        <span wire:loading.remove>Verstuur inlogcode</span>
+                        <span wire:loading>Versturen...</span>
+                    </button>
+                </form>
+            </div>
+
             @else
-            {{-- Stap 2: code --}}
+            {{-- Stap 3: code --}}
             <div>
                 <button type="button"
                         onclick="kaplyLW(this,'terugNaarEmail')"

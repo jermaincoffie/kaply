@@ -17,12 +17,39 @@ class Inloggen extends Component
     public string $email = '';
     public string $code = '';
     public string $fout = '';
+    public string $voornaam = '';
+    public string $achternaam = '';
+    public string $telefoon = '';
+    public bool $isNieuwGebruiker = false;
 
     public function verstuurCode(): void
     {
         $this->validate(['email' => 'required|email']);
         $this->fout = '';
 
+        if (!User::where('email', strtolower($this->email))->exists()) {
+            $this->isNieuwGebruiker = true;
+            $this->stap = 'profiel';
+            return;
+        }
+
+        $this->isNieuwGebruiker = false;
+        $this->verzendOtp();
+    }
+
+    public function vulProfielIn(): void
+    {
+        $this->validate([
+            'voornaam'   => 'required|string|min:2',
+            'achternaam' => 'required|string|min:2',
+            'telefoon'   => 'required|string|min:8|max:20',
+        ]);
+        $this->fout = '';
+        $this->verzendOtp();
+    }
+
+    private function verzendOtp(): void
+    {
         $sleutel = 'otp-verstuur:' . request()->ip();
         if (RateLimiter::tooManyAttempts($sleutel, 5)) {
             $this->fout = 'Te veel pogingen. Probeer over een minuut opnieuw.';
@@ -30,7 +57,6 @@ class Inloggen extends Component
         }
         RateLimiter::hit($sleutel, 60);
 
-        // Verwijder oude codes voor dit emailadres
         OtpCode::where('email', $this->email)->delete();
 
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -75,7 +101,14 @@ class Inloggen extends Component
 
         $user = User::firstOrCreate(
             ['email' => $this->email],
-            [
+            $this->isNieuwGebruiker ? [
+                'name'       => trim($this->voornaam . ' ' . $this->achternaam),
+                'voornaam'   => $this->voornaam,
+                'achternaam' => $this->achternaam,
+                'telefoon'   => $this->telefoon,
+                'password'   => bcrypt(str()->random(32)),
+                'role'       => 'klant',
+            ] : [
                 'name'     => explode('@', $this->email)[0],
                 'password' => bcrypt(str()->random(32)),
                 'role'     => 'klant',
@@ -93,6 +126,10 @@ class Inloggen extends Component
         $this->stap = 'email';
         $this->code = '';
         $this->fout = '';
+        $this->isNieuwGebruiker = false;
+        $this->voornaam = '';
+        $this->achternaam = '';
+        $this->telefoon = '';
     }
 
     public function render()
