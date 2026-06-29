@@ -479,8 +479,9 @@
                      style="height: {{ $mHoogte }}px"
                      x-data
                      @click="
-                        const rect = $el.getBoundingClientRect();
-                        const scrollTop = $el.closest('.overflow-y-auto')?.scrollTop ?? 0;
+                        const container = $el.closest('.overflow-y-auto');
+                        const rect = container.getBoundingClientRect();
+                        const scrollTop = container?.scrollTop ?? 0;
                         const y = $event.clientY - rect.top + scrollTop;
                         const minFromTop = Math.floor(y / {{ $mPxPerUur }} * 60);
                         const roundedMin = Math.round(minFromTop / 5) * 5;
@@ -766,8 +767,9 @@
                  style="height: {{ $hoogte }}px"
                  x-data
                  @click="
-                    const rect = $el.getBoundingClientRect();
-                    const scrollTop = $el.closest('.overflow-y-auto')?.scrollTop ?? 0;
+                    const container = $el.closest('.overflow-y-auto');
+                    const rect = container.getBoundingClientRect();
+                    const scrollTop = container?.scrollTop ?? 0;
                     const y = $event.clientY - rect.top + scrollTop;
                     const minFromTop = Math.floor(y / {{ $pxPerUur }} * 60);
                     const roundedMin = Math.round(minFromTop / 5) * 5;
