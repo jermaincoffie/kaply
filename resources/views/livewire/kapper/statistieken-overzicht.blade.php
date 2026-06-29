@@ -1,7 +1,3 @@
-@push('head')
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-@endpush
-
 @php
     $euro = fn($cents) => '€ ' . number_format($cents / 100, 2, ',', '.');
     $pct  = fn($h, $v) => $v > 0 ? round(($h - $v) / $v * 100) : null;
@@ -145,12 +141,22 @@
     {{-- Omzet lijndiagram --}}
     <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-6 mb-6">
         <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mb-5">Omzet</h2>
-        <div style="position:relative; height:200px;">
+        @if(array_sum($grafiekData['data']) > 0)
+        <div x-data x-init="window._kaplyInitOmzet && window._kaplyInitOmzet()" style="position:relative; height:200px;">
             <canvas id="kaply-omzet-chart"
                     data-labels="{{ json_encode($grafiekData['labels']) }}"
                     data-data="{{ json_encode($grafiekData['data']) }}">
             </canvas>
         </div>
+        @else
+        <div style="height:200px;" class="flex flex-col items-center justify-center gap-2">
+            <svg class="w-8 h-8 text-gray-200 dark:text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5l5-5 4 4 5-6 4 3"/>
+            </svg>
+            <p class="text-sm text-gray-400 dark:text-neutral-500">Geen omzetdata voor deze periode</p>
+            <p class="text-xs text-gray-300 dark:text-neutral-600">Omzet telt alleen voltooide afspraken</p>
+        </div>
+        @endif
     </div>
 
     {{-- Onderste rij: omzet per dienst + top klanten --}}
@@ -160,9 +166,9 @@
         <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-6">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mb-5">Omzet per dienst</h2>
             @if($omzetPerDienst->isNotEmpty())
-            <div class="flex gap-6 items-center">
-                <div style="position:relative; width:120px; height:120px; flex-shrink:0;">
-                    <canvas id="kaply-dienst-chart"
+            <div class="flex gap-6 items-center" x-data x-init="window._kaplyInitDienst && window._kaplyInitDienst()">
+                <div style="width:120px; height:120px; flex-shrink:0;">
+                    <canvas id="kaply-dienst-chart" width="120" height="120"
                             data-labels="{{ json_encode($omzetPerDienst->pluck('naam')->toArray()) }}"
                             data-data="{{ json_encode($omzetPerDienst->map(fn($d) => round($d->totaal / 100, 2))->toArray()) }}">
                     </canvas>
@@ -217,115 +223,59 @@
         </div>
 
     </div>
-</div>
 
-@push('scripts')
-<script>
+    <script>
 (function() {
-    let omzetChart = null;
-    let dienstChart = null;
+    if (typeof Chart === 'undefined') return;
 
-    const isDark = () => document.documentElement.classList.contains('dark');
+    var _omzetChart = null;
+    var _dienstChart = null;
 
-    function gridColor() {
-        return isDark() ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-    }
+    function isDark() { return document.documentElement.classList.contains('dark'); }
+    function gridColor() { return isDark() ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'; }
 
-    function initOmzetChart() {
-        const canvas = document.getElementById('kaply-omzet-chart');
+    window._kaplyInitOmzet = function() {
+        var canvas = document.getElementById('kaply-omzet-chart');
         if (!canvas) return;
-        if (omzetChart) { omzetChart.destroy(); omzetChart = null; }
-
-        const labels = JSON.parse(canvas.dataset.labels || '[]');
-        const data   = JSON.parse(canvas.dataset.data   || '[]');
-        const ctx    = canvas.getContext('2d');
-
-        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        if (_omzetChart) { _omzetChart.destroy(); _omzetChart = null; }
+        var labels = JSON.parse(canvas.dataset.labels || '[]');
+        var data   = JSON.parse(canvas.dataset.data   || '[]');
+        var ctx    = canvas.getContext('2d');
+        var gradient = ctx.createLinearGradient(0, 0, 0, 200);
         gradient.addColorStop(0, 'rgba(59,130,246,0.18)');
         gradient.addColorStop(1, 'rgba(59,130,246,0)');
-
-        omzetChart = new Chart(ctx, {
+        _omzetChart = new Chart(ctx, {
             type: 'line',
-            data: {
-                labels,
-                datasets: [{
-                    data,
-                    borderColor: '#3B82F6',
-                    backgroundColor: gradient,
-                    borderWidth: 2.5,
-                    tension: 0.4,
-                    fill: true,
-                    pointRadius: 0,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: '#3B82F6',
-                }]
-            },
+            data: { labels: labels, datasets: [{ data: data, borderColor: '#3B82F6', backgroundColor: gradient, borderWidth: 2.5, tension: 0.4, fill: true, pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: '#3B82F6' }] },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false }, tooltip: {
-                    callbacks: {
-                        label: ctx => '€ ' + ctx.parsed.y.toLocaleString('nl-NL', { minimumFractionDigits: 2 })
-                    }
-                }},
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c) { return '€ ' + c.parsed.y.toLocaleString('nl-NL', { minimumFractionDigits: 2 }); } } } },
                 scales: {
                     x: { grid: { color: gridColor() }, ticks: { color: isDark() ? '#9CA3AF' : '#6B7280', font: { size: 11 } } },
-                    y: {
-                        grid: { color: gridColor() },
-                        ticks: {
-                            color: isDark() ? '#9CA3AF' : '#6B7280',
-                            font: { size: 11 },
-                            callback: v => '€ ' + v.toLocaleString('nl-NL')
-                        },
-                        beginAtZero: true
-                    }
+                    y: { grid: { color: gridColor() }, ticks: { color: isDark() ? '#9CA3AF' : '#6B7280', font: { size: 11 }, callback: function(v) { return '€ ' + v.toLocaleString('nl-NL'); } }, beginAtZero: true }
                 }
             }
         });
-    }
+    };
 
-    function initDienstChart() {
-        const canvas = document.getElementById('kaply-dienst-chart');
+    window._kaplyInitDienst = function() {
+        var canvas = document.getElementById('kaply-dienst-chart');
         if (!canvas) return;
-        if (dienstChart) { dienstChart.destroy(); dienstChart = null; }
-
-        const labels = JSON.parse(canvas.dataset.labels || '[]');
-        const data   = JSON.parse(canvas.dataset.data   || '[]');
+        if (_dienstChart) { _dienstChart.destroy(); _dienstChart = null; }
+        var labels = JSON.parse(canvas.dataset.labels || '[]');
+        var data   = JSON.parse(canvas.dataset.data   || '[]');
         if (!data.length) return;
-
-        dienstChart = new Chart(canvas.getContext('2d'), {
+        _dienstChart = new Chart(canvas.getContext('2d'), {
             type: 'doughnut',
-            data: {
-                labels,
-                datasets: [{
-                    data,
-                    backgroundColor: ['#3B82F6','#60A5FA','#93C5FD','#BFDBFE','#DBEAFE','#EFF6FF'],
-                    borderWidth: 0,
-                    hoverOffset: 4,
-                }]
-            },
-            options: {
-                responsive: false,
-                cutout: '65%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => ctx.label + ': €' + ctx.parsed.toLocaleString('nl-NL', { minimumFractionDigits: 2 })
-                        }
-                    }
-                }
-            }
+            data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#3B82F6','#60A5FA','#93C5FD','#BFDBFE','#DBEAFE','#EFF6FF'], borderWidth: 0, hoverOffset: 4 }] },
+            options: { responsive: false, cutout: '65%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c) { return c.label + ': €' + c.parsed.toLocaleString('nl-NL', { minimumFractionDigits: 2 }); } } } } }
         });
-    }
+    };
 
-    function initCharts() {
-        initOmzetChart();
-        initDienstChart();
-    }
-
-    document.addEventListener('livewire:updated', initCharts);
-    initCharts();
+    document.addEventListener('livewire:updated', function() {
+        window._kaplyInitOmzet && window._kaplyInitOmzet();
+        window._kaplyInitDienst && window._kaplyInitDienst();
+    });
 })();
 </script>
-@endpush
+</div>

@@ -17,6 +17,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     @stack('head')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
         // Zet dark mode vÃ³Ã³r render om flicker te voorkomen
         if (localStorage.getItem('darkMode') === 'true') {
