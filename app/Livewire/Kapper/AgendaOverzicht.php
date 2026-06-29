@@ -210,7 +210,7 @@ class AgendaOverzicht extends Component
             'walk_in_naam'  => $walkInNaam,
             'kapper_id'     => auth()->user()->kapper->id,
             'dienst_id'     => $dienst->id,
-            'medewerker_id' => $this->nieuwMedewerkerId,
+            'medewerker_id' => $this->nieuwMedewerkerId ?: null,
             'datum'         => $this->nieuwDatum,
             'start_tijd'    => $this->nieuwTijd,
             'eind_tijd'     => $eind,
