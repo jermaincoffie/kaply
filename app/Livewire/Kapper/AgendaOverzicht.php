@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Kapper;
 
+use App\Models\Activiteit;
 use App\Models\Afspraak;
 use App\Models\Blokkering;
 use App\Models\Dienst;
@@ -202,7 +203,7 @@ class AgendaOverzicht extends Component
             ->addMinutes($dienst->duur_minuten)
             ->format('H:i');
 
-        Afspraak::create([
+        $afspraak = Afspraak::create([
             'klant_id'      => $klantId,
             'walk_in_naam'  => $walkInNaam,
             'kapper_id'     => auth()->user()->kapper->id,
@@ -213,6 +214,17 @@ class AgendaOverzicht extends Component
             'eind_tijd'     => $eind,
             'status'        => 'gepland',
             'betaalmethode' => $this->nieuwBetaalmethode,
+        ]);
+
+        $logNaam = $walkInNaam ?? (User::find($klantId)?->name ?? 'Onbekend');
+        Activiteit::create([
+            'kapper_id'   => auth()->user()->kapper->id,
+            'afspraak_id' => $afspraak->id,
+            'datum'       => $this->nieuwDatum,
+            'type'        => $walkInNaam ? 'walk_in' : 'geboekt',
+            'tekst'       => $walkInNaam
+                ? "{$logNaam} is ingeboekt als walk-in voor {$dienst->naam} om {$this->nieuwTijd}"
+                : "{$logNaam} heeft een afspraak gemaakt voor {$dienst->naam} om {$this->nieuwTijd}",
         ]);
 
         $this->toonNieuwFormulier = false;
@@ -253,6 +265,15 @@ class AgendaOverzicht extends Component
             'reden'      => $this->blokkeerReden ?: null,
         ]);
 
+        $blReden = $this->blokkeerReden ?: 'Blokkering';
+        Activiteit::create([
+            'kapper_id'   => auth()->user()->kapper->id,
+            'afspraak_id' => null,
+            'datum'       => $this->blokkeerDatum,
+            'type'        => 'geblokkeerd',
+            'tekst'       => "{$blReden} toegevoegd van {$this->blokkeerStartTijd} tot {$this->blokkeerEindTijd}",
+        ]);
+
         $this->toonBlokkerenForm = false;
     }
 
@@ -286,7 +307,17 @@ class AgendaOverzicht extends Component
 
     public function noShow(int $id): void
     {
-        Afspraak::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->update(['status' => 'no_show']);
+        $afspraak = Afspraak::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->with('klant')->first();
+        if (!$afspraak) return;
+        $afspraak->update(['status' => 'no_show']);
+        $nsNaam = $afspraak->walk_in_naam ?? $afspraak->klant?->name ?? 'Onbekend';
+        Activiteit::create([
+            'kapper_id'   => $afspraak->kapper_id,
+            'afspraak_id' => $afspraak->id,
+            'datum'       => $afspraak->datum->toDateString(),
+            'type'        => 'no_show',
+            'tekst'       => "{$nsNaam} is niet komen opdagen (no-show) om " . substr($afspraak->start_tijd, 0, 5),
+        ]);
         $this->geselecteerdeAfspraakId = null;
     }
 
@@ -295,8 +326,18 @@ class AgendaOverzicht extends Component
         $afspraak = Afspraak::where('id', $id)->where('kapper_id', auth()->user()->kapper->id)->first();
         if (!$afspraak) return;
 
+        $afspraak->loadMissing('klant');
         $afspraak->update(['status' => 'geannuleerd']);
         $this->geselecteerdeAfspraakId = null;
+
+        $annuleerNaam = $afspraak->walk_in_naam ?? $afspraak->klant?->name ?? 'Onbekend';
+        Activiteit::create([
+            'kapper_id'   => $afspraak->kapper_id,
+            'afspraak_id' => $afspraak->id,
+            'datum'       => $afspraak->datum->toDateString(),
+            'type'        => 'geannuleerd',
+            'tekst'       => "Afspraak van {$annuleerNaam} is geannuleerd (om " . substr($afspraak->start_tijd, 0, 5) . ")",
+        ]);
 
         $heeftWachtenden = Wachtlijst::where('kapper_id', auth()->user()->kapper->id)
             ->where('status', 'wachtend')
@@ -551,6 +592,11 @@ class AgendaOverzicht extends Component
             ->map->count()
             ->toArray();
 
+        $mobielActiviteiten = Activiteit::where('kapper_id', $kapper_id)
+            ->where('datum', $this->mobielDatum)
+            ->orderByDesc('created_at')
+            ->get();
+
         $wachtlijst = Wachtlijst::where('kapper_id', $kapper_id)
             ->where('status', 'wachtend')
             ->where(fn($q) => $q->whereNull('gewenste_datum')->orWhere('gewenste_datum', '>=', today()))
@@ -596,7 +642,7 @@ class AgendaOverzicht extends Component
             'medewerkers', 'medewerkerKolom',
             'afspraakLayout', 'mobielLayout',
             'mobielWeekDays', 'stripAfspraakCounts',
-            'wachtlijst'
+            'wachtlijst', 'mobielActiviteiten'
         ))->layout('layouts.kapper', ['title' => 'Agenda']);
     }
 }
