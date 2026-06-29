@@ -452,7 +452,7 @@
 
             {{-- Tijdlijn --}}
             @if(!$toonBijzonderheden)
-            <div class="flex overflow-y-auto" style="max-height: 520px">
+            <div id="agenda-scroll-mobiel" class="flex overflow-y-auto" style="max-height: 520px">
                 {{-- Tijdas --}}
                 <div class="w-14 flex-shrink-0 relative bg-gray-50 dark:bg-neutral-900/20 border-r border-gray-100 dark:border-neutral-700/50" style="height: {{ $mHoogte }}px">
                     @for ($u = $mDagStart; $u < $mDagEind; $u++)
@@ -737,7 +737,7 @@
             $hoogte   = $uren * $pxPerUur;
         @endphp
 
-        <div class="flex overflow-y-auto" style="max-height: 600px">
+        <div id="agenda-scroll-desktop" class="flex overflow-y-auto" style="max-height: 600px">
             {{-- Tijdlijn --}}
             <div class="w-16 flex-shrink-0 relative" style="height: {{ $hoogte }}px">
                 @for ($u = $dagStart; $u < $dagEind; $u++)
@@ -1486,4 +1486,29 @@
         </div>
     </div>
     @endif
+
+    <script>
+    window._agendaScrollNaarNu = function() {
+        var nu    = new Date();
+        var uur   = nu.getHours();
+        var min   = nu.getMinutes();
+        var start = 8;
+        var eind  = 19;
+        var pph   = 300;
+
+        ['agenda-scroll-mobiel', 'agenda-scroll-desktop'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            if (uur >= eind) {
+                el.scrollTop = el.scrollHeight;
+            } else if (uur >= start) {
+                el.scrollTop = Math.max(0, ((uur - start) + min / 60) * pph - 150);
+            }
+        });
+    };
+    requestAnimationFrame(window._agendaScrollNaarNu);
+    document.addEventListener('livewire:navigated', function() {
+        requestAnimationFrame(window._agendaScrollNaarNu);
+    });
+    </script>
 </div>
