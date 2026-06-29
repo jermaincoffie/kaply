@@ -126,7 +126,6 @@
                 $isWalkIn = !empty($af->walk_in_naam);
                 $isActief = \Carbon\Carbon::parse($af->datum->toDateString() . ' ' . $af->start_tijd)->isPast()
                           && \Carbon\Carbon::parse($af->datum->toDateString() . ' ' . $af->eind_tijd)->isFuture();
-                $initiaal = mb_strtoupper(mb_substr($af->klant_naam, 0, 1));
                 $isGeselecteerd = $geselecteerdeAfspraak?->id === $af->id;
 
                 [$statusLabel, $statusKleur] = match(true) {
@@ -153,8 +152,8 @@
                     <p class="text-sm font-bold text-blue-600 dark:text-blue-400">{{ substr($af->start_tijd, 0, 5) }}</p>
                     <p class="text-[10px] text-gray-300 dark:text-neutral-600">{{ substr($af->eind_tijd, 0, 5) }}</p>
                 </div>
-                <div class="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold {{ $avatarKleur }}">
-                    {{ $initiaal }}
+                <div class="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center {{ $avatarKleur }}">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">{{ $af->klant_naam }}</p>
@@ -375,7 +374,7 @@
                                 wire:click="selecteerKlant({{ $klant->id }}, '{{ addslashes($klant->name) }}')"
                                 class="w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
                             <div class="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                                <span class="text-blue-700 dark:text-blue-400 font-bold text-xs">{{ mb_strtoupper(mb_substr($klant->name, 0, 1)) }}</span>
+                                <svg class="w-3.5 h-3.5 text-blue-700 dark:text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">{{ $klant->name }}</p>

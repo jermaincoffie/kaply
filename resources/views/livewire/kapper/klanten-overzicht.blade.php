@@ -27,7 +27,7 @@
                     class="w-full px-4 py-3 text-left {{ $geselecteerdeKlantId === $klant->id ? 'bg-blue-50 dark:bg-blue-900/10' : 'hover:bg-gray-50 dark:hover:bg-neutral-700/20' }} transition-colors">
                 <div class="flex items-center gap-3 min-w-0">
                     <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                        <span class="text-blue-700 dark:text-blue-400 font-bold text-xs">{{ mb_strtoupper(mb_substr($klant->name, 0, 1)) }}</span>
+                        <svg class="w-4 h-4 text-blue-700 dark:text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                     </div>
                     <div class="min-w-0 flex-1">
                         <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ str($klant->name)->title() }}</p>
@@ -65,9 +65,7 @@
                     <td class="px-6 py-3.5">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                                <span class="text-blue-700 dark:text-blue-400 font-bold text-xs">
-                                    {{ mb_strtoupper(mb_substr($klant->name, 0, 1)) }}
-                                </span>
+                                <svg class="w-4 h-4 text-blue-700 dark:text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                             </div>
                             <div>
                                 <p class="font-medium text-gray-800 dark:text-neutral-100">{{ str($klant->name)->title() }}</p>
@@ -133,7 +131,7 @@
                 <div class="flex items-start justify-between mb-5">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                            <span class="text-blue-700 dark:text-blue-400 font-bold text-sm">{{ mb_strtoupper(mb_substr($geselecteerdeKlant->name, 0, 1)) }}</span>
+                            <svg class="w-5 h-5 text-blue-700 dark:text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                         </div>
                         <div>
                             <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">{{ str($geselecteerdeKlant->name)->title() }}</h3>

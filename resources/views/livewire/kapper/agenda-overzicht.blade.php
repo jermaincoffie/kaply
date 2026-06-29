@@ -906,7 +906,7 @@
                                     wire:click="selecteerKlant({{ $klant->id }}, '{{ addslashes($klant->name) }}')"
                                     class="w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
                                 <div class="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                                    <span class="text-blue-700 dark:text-blue-400 font-bold text-xs">{{ mb_strtoupper(mb_substr($klant->name, 0, 1)) }}</span>
+                                    <svg class="w-3.5 h-3.5 text-blue-700 dark:text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-gray-800 dark:text-neutral-100">{{ $klant->name }}</p>
@@ -1135,7 +1135,7 @@
                 @if(!$a->walk_in_naam && $a->klant)
                 <div class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-neutral-700/40 mb-4">
                     <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                        <span class="text-blue-700 dark:text-blue-400 font-bold text-sm">{{ mb_strtoupper(mb_substr($a->klant->name, 0, 1)) }}</span>
+                        <svg class="w-4 h-4 text-blue-700 dark:text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $a->klant->email }}</p>
@@ -1267,7 +1267,7 @@
                 @foreach($wachtlijst as $wachtende)
                 <div class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-700/30">
                     <div class="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
-                        <span class="text-amber-700 dark:text-amber-400 font-bold text-sm">{{ mb_strtoupper(mb_substr($wachtende->naam, 0, 1)) }}</span>
+                        <svg class="w-5 h-5 text-amber-700 dark:text-amber-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 truncate">{{ $wachtende->naam }}</p>
