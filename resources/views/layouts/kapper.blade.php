@@ -355,7 +355,7 @@
                 <p class="text-sm font-semibold text-red-700 dark:text-red-400">Betaling mislukt — je abonnement verloopt over {{ session('abonnement_past_due') }} {{ session('abonnement_past_due') === 1 ? 'dag' : 'dagen' }}</p>
                 <p class="text-xs text-red-600 dark:text-red-500 mt-0.5">Update je betaalmethode om je account actief te houden.</p>
             </div>
-            <a href="{{ route('subscription.portal') }}"
+            <a href="{{ route('kapper.subscription.portal') }}"
                class="flex-shrink-0 text-xs font-semibold text-red-700 dark:text-red-400 underline hover:no-underline">
                 Betaling bijwerken
             </a>
