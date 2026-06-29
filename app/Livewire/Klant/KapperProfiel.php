@@ -11,6 +11,7 @@ use App\Models\Review;
 use App\Models\Wachtlijst;
 use App\Services\BeschikbaarheidsService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
@@ -149,7 +150,54 @@ class KapperProfiel extends Component
             ->addMinutes($dienst->duur_minuten)
             ->format('H:i');
 
-        if ($this->betaalmethode === 'online') {
+        $slotBezet     = false;
+        $redirectUrl   = null;
+        $afspraak      = null;
+
+        DB::transaction(function () use ($dienst, $eind, &$slotBezet, &$redirectUrl, &$afspraak) {
+            // Conflict check met lock — voorkomt dubbele boeking bij gelijktijdige requests
+            $conflict = Afspraak::where('kapper_id', $this->kapper->id)
+                ->where('datum', $this->geselecteerdeDatum)
+                ->whereIn('status', ['gepland', 'wacht_op_betaling'])
+                ->where('start_tijd', '<', $eind)
+                ->where('eind_tijd', '>', $this->geselecteerdeTijd)
+                ->when(
+                    $this->geselecteerdeMedewerkerId,
+                    fn($q) => $q->where('medewerker_id', $this->geselecteerdeMedewerkerId),
+                    fn($q) => $q->whereNull('medewerker_id')
+                )
+                ->lockForUpdate()
+                ->exists();
+
+            if ($conflict) {
+                $slotBezet = true;
+                return;
+            }
+
+            if ($this->betaalmethode === 'online') {
+                $afspraak = Afspraak::create([
+                    'klant_id'      => auth()->id(),
+                    'kapper_id'     => $this->kapper->id,
+                    'dienst_id'     => $dienst->id,
+                    'medewerker_id' => $this->geselecteerdeMedewerkerId,
+                    'datum'         => $this->geselecteerdeDatum,
+                    'start_tijd'    => $this->geselecteerdeTijd,
+                    'eind_tijd'     => $eind,
+                    'status'        => 'wacht_op_betaling',
+                    'betaalmethode' => 'online',
+                    'notitie'       => trim($this->klantNotitie) ?: null,
+                ]);
+                Activiteit::create([
+                    'kapper_id'   => $this->kapper->id,
+                    'afspraak_id' => $afspraak->id,
+                    'datum'       => $this->geselecteerdeDatum,
+                    'type'        => 'geboekt',
+                    'tekst'       => auth()->user()->name . " heeft een afspraak gemaakt voor {$dienst->naam} om {$this->geselecteerdeTijd}",
+                ]);
+                $redirectUrl = route('afspraak.betaling.checkout', ['afspraak_id' => $afspraak->id]);
+                return;
+            }
+
             $afspraak = Afspraak::create([
                 'klant_id'      => auth()->id(),
                 'kapper_id'     => $this->kapper->id,
@@ -158,33 +206,22 @@ class KapperProfiel extends Component
                 'datum'         => $this->geselecteerdeDatum,
                 'start_tijd'    => $this->geselecteerdeTijd,
                 'eind_tijd'     => $eind,
-                'status'        => 'wacht_op_betaling',
-                'betaalmethode' => 'online',
+                'status'        => 'gepland',
+                'betaalmethode' => $this->betaalmethode,
                 'notitie'       => trim($this->klantNotitie) ?: null,
             ]);
-            Activiteit::create([
-                'kapper_id'   => $this->kapper->id,
-                'afspraak_id' => $afspraak->id,
-                'datum'       => $this->geselecteerdeDatum,
-                'type'        => 'geboekt',
-                'tekst'       => auth()->user()->name . " heeft een afspraak gemaakt voor {$dienst->naam} om {$this->geselecteerdeTijd}",
-            ]);
-            $this->redirect(route('afspraak.betaling.checkout', ['afspraak_id' => $afspraak->id]));
+        });
+
+        if ($slotBezet) {
+            $this->addError('slot', 'Dit tijdslot is zojuist geboekt. Kies een ander tijdstip.');
+            $this->laadTijdsloten();
             return;
         }
 
-        $afspraak = Afspraak::create([
-            'klant_id'      => auth()->id(),
-            'kapper_id'     => $this->kapper->id,
-            'dienst_id'     => $dienst->id,
-            'medewerker_id' => $this->geselecteerdeMedewerkerId,
-            'datum'         => $this->geselecteerdeDatum,
-            'start_tijd'    => $this->geselecteerdeTijd,
-            'eind_tijd'     => $eind,
-            'status'        => 'gepland',
-            'betaalmethode' => $this->betaalmethode,
-            'notitie'       => trim($this->klantNotitie) ?: null,
-        ]);
+        if ($redirectUrl) {
+            $this->redirect($redirectUrl);
+            return;
+        }
 
         Activiteit::create([
             'kapper_id'   => $this->kapper->id,

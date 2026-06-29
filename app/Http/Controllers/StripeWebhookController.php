@@ -43,7 +43,7 @@ class StripeWebhookController extends CashierWebhookController
             ]);
         }
 
-        Mail::to($user->email)->send(new AbonnementBetalingMisluktMail($user->kapper));
+        Mail::to($user->email)->queue(new AbonnementBetalingMisluktMail($user->kapper));
     }
 
     public function handleCheckoutSessionCompleted(array $payload): void
