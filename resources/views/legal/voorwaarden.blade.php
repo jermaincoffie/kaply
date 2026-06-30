@@ -15,7 +15,7 @@
     </a>
 
     <h1 class="text-3xl font-bold mb-2">Algemene Voorwaarden</h1>
-    <p class="text-sm text-gray-400 mb-10">Laatst bijgewerkt: {{ now()->format('d F Y') }}</p>
+    <p class="text-sm text-gray-400 mb-10">Laatst bijgewerkt: 30 juni 2026</p>
 
     <div class="prose prose-gray dark:prose-invert max-w-none space-y-8 text-sm leading-relaxed">
 
@@ -70,12 +70,17 @@
         </section>
 
         <section>
-            <h2 class="text-lg font-semibold mb-3">7. Betalingen</h2>
+            <h2 class="text-lg font-semibold mb-3">7. Leeftijdsgrens</h2>
+            <p>Kaply is bedoeld voor gebruikers van 16 jaar en ouder. Minderjarigen onder de 16 jaar mogen alleen gebruik maken van het platform met aantoonbare toestemming van een ouder of wettelijke voogd. Door gebruik te maken van Kaply bevestig je dat je 16 jaar of ouder bent, of dat je ouder/voogd toestemming heeft gegeven.</p>
+        </section>
+
+        <section>
+            <h2 class="text-lg font-semibold mb-3">8. Betalingen</h2>
             <p>Betalingen verlopen via Stripe. Kaply heeft geen toegang tot volledige betaalgegevens. Prijzen zijn inclusief BTW tenzij anders vermeld.</p>
         </section>
 
         <section>
-            <h2 class="text-lg font-semibold mb-3">8. Aansprakelijkheid</h2>
+            <h2 class="text-lg font-semibold mb-3">9. Aansprakelijkheid</h2>
             <p>Kaply is niet aansprakelijk voor schade als gevolg van:</p>
             <ul class="list-disc pl-5 mt-2 space-y-1">
                 <li>Niet-nagekomen afspraken door kappers of klanten</li>
@@ -86,17 +91,17 @@
         </section>
 
         <section>
-            <h2 class="text-lg font-semibold mb-3">9. Beëindiging</h2>
+            <h2 class="text-lg font-semibold mb-3">10. Beëindiging</h2>
             <p>Kaply behoudt het recht om accounts te verwijderen bij schending van deze voorwaarden, zonder restitutie van betaald abonnementsgeld.</p>
         </section>
 
         <section>
-            <h2 class="text-lg font-semibold mb-3">10. Toepasselijk recht</h2>
+            <h2 class="text-lg font-semibold mb-3">11. Toepasselijk recht</h2>
             <p>Op deze voorwaarden is Nederlands recht van toepassing. Geschillen worden voorgelegd aan de bevoegde rechter in Nederland.</p>
         </section>
 
         <section>
-            <h2 class="text-lg font-semibold mb-3">11. Contact</h2>
+            <h2 class="text-lg font-semibold mb-3">12. Contact</h2>
             <p>Voor vragen over deze voorwaarden: <a href="mailto:info@kaply.nl" class="text-blue-600 hover:underline">info@kaply.nl</a></p>
         </section>
 

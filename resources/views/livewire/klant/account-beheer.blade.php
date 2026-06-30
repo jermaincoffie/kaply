@@ -95,6 +95,21 @@
             </form>
         </div>
 
+        {{-- Gegevens downloaden (AVG portabiliteit) --}}
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-6">
+            <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mb-1">Mijn gegevens downloaden</h2>
+            <p class="text-xs text-gray-500 dark:text-neutral-400 mb-4">
+                Download een overzicht van al je gegevens op Kaply (account, afspraken, beoordelingen) als JSON-bestand.
+            </p>
+            <a href="{{ route('klant.data.download') }}"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-gray-700 dark:bg-neutral-600 hover:bg-gray-800 dark:hover:bg-neutral-500 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Gegevens downloaden
+            </a>
+        </div>
+
         {{-- Account verwijderen --}}
         <div class="bg-white dark:bg-neutral-800 border border-red-200 dark:border-red-900/50 rounded-xl p-6">
             <h2 class="text-sm font-semibold text-red-600 dark:text-red-400 mb-1">Account verwijderen</h2>

@@ -24,6 +24,7 @@ use App\Livewire\Kapper\KortingscodesBeheer;
 use App\Livewire\Kapper\OnboardingWizard;
 use App\Livewire\Kapper\ReviewsOverzicht as KapperReviews;
 use App\Http\Controllers\AfspraakBetaalController;
+use App\Http\Controllers\KlantDataController;
 use App\Http\Controllers\IcalController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\StripeConnectController;
@@ -106,6 +107,7 @@ Route::middleware(['auth'])->get('/dashboard', function () {
 // Klant
 Route::middleware(['klant.auth'])->group(function () {
     Route::get('/mijn-afspraken', MijnAfspraken::class)->name('klant.afspraken');
+    Route::get('/mijn-gegevens/download', [KlantDataController::class, 'download'])->name('klant.data.download');
     Route::get('/mijn-account', AccountBeheer::class)->name('klant.account');
     Route::get('/afspraak/betaling/checkout', [AfspraakBetaalController::class, 'checkout'])->name('afspraak.betaling.checkout');
     Route::get('/afspraak/betaling/succes', [AfspraakBetaalController::class, 'succes'])->name('afspraak.betaling.succes');

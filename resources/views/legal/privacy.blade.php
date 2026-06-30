@@ -15,14 +15,20 @@
     </a>
 
     <h1 class="text-3xl font-bold mb-2">Privacybeleid</h1>
-    <p class="text-sm text-gray-400 mb-10">Laatst bijgewerkt: {{ now()->format('d F Y') }}</p>
+    <p class="text-sm text-gray-400 mb-10">Laatst bijgewerkt: 30 juni 2026</p>
 
     <div class="prose prose-gray dark:prose-invert max-w-none space-y-8 text-sm leading-relaxed">
 
         <section>
             <h2 class="text-lg font-semibold mb-3">1. Wie zijn wij?</h2>
-            <p>Kaply is een online platform waarmee kappers hun beschikbaarheid en diensten kunnen publiceren en klanten afspraken kunnen boeken. Kaply is gevestigd in Nederland en ingeschreven bij de Kamer van Koophandel.</p>
-            <p class="mt-2">Contactadres: <a href="mailto:info@kaply.nl" class="text-blue-600 hover:underline">info@kaply.nl</a></p>
+            <p>Kaply is een online platform waarmee kappers hun beschikbaarheid en diensten kunnen publiceren en klanten afspraken kunnen boeken.</p>
+            <p class="mt-3"><strong>Verwerkingsverantwoordelijke:</strong></p>
+            <ul class="list-none pl-0 mt-1 space-y-0.5 text-gray-600 dark:text-neutral-400">
+                <li>Coffie Digital (handelsnaam: Kaply)</li>
+                <li>Iepenrode 19, 2317BJ Leiden</li>
+                <li>KVK-nummer: 42089812</li>
+                <li>E-mail: <a href="mailto:info@kaply.nl" class="text-blue-600 hover:underline">info@kaply.nl</a></li>
+            </ul>
         </section>
 
         <section>
