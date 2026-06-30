@@ -64,7 +64,7 @@ class Inloggen extends Component
         OtpCode::create([
             'email'      => $this->email,
             'code'       => $code,
-            'expires_at' => now()->addMinutes(15),
+            'expires_at' => now()->addMinutes(5),
         ]);
 
         Mail::to($this->email)->send(new OtpCodeMail($code));
