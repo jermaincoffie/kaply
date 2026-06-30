@@ -285,4 +285,44 @@
         </div>
 
     </div>
+
+    {{-- Admin activiteitslog --}}
+    @if($admin_logs->isNotEmpty())
+    <div class="mt-8">
+        <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-300 mb-3">Activiteitslog</h2>
+        <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl overflow-hidden">
+            <div class="divide-y divide-gray-50 dark:divide-neutral-700">
+                @foreach($admin_logs as $log)
+                @php
+                    [$icon, $label, $kleur] = match($log->actie) {
+                        'goedgekeurd'     => ['✓', 'Goedgekeurd',   'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20'],
+                        'afgewezen'       => ['✕', 'Afgewezen',     'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'],
+                        'geactiveerd'     => ['↑', 'Geactiveerd',   'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'],
+                        'gedeactiveerd'   => ['↓', 'Gedeactiveerd', 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20'],
+                        'review_zichtbaar'=> ['👁', 'Review zichtbaar', 'text-gray-600 dark:text-neutral-400 bg-gray-50 dark:bg-neutral-700'],
+                        'review_verborgen'=> ['🙈', 'Review verborgen', 'text-gray-600 dark:text-neutral-400 bg-gray-50 dark:bg-neutral-700'],
+                        default           => ['·', $log->actie, 'text-gray-500 bg-gray-50 dark:bg-neutral-700'],
+                    };
+                @endphp
+                <div class="flex items-center gap-3 px-4 py-3">
+                    <span class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold {{ $kleur }}">{{ $icon }}</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-gray-800 dark:text-neutral-100">
+                            <span class="font-medium">{{ $log->kapper_naam ?? '—' }}</span>
+                            <span class="text-gray-400 dark:text-neutral-500"> · {{ $label }}</span>
+                            @if($log->details)
+                            <span class="text-gray-400 dark:text-neutral-500 text-xs"> · {{ $log->details }}</span>
+                            @endif
+                        </p>
+                        <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">
+                            {{ $log->admin->name ?? 'Admin' }} · {{ $log->created_at->diffForHumans() }}
+                        </p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
+
 </div>

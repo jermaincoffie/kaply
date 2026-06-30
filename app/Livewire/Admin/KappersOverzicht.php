@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Mail\KapperAfgewezenMail;
+use App\Models\AdminLog;
 use App\Models\Kapper;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
@@ -15,13 +16,17 @@ class KappersOverzicht extends Component
 
     public function goedkeuren(int $id): void
     {
-        Kapper::findOrFail($id)->update(['actief' => true, 'abonnement_status' => 'actief']);
+        $kapper = Kapper::findOrFail($id);
+        $kapper->update(['actief' => true, 'abonnement_status' => 'actief']);
+        AdminLog::schrijf('goedgekeurd', $kapper);
     }
 
     public function afwijzen(int $id): void
     {
         $kapper = Kapper::with('user')->findOrFail($id);
         $user   = $kapper->user;
+
+        AdminLog::schrijf('afgewezen', $kapper);
 
         if ($user) {
             Mail::to($user->email)->send(new KapperAfgewezenMail($user->name, $kapper->salon_naam));
@@ -33,12 +38,16 @@ class KappersOverzicht extends Component
 
     public function activeer(int $id): void
     {
-        Kapper::findOrFail($id)->update(['actief' => true, 'abonnement_status' => 'actief']);
+        $kapper = Kapper::findOrFail($id);
+        $kapper->update(['actief' => true, 'abonnement_status' => 'actief']);
+        AdminLog::schrijf('geactiveerd', $kapper);
     }
 
     public function deactiveer(int $id): void
     {
-        Kapper::findOrFail($id)->update(['actief' => false, 'abonnement_status' => 'gepauzeerd']);
+        $kapper = Kapper::findOrFail($id);
+        $kapper->update(['actief' => false, 'abonnement_status' => 'gepauzeerd']);
+        AdminLog::schrijf('gedeactiveerd', $kapper);
     }
 
     public function render()

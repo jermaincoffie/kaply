@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\AdminLog;
 use App\Models\Kapper;
 use App\Models\Review;
 use App\Models\User;
@@ -15,8 +16,10 @@ class Dashboard extends Component
 
     public function toggleReviewZichtbaar(int $id): void
     {
-        $review = Review::findOrFail($id);
+        $review = Review::with('kapper')->findOrFail($id);
         $review->update(['zichtbaar' => !$review->zichtbaar]);
+        $actie = $review->zichtbaar ? 'review_zichtbaar' : 'review_verborgen';
+        AdminLog::schrijf($actie, $review->kapper, 'Review #' . $review->id);
     }
 
     public function render()
@@ -116,6 +119,10 @@ class Dashboard extends Component
             'recente_reviews'         => Review::with(['kapper', 'klant'])
                 ->orderByDesc('created_at')
                 ->limit(5)
+                ->get(),
+            'admin_logs'              => AdminLog::with('admin')
+                ->orderByDesc('created_at')
+                ->limit(25)
                 ->get(),
         ])->layout('layouts.admin');
     }
