@@ -13,6 +13,7 @@ use App\Services\BeschikbaarheidsService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Component;
 
 class KapperProfiel extends Component
@@ -144,6 +145,13 @@ class KapperProfiel extends Component
     public function bevestigBoeking(): void
     {
         if (!auth()->check()) return;
+
+        $rateLimiterKey = 'boeking:' . (auth()->id() ?? request()->ip());
+        if (RateLimiter::tooManyAttempts($rateLimiterKey, 5)) {
+            $this->addError('slot', 'Te veel boekingspogingen. Wacht even en probeer opnieuw.');
+            return;
+        }
+        RateLimiter::hit($rateLimiterKey, 60);
 
         $dienst = Dienst::findOrFail($this->geselecteerdeDienstId);
         $eind   = Carbon::parse($this->geselecteerdeDatum . ' ' . $this->geselecteerdeTijd)

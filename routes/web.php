@@ -121,7 +121,7 @@ Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']
 // Stripe Connect Demo — Sample integration (no auth required for demo purposes)
 // In production, protect the manage/onboard routes with auth middleware.
 // ──────────────────────────────────────────────────────────────────────────────
-Route::prefix('stripe-demo')->name('stripe-demo.')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('stripe-demo')->name('stripe-demo.')->group(function () {
     // Dashboard: create connected accounts
     Route::get('/', [\App\Http\Controllers\StripeConnectDemoController::class, 'dashboard'])->name('dashboard');
     Route::post('/account', [\App\Http\Controllers\StripeConnectDemoController::class, 'createAccount'])->name('create-account');

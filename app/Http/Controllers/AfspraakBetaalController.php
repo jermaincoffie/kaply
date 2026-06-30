@@ -224,9 +224,17 @@ class AfspraakBetaalController extends Controller
 
     private function verwerkAnnulering(Afspraak $afspraak): void
     {
-        if ($afspraak->status !== 'gepland') return;
+        $geannuleerd = false;
 
-        $afspraak->update(['status' => 'geannuleerd']);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($afspraak, &$geannuleerd) {
+            $vers = Afspraak::lockForUpdate()->find($afspraak->id);
+            if (!$vers || $vers->status !== 'gepland') return;
+            $vers->update(['status' => 'geannuleerd']);
+            $afspraak->status = 'geannuleerd';
+            $geannuleerd = true;
+        });
+
+        if (!$geannuleerd) return;
 
         Mail::to($afspraak->klant->email)->send(new AfspraakGeannuleerdMail($afspraak));
         $afspraak->kapper->user->notify(new AfspraakGeannuleerdNotificatie($afspraak));
