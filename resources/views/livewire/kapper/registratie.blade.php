@@ -84,6 +84,21 @@
                            class="w-full py-2 px-3 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm text-gray-800 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors">
                 </div>
 
+                <div>
+                    <label class="flex items-start gap-2.5 cursor-pointer">
+                        <input wire:model="akkoordVoorwaarden" type="checkbox"
+                               class="mt-0.5 w-4 h-4 rounded border-gray-300 dark:border-neutral-600 text-blue-600 focus:ring-blue-500 flex-shrink-0">
+                        <span class="text-xs text-gray-500 dark:text-neutral-400 leading-relaxed">
+                            Ik ga akkoord met de
+                            <a href="{{ route('voorwaarden') }}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">algemene voorwaarden</a>
+                            en het
+                            <a href="{{ route('privacy') }}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">privacybeleid</a>
+                            van Kaply.
+                        </span>
+                    </label>
+                    @error('akkoordVoorwaarden') <p class="text-xs text-red-500 mt-1.5">{{ $message }}</p> @enderror
+                </div>
+
                 <button type="button" wire:click="volgende" wire:loading.attr="disabled"
                         class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-semibold rounded-lg transition-colors mt-2 flex items-center justify-center gap-2">
                     <svg wire:loading wire:target="volgende" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

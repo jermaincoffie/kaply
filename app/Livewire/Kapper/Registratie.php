@@ -20,6 +20,7 @@ class Registratie extends Component
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
+    public bool $akkoordVoorwaarden = false;
 
     // Stap 2
     public string $salon_naam = '';
@@ -30,9 +31,10 @@ class Registratie extends Component
     protected function stapEenRules(): array
     {
         return [
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
+            'name'               => 'required|string|max:255',
+            'email'              => 'required|email|unique:users,email',
+            'password'           => 'required|min:8|confirmed',
+            'akkoordVoorwaarden' => 'accepted',
         ];
     }
 
@@ -49,14 +51,15 @@ class Registratie extends Component
     public function volgende(): void
     {
         $this->validate($this->stapEenRules(), [
-            'name.required'      => 'Naam is verplicht.',
-            'name.max'           => 'Naam mag maximaal 255 tekens zijn.',
-            'email.required'     => 'E-mailadres is verplicht.',
-            'email.email'        => 'Voer een geldig e-mailadres in.',
-            'email.unique'       => 'Dit e-mailadres is al geregistreerd.',
-            'password.required'  => 'Wachtwoord is verplicht.',
-            'password.min'       => 'Wachtwoord moet minimaal 8 tekens zijn.',
-            'password.confirmed' => 'Wachtwoorden komen niet overeen.',
+            'name.required'                  => 'Naam is verplicht.',
+            'name.max'                       => 'Naam mag maximaal 255 tekens zijn.',
+            'email.required'                 => 'E-mailadres is verplicht.',
+            'email.email'                    => 'Voer een geldig e-mailadres in.',
+            'email.unique'                   => 'Dit e-mailadres is al geregistreerd.',
+            'password.required'              => 'Wachtwoord is verplicht.',
+            'password.min'                   => 'Wachtwoord moet minimaal 8 tekens zijn.',
+            'password.confirmed'             => 'Wachtwoorden komen niet overeen.',
+            'akkoordVoorwaarden.accepted'    => 'Je moet akkoord gaan met de algemene voorwaarden.',
         ]);
         $this->stap = 2;
     }

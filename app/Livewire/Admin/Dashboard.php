@@ -22,6 +22,13 @@ class Dashboard extends Component
         AdminLog::schrijf($actie, $review->kapper, 'Review #' . $review->id);
     }
 
+    public function verwijderReview(int $id): void
+    {
+        $review = Review::with('kapper')->findOrFail($id);
+        AdminLog::schrijf('review_verwijderd', $review->kapper, 'Review #' . $review->id);
+        $review->delete();
+    }
+
     public function render()
     {
         $abonnees_actief = Kapper::where('abonnement_status', 'actief')->count();

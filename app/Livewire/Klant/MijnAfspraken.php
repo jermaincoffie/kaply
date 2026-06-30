@@ -20,6 +20,10 @@ class MijnAfspraken extends Component
     public ?int $reviewAfspraakId = null;
     public int $reviewRating = 0;
     public string $reviewTekst = '';
+
+    public ?int $bewerkReviewAfspraakId = null;
+    public int $bewerkRating = 0;
+    public string $bewerkTekst = '';
     public string $annuleerFout = '';
     public ?int $annuleringFeeAfspraakId = null;
     public int $annuleringFeeKosten = 0;
@@ -211,6 +215,52 @@ class MijnAfspraken extends Component
         ]);
 
         $this->reviewAfspraakId = null;
+    }
+
+    public function openBewerkReview(int $afspraakId): void
+    {
+        $afspraak = Afspraak::where('id', $afspraakId)
+            ->where('klant_id', auth()->id())
+            ->with('review')
+            ->firstOrFail();
+
+        if (!$afspraak->review) return;
+
+        $this->bewerkReviewAfspraakId = $afspraakId;
+        $this->bewerkRating           = $afspraak->review->rating;
+        $this->bewerkTekst            = $afspraak->review->tekst ?? '';
+    }
+
+    public function slaBewerktReviewOp(): void
+    {
+        $this->validate([
+            'bewerkRating' => 'required|integer|min:1|max:5',
+            'bewerkTekst'  => 'nullable|string|max:500',
+        ]);
+
+        $afspraak = Afspraak::where('id', $this->bewerkReviewAfspraakId)
+            ->where('klant_id', auth()->id())
+            ->with('review')
+            ->firstOrFail();
+
+        if (!$afspraak->review) return;
+
+        $afspraak->review->update([
+            'rating' => $this->bewerkRating,
+            'tekst'  => $this->bewerkTekst ?: null,
+        ]);
+
+        $this->bewerkReviewAfspraakId = null;
+    }
+
+    public function verwijderEigenReview(int $afspraakId): void
+    {
+        $afspraak = Afspraak::where('id', $afspraakId)
+            ->where('klant_id', auth()->id())
+            ->with('review')
+            ->firstOrFail();
+
+        $afspraak->review?->delete();
     }
 
     public function wachtlijstAfmelden(int $id): void

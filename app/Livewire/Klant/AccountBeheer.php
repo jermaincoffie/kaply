@@ -2,6 +2,10 @@
 
 namespace App\Livewire\Klant;
 
+use App\Models\OtpCode;
+use App\Models\Review;
+use App\Models\Wachtlijst;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 
@@ -44,6 +48,26 @@ class AccountBeheer extends Component
     public function verwijderFavoriet(int $kapperId): void
     {
         auth()->user()->favorieteKappers()->detach($kapperId);
+    }
+
+    public function verwijderAccount(): void
+    {
+        $user = auth()->user();
+
+        // Verwijder klantgebonden data (afspraken worden genullified via DB foreign key)
+        Review::where('klant_id', $user->id)->delete();
+        Wachtlijst::where('klant_id', $user->id)->delete();
+        OtpCode::where('email', $user->email)->delete();
+        $user->favorieteKappers()->detach();
+
+        Auth::logout();
+
+        $user->delete();
+
+        session()->invalidate();
+        session()->regenerateToken();
+
+        $this->redirect('/', navigate: false);
     }
 
     public function render()

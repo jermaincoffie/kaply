@@ -271,13 +271,20 @@
                         <p class="text-xs text-gray-500 dark:text-neutral-400 truncate">{{ $review->tekst }}</p>
                         @endif
                     </div>
-                    <button wire:click="toggleReviewZichtbaar({{ $review->id }})"
-                            class="flex-shrink-0 text-xs font-medium px-2 py-1 rounded border transition-colors
-                                {{ $review->zichtbaar
-                                    ? 'border-gray-200 dark:border-neutral-700 text-gray-500 dark:text-neutral-400 hover:border-red-300 hover:text-red-500'
-                                    : 'border-green-300 dark:border-green-800 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20' }}">
-                        {{ $review->zichtbaar ? 'Verberg' : 'Toon' }}
-                    </button>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button wire:click="toggleReviewZichtbaar({{ $review->id }})"
+                                class="text-xs font-medium px-2 py-1 rounded border transition-colors
+                                    {{ $review->zichtbaar
+                                        ? 'border-gray-200 dark:border-neutral-700 text-gray-500 dark:text-neutral-400 hover:border-red-300 hover:text-red-500'
+                                        : 'border-green-300 dark:border-green-800 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20' }}">
+                            {{ $review->zichtbaar ? 'Verberg' : 'Toon' }}
+                        </button>
+                        <button wire:click="verwijderReview({{ $review->id }})"
+                                wire:confirm="Review permanent verwijderen? Dit kan niet ongedaan worden."
+                                class="text-xs font-medium px-2 py-1 rounded border border-red-200 dark:border-red-800 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                            Verwijder
+                        </button>
+                    </div>
                 </div>
                 @endforeach
             </div>
