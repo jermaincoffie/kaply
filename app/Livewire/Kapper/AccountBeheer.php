@@ -26,7 +26,7 @@ class AccountBeheer extends Component
     {
         $this->validate([
             'huidigWachtwoord'            => ['required'],
-            'nieuwWachtwoord'             => ['required', 'confirmed', Password::min(8)],
+            'nieuwWachtwoord'             => ['required', 'same:nieuwWachtwoordBevestiging', Password::min(8)],
             'nieuwWachtwoordBevestiging'  => ['required'],
         ], [
             'huidigWachtwoord.required'           => 'Huidig wachtwoord is verplicht.',
