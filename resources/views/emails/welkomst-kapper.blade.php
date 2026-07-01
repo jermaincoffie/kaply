@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <a href="{{ route('kapper.subscription.checkout') }}" class="btn">Start gratis proefperiode</a>
+        <a href="{{ route('kapper.abonnement') }}" class="btn">Start gratis proefperiode</a>
     </div>
     <div class="footer">
         Kaply · Online boekingsplatform voor kappers<br>
