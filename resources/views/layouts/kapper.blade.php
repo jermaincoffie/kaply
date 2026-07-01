@@ -331,11 +331,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 @if($trialDagen === 0)
-                    Je gratis proefperiode verloopt <strong class=”mx-1”>vandaag</strong> - activeer nu om door te gaan.
+                    <strong>Proefperiode verloopt vandaag</strong> — activeer nu.
                 @elseif($trialDagen === 1)
-                    Je gratis proefperiode verloopt <strong class="mx-1">morgen</strong>.
+                    Proefperiode verloopt <strong>morgen</strong>.
                 @else
-                    Je gratis proefperiode verloopt over <strong class="mx-1">{{ $trialDagen }} dagen</strong>.
+                    Proefperiode: nog <strong>{{ $trialDagen }} dagen</strong> gratis.
                 @endif
             </div>
             <a href="{{ route('kapper.abonnement') }}" class="flex-shrink-0 font-semibold underline hover:no-underline whitespace-nowrap">
