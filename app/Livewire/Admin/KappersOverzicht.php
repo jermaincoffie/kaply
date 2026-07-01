@@ -17,7 +17,7 @@ class KappersOverzicht extends Component
     public function goedkeuren(int $id): void
     {
         $kapper = Kapper::findOrFail($id);
-        $kapper->update(['actief' => true, 'abonnement_status' => 'actief']);
+        $kapper->update(['actief' => true]);
         AdminLog::schrijf('goedgekeurd', $kapper);
     }
 
