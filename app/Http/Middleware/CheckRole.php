@@ -10,7 +10,11 @@ class CheckRole
 {
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        if (!$request->user() || ($request->user()->role !== 'admin' && !in_array($request->user()->role, $roles))) {
+        if (!$request->user()) {
+            return redirect()->route('login');
+        }
+
+        if ($request->user()->role !== 'admin' && !in_array($request->user()->role, $roles)) {
             abort(403);
         }
 
