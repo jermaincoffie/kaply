@@ -40,7 +40,7 @@ class SubscriptionController extends Controller
             $session = $this->stripe()->checkout->sessions->create([
                 'customer'             => $user->stripe_id,
                 'mode'                 => 'subscription',
-                'automatic_payment_methods' => ['enabled' => true],
+                'payment_method_types' => ['card'],
                 'line_items'           => [
                     ['price' => $priceId, 'quantity' => 1],
                 ],
