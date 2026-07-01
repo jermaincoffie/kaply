@@ -17,16 +17,21 @@ class OnboardingWizard extends Component
     public string $salonNaam = '';
     public string $stad      = '';
     public string $adres     = '';
+    public string $telefoon  = '';
     public string $bio       = '';
 
     // Stap 3: dienst
-    public string $dienstNaam  = '';
-    public string $dienstDuur  = '30';
-    public string $dienstPrijs = '';
+    public string $dienstNaam        = '';
+    public string $dienstDuur        = '30';
+    public string $dienstPrijs       = '';
+    public string $dienstNoShowBedrag = '0.00';
 
     // Stap 4: beschikbaarheid
-    public array $rooster       = [];
-    public int   $bufferMinuten = 0;
+    public array  $rooster              = [];
+    public int    $bufferMinuten        = 0;
+    public int    $vooruitboekenMaanden = 2;
+    public string $annuleringUren       = '';
+    public string $annuleringKosten     = '';
 
     // Stap 5: media (optioneel)
     public $foto             = null;
@@ -40,6 +45,7 @@ class OnboardingWizard extends Component
         $this->salonNaam = $kapper->salon_naam ?? '';
         $this->stad      = $kapper->stad ?? '';
         $this->adres     = $kapper->adres ?? '';
+        $this->telefoon  = $kapper->telefoon ?? '';
         $this->bio       = $kapper->bio ?? '';
 
         for ($dag = 0; $dag <= 6; $dag++) {
@@ -59,12 +65,14 @@ class OnboardingWizard extends Component
                 'salonNaam' => 'required|string|max:255',
                 'stad'      => 'required|string|max:255',
                 'adres'     => 'nullable|string|max:255',
+                'telefoon'  => 'nullable|string|max:20',
                 'bio'       => 'nullable|string|max:1000',
             ]);
             auth()->user()->kapper->update([
                 'salon_naam' => $this->salonNaam,
                 'stad'       => $this->stad,
                 'adres'      => $this->adres ?: null,
+                'telefoon'   => $this->telefoon ?: null,
                 'bio'        => $this->bio ?: null,
             ]);
         }
@@ -80,19 +88,22 @@ class OnboardingWizard extends Component
     public function dienstToevoegen(): void
     {
         $this->validate([
-            'dienstNaam'  => 'required|string|max:100',
-            'dienstDuur'  => 'required|integer|min:5|max:480',
-            'dienstPrijs' => 'required|numeric|min:0',
+            'dienstNaam'         => 'required|string|max:100',
+            'dienstDuur'         => 'required|integer|min:5|max:480',
+            'dienstPrijs'        => 'required|numeric|min:0',
+            'dienstNoShowBedrag' => 'required|numeric|min:0',
         ]);
 
         auth()->user()->kapper->diensten()->create([
-            'naam'         => $this->dienstNaam,
-            'duur_minuten' => (int) $this->dienstDuur,
-            'prijs'        => (int) round((float) str_replace(',', '.', $this->dienstPrijs) * 100),
+            'naam'           => $this->dienstNaam,
+            'duur_minuten'   => (int) $this->dienstDuur,
+            'prijs'          => (int) round((float) str_replace(',', '.', $this->dienstPrijs) * 100),
+            'no_show_bedrag' => (int) round((float) str_replace(',', '.', $this->dienstNoShowBedrag) * 100),
         ]);
 
-        $this->reset(['dienstNaam', 'dienstPrijs']);
+        $this->reset(['dienstNaam', 'dienstPrijs', 'dienstNoShowBedrag']);
         $this->dienstDuur = '30';
+        $this->dienstNoShowBedrag = '0.00';
     }
 
     public function dienstVerwijderen(int $id): void
@@ -161,8 +172,11 @@ class OnboardingWizard extends Component
         }
 
         $kapper->update([
-            'buffer_minuten'      => $this->bufferMinuten,
-            'onboarding_voltooid' => true,
+            'buffer_minuten'        => $this->bufferMinuten,
+            'vooruitboeken_maanden' => $this->vooruitboekenMaanden,
+            'annulering_uren'       => $this->annuleringUren !== '' ? (int) $this->annuleringUren : null,
+            'annulering_kosten'     => $this->annuleringKosten !== '' ? (int) round((float) $this->annuleringKosten * 100) : null,
+            'onboarding_voltooid'   => true,
         ]);
     }
 
