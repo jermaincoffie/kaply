@@ -109,7 +109,7 @@
                                     class="flex-1 px-4 py-2 rounded-lg border border-gray-200 dark:border-neutral-600 text-sm font-medium text-gray-700 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
                                 Annuleren
                             </button>
-                            <button wire:click="annuleer" @click="bevestig = false"
+                            <button @click="bevestig = false; $wire.annuleer()"
                                     class="flex-1 px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors">
                                 Ja, opzeggen
                             </button>
