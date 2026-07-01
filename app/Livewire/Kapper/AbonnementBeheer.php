@@ -36,13 +36,14 @@ class AbonnementBeheer extends Component
             : null;
 
         return view('livewire.kapper.abonnement-beheer', [
-            'subscription'          => $subscription,
-            'actief'                => $subscription?->active() ?? false,
-            'gepauzeerd'            => $subscription?->onGracePeriod() ?? false,
-            'eindDatum'             => $subscription?->ends_at,
-            'inTrial'               => $inTrial,
-            'trialDagenOver'        => $trialDagenOver,
+            'subscription'           => $subscription,
+            'actief'                 => $subscription?->active() ?? false,
+            'gepauzeerd'             => $subscription?->onGracePeriod() ?? false,
+            'eindDatum'              => $subscription?->ends_at,
+            'inTrial'                => $inTrial,
+            'trialDagenOver'         => $trialDagenOver,
             'stripeConnectOnboarded' => $kapper?->stripe_connect_onboarded ?? false,
+            'hadOoitAbonnement'      => $user->subscriptions()->exists(),
         ])->layout('layouts.kapper');
     }
 }

@@ -196,6 +196,14 @@
             <div class="mt-5 pt-5 border-t border-gray-100 dark:border-neutral-700 flex flex-col items-center">
                 <form method="POST" action="{{ route('kapper.subscription.subscribe') }}" class="w-full sm:w-auto">
                     @csrf
+                    @if($hadOoitAbonnement)
+                    <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
+                        </svg>
+                        Abonnement starten
+                    </button>
+                    @else
                     <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
@@ -205,8 +213,13 @@
                             <span class="text-xs font-normal opacity-90">Gratis voor 14 dagen</span>
                         </span>
                     </button>
+                    @endif
                 </form>
+                @if($hadOoitAbonnement)
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2 text-center">€25/maand excl. BTW · betaling via creditcard of iDEAL · op elk moment opzegbaar</p>
+                @else
                 <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2 text-center">Daarna €25/maand excl. BTW · betaling via creditcard of iDEAL · op elk moment opzegbaar</p>
+                @endif
             </div>
         @endif
     </div>
