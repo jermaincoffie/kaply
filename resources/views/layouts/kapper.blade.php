@@ -126,7 +126,7 @@
 
         {{-- Instellingen dropdown --}}
         @php
-            $instellingenActief = request()->routeIs('kapper.diensten') || request()->routeIs('kapper.beschikbaarheid') || request()->routeIs('kapper.medewerkers') || request()->routeIs('kapper.profiel-beheer') || request()->routeIs('kapper.galerij') || request()->routeIs('kapper.abonnement') || request()->routeIs('kapper.facturatie') || request()->routeIs('kapper.account');
+            $instellingenActief = request()->routeIs('kapper.diensten') || request()->routeIs('kapper.beschikbaarheid') || request()->routeIs('kapper.medewerkers') || request()->routeIs('kapper.profiel-beheer') || request()->routeIs('kapper.galerij') || request()->routeIs('kapper.abonnement') || request()->routeIs('kapper.facturatie');
         @endphp
         <div x-data="{ open: {{ $instellingenActief ? 'true' : 'false' }} }">
             <button @click="open = !open"
@@ -171,23 +171,11 @@
                     </svg>
                     Galerij
                 </a>
-                <a href="{{ route('kapper.abonnement') }}" class="{{ $linkClass('kapper.abonnement') }}">
+                <a href="{{ route('kapper.abonnement') }}" class="{{ request()->routeIs('kapper.abonnement', 'kapper.facturatie') ? 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium bg-blue-50 text-blue-900 dark:bg-neutral-700 dark:text-neutral-200' : 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200 transition-colors' }}">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
                     </svg>
-                    Abonnement
-                </a>
-                <a href="{{ route('kapper.facturatie') }}" class="{{ $linkClass('kapper.facturatie') }}">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    Facturatie
-                </a>
-                <a href="{{ route('kapper.account') }}" class="{{ $linkClass('kapper.account') }}">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
-                    </svg>
-                    Account & wachtwoord
+                    Abonnement & facturatie
                 </a>
             </div>
         </div>
@@ -197,22 +185,16 @@
     {{-- Onderin: Setup wizard + Uitloggen --}}
     <div class="px-3 pb-4 pt-2 border-t border-gray-100 dark:border-neutral-700 flex-shrink-0 space-y-0.5">
         @php $onboardingKlaar = auth()->user()->kapper?->onboarding_voltooid; @endphp
+        @if(!$onboardingKlaar)
         <a href="{{ route('kapper.onboarding') }}"
-           class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ $onboardingKlaar ? 'text-gray-500 dark:text-neutral-500 hover:bg-gray-100 dark:hover:bg-neutral-700 hover:text-gray-700 dark:hover:text-neutral-300' : 'text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-950/30' }}">
-            @if($onboardingKlaar)
-                <svg class="w-4 h-4 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-            @else
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                </svg>
-            @endif
+           class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-950/30">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
             Setup wizard
-            @if(!$onboardingKlaar)
             <span class="ml-auto w-2 h-2 rounded-full bg-orange-500 flex-shrink-0"></span>
-            @endif
         </a>
+        @endif
         {{-- Support dropdown --}}
         <div class="pt-2 mt-2 border-t border-gray-100 dark:border-neutral-700" x-data="{ open: false }">
             <button @click="open = !open"
