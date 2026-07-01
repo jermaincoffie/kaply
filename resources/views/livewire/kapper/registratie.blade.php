@@ -134,7 +134,7 @@
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                     </svg>
-                    Account aangemaakt
+                    Stap 1 voltooid
                 </span>
             </div>
             <h1 class="text-base font-semibold text-gray-800 dark:text-neutral-100 mb-1">Jouw salon</h1>
