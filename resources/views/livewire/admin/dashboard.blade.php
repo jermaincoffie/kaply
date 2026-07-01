@@ -148,10 +148,21 @@
                 </span>
                 @endif
             </div>
-            @if($trial_kappers->isEmpty())
+            @if($trial_kappers->isEmpty() && $proefperiode_kappers->isEmpty())
             <div class="px-6 py-10 text-center text-sm text-gray-400 dark:text-neutral-500">Geen kappers in trial</div>
             @else
             <div class="divide-y divide-gray-50 dark:divide-neutral-700">
+                @foreach($proefperiode_kappers as $kapper)
+                <div class="px-6 py-3">
+                    <div class="flex items-center justify-between">
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-medium text-gray-800 dark:text-neutral-100 truncate">{{ $kapper->salon_naam }}</p>
+                            <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $kapper->stad }} · {{ $kapper->user?->email }}</p>
+                        </div>
+                        <span class="text-xs font-medium text-violet-600 dark:text-violet-400 ml-3 flex-shrink-0">Nog niet gestart</span>
+                    </div>
+                </div>
+                @endforeach
                 @foreach($trial_kappers as $kapper)
                 @php
                     $urgentie = $kapper->dagen_resterend <= 2

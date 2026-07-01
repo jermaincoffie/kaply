@@ -60,6 +60,13 @@ class Dashboard extends Component
                 return $k;
             });
 
+        // Goedgekeurde kappers zonder Stripe abonnement (proefperiode nog niet gestart)
+        $proefperiode_kappers = Kapper::with('user')
+            ->where('actief', true)
+            ->where('abonnement_status', 'geen')
+            ->orderByDesc('created_at')
+            ->get();
+
         // Conversieratio: actieve abonnees / alle kappers die onboarding voltooid hebben
         $totaal_onboarded = Kapper::where('onboarding_voltooid', true)->count();
         $conversieratio   = $totaal_onboarded > 0 ? round(($abonnees_actief / $totaal_onboarded) * 100) : 0;
@@ -106,7 +113,8 @@ class Dashboard extends Component
             'prognose_mrr'            => $prognose_mrr,
             'mrr_verschil'            => $mrr_verschil,
             'trial_kappers'           => $trial_kappers,
-            'trial_count'             => $trial_kappers->count(),
+            'proefperiode_kappers'    => $proefperiode_kappers,
+            'trial_count'             => $trial_kappers->count() + $proefperiode_kappers->count(),
             'conversieratio'          => $conversieratio,
             'recente_aanmeldingen'    => $recente_aanmeldingen,
             'wachtende_kappers'       => $wachtende_kappers,
