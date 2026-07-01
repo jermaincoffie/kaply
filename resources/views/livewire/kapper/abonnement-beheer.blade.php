@@ -179,7 +179,13 @@
                             Inactief
                         </span>
                     </div>
-                    <p class="text-sm text-gray-500 dark:text-neutral-400">Start je gratis proefperiode van 14 dagen en maak je salon zichtbaar op Kaply.</p>
+                    <p class="text-sm text-gray-500 dark:text-neutral-400">
+                        @if($hadOoitAbonnement)
+                            Start je abonnement en maak je salon zichtbaar op Kaply.
+                        @else
+                            Start je gratis proefperiode van 14 dagen en maak je salon zichtbaar op Kaply.
+                        @endif
+                    </p>
                 </div>
             </div>
 
