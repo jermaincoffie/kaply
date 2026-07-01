@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Kapper;
 
+use App\Mail\WelkomstMail;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\Attributes\Url;
 use Stripe\BillingPortal\Session as PortalSession;
@@ -33,6 +35,12 @@ class AbonnementSucces extends Component
         }
 
         $this->salonNaam = auth()->user()->kapper?->salon_naam;
+
+        $user = auth()->user();
+        if (!$user->welcomed_at) {
+            $user->update(['welcomed_at' => now()]);
+            Mail::to($user->email)->send(new WelkomstMail($user));
+        }
     }
 
     public function naarPortal(): void
