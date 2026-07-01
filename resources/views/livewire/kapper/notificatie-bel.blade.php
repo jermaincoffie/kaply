@@ -1,8 +1,4 @@
-<div class="relative" wire:poll.30s
-     x-data
-     @click.outside="$wire.open = false"
-     @mouseleave="$wire.open = false"
-     x-init="window.addEventListener('scroll', () => { if ($wire.open) $wire.open = false }, { passive: true })">
+<div class="relative" wire:poll.30s x-data @click.outside="$wire.open = false">
 
     {{-- Bell knop --}}
     <button wire:click="toggle"
