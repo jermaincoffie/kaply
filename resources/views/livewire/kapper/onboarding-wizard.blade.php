@@ -256,59 +256,8 @@
             <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Je kunt dit later altijd aanpassen</p>
         </div>
 
-        {{-- Buffer --}}
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex flex-wrap items-center justify-between gap-3">
-            <div>
-                <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">Buffer na afspraak</p>
-                <p class="text-xs text-gray-400 dark:text-neutral-500">Vrije tijd na elke afspraak</p>
-            </div>
-            <x-select
-                wire-target="bufferMinuten"
-                :current="(string) $bufferMinuten"
-                :options="['0' => 'Geen buffer', '5' => '5 min', '10' => '10 min', '15' => '15 min', '30' => '30 min']"
-            />
-        </div>
-
-        {{-- Vooruit boeken --}}
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex flex-wrap items-center justify-between gap-3">
-            <div>
-                <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">Vooruit boeken</p>
-                <p class="text-xs text-gray-400 dark:text-neutral-500">Hoe ver van tevoren kunnen klanten boeken?</p>
-            </div>
-            <x-select
-                wire-target="vooruitboekenMaanden"
-                :current="(string) $vooruitboekenMaanden"
-                :options="['1' => '1 maand', '2' => '2 maanden', '3' => '3 maanden', '6' => '6 maanden', '12' => '12 maanden']"
-            />
-        </div>
-
-        {{-- Annuleringsbeleid --}}
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">
-            <p class="text-sm font-medium text-gray-700 dark:text-neutral-300 mb-3">Annuleringsbeleid <span class="text-gray-400 font-normal text-xs">— optioneel</span></p>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 dark:text-neutral-400 mb-1">Gratis annuleren tot</label>
-                    <div class="relative">
-                        <input wire:model="annuleringUren" type="number" min="1" placeholder="24"
-                               class="w-full py-2 pl-3 pr-10 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 dark:text-neutral-500 pointer-events-none">uur</span>
-                    </div>
-                    @error('annuleringUren') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-600 dark:text-neutral-400 mb-1">Annuleringskosten</label>
-                    <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 dark:text-neutral-500 pointer-events-none">€</span>
-                        <input wire:model="annuleringKosten" type="text" placeholder="0"
-                               class="w-full py-2 pl-7 pr-3 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
-                    </div>
-                    @error('annuleringKosten') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-                </div>
-            </div>
-            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2">Laat leeg om geen annuleringsbeleid in te stellen</p>
-        </div>
-
-        <div class="divide-y divide-gray-50 dark:divide-neutral-700">
+        {{-- Dagen --}}
+        <div class="divide-y divide-gray-50 dark:divide-neutral-700 border-b border-gray-100 dark:border-neutral-700">
             @foreach($rooster as $dag => $data)
             <div class="px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
                 <label class="flex items-center gap-3 cursor-pointer sm:flex-shrink-0 sm:w-32">
@@ -330,6 +279,61 @@
                 @endif
             </div>
             @endforeach
+        </div>
+
+        {{-- Buffer --}}
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">Buffer tijd</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Pauze na elke afspraak</p>
+            </div>
+            <x-select
+                class="w-full sm:w-auto"
+                wire-target="bufferMinuten"
+                :current="(string) $bufferMinuten"
+                :options="['0' => 'Geen buffer', '5' => '5 minuten', '10' => '10 minuten', '15' => '15 minuten', '30' => '30 minuten']"
+            />
+        </div>
+
+        {{-- Vooruit boeken --}}
+        <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-gray-700 dark:text-neutral-300">Vooruitboeken</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Maximale boekingsperiode</p>
+            </div>
+            <x-select
+                class="w-full sm:w-auto"
+                wire-target="vooruitboekenMaanden"
+                :current="(string) $vooruitboekenMaanden"
+                :options="['1' => '1 maand', '2' => '2 maanden', '3' => '3 maanden', '6' => '6 maanden']"
+            />
+        </div>
+
+        {{-- Annuleringstermijn --}}
+        <div class="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 border-b border-gray-100 dark:border-neutral-700">
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">Annuleringstermijn</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant kan niet meer gratis annuleren binnen deze tijd</p>
+            </div>
+            <x-select
+                class="w-full sm:w-auto"
+                wire-target="annuleringUren"
+                :current="$annuleringUren"
+                :options="['' => 'Geen limiet', '1' => '1 uur', '2' => '2 uur', '4' => '4 uur', '8' => '8 uur', '12' => '12 uur', '24' => '24 uur', '48' => '48 uur']"
+            />
+        </div>
+
+        {{-- Annuleringskosten --}}
+        <div class="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+            <div class="min-w-0">
+                <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">Annuleringskosten</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant betaalt dit bedrag bij laat annuleren (leeg = blokkeren)</p>
+            </div>
+            <div class="relative w-full sm:w-auto">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 dark:text-neutral-500 pointer-events-none">€</span>
+                <input wire:model="annuleringKosten" type="number" step="0.01" min="0" max="999" placeholder="0.00"
+                       class="pl-7 pr-3 py-2 w-full sm:w-28 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-lg text-sm text-gray-800 dark:text-neutral-200 placeholder-gray-300 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+            </div>
         </div>
     </div>
 
