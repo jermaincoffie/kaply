@@ -193,7 +193,7 @@
             </div>
             @endif
 
-            <div class="mt-5 pt-5 border-t border-gray-100 dark:border-neutral-700 flex flex-col items-center sm:items-start">
+            <div class="mt-5 pt-5 border-t border-gray-100 dark:border-neutral-700 flex flex-col items-center">
                 <form method="POST" action="{{ route('kapper.subscription.subscribe') }}" class="w-full sm:w-auto">
                     @csrf
                     <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition-colors">
@@ -206,7 +206,7 @@
                         </span>
                     </button>
                 </form>
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2 text-center sm:text-left">Daarna €25/maand excl. BTW · betaling via creditcard of iDEAL · op elk moment opzegbaar</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2 text-center">Daarna €25/maand excl. BTW · betaling via creditcard of iDEAL · op elk moment opzegbaar</p>
             </div>
         @endif
     </div>
