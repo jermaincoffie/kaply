@@ -46,7 +46,7 @@ class AccountBeheer extends Component
         ]);
 
         $this->reset(['huidigWachtwoord', 'nieuwWachtwoord', 'nieuwWachtwoordBevestiging']);
-        $this->dispatch('banner-message', style: 'success', message: 'Wachtwoord gewijzigd.');
+        $this->dispatch('wachtwoord-opgeslagen');
     }
 
     public function render()

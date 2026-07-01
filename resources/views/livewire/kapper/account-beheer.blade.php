@@ -73,11 +73,17 @@
 
             <div class="pt-2">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        x-data="{ saved: false }"
+                        @wachtwoord-opgeslagen.window="saved = true; setTimeout(() => saved = false, 3000)"
+                        :class="saved ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors">
+                    <svg x-show="!saved" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
                     </svg>
-                    Wachtwoord opslaan
+                    <svg x-show="saved" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                    </svg>
+                    <span x-text="saved ? 'Wachtwoord gewijzigd!' : 'Wachtwoord opslaan'"></span>
                 </button>
             </div>
 
