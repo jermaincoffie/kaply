@@ -47,6 +47,8 @@ class SubscriptionController extends Controller
                 'subscription_data'    => [
                     'trial_period_days' => 14,
                 ],
+                'automatic_tax'        => ['enabled' => true],
+                'customer_update'      => ['address' => 'auto'],
                 'success_url' => route('kapper.subscription.succes') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url'  => route('kapper.abonnement'),
             ], [
