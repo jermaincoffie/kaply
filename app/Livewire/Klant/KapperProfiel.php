@@ -3,6 +3,7 @@
 namespace App\Livewire\Klant;
 
 use App\Mail\AfspraakBevestigingMail;
+use App\Notifications\NieuweAfspraakNotificatie;
 use App\Models\Activiteit;
 use App\Models\Afspraak;
 use App\Models\Kapper;
@@ -202,6 +203,7 @@ class KapperProfiel extends Component
                     'type'        => 'geboekt',
                     'tekst'       => auth()->user()->name . " heeft een afspraak gemaakt voor {$dienst->naam} om {$this->geselecteerdeTijd}",
                 ]);
+                $this->kapper->user->notify(new NieuweAfspraakNotificatie($afspraak));
                 $redirectUrl = route('afspraak.betaling.checkout', ['afspraak_id' => $afspraak->id]);
                 return;
             }
@@ -240,6 +242,7 @@ class KapperProfiel extends Component
         ]);
 
         Mail::to(auth()->user()->email)->send(new AfspraakBevestigingMail($afspraak));
+        $this->kapper->user->notify(new NieuweAfspraakNotificatie($afspraak));
 
         // Klant heeft geboekt — verwijder van wachtlijst voor deze kapper
         if (auth()->id()) {
