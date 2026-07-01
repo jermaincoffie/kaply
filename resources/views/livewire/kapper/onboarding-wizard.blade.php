@@ -250,7 +250,7 @@
 {{-- Stap 4: Beschikbaarheid --}}
 @if($stap === 4)
 <div>
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl overflow-hidden mb-4">
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-2xl mb-4">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-700">
             <h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Op welke dagen werk je?</h2>
             <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Je kunt dit later altijd aanpassen</p>
