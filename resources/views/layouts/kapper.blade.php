@@ -325,7 +325,7 @@
             };
         @endphp
         @if($inTrial && $trialDagen !== null)
-        <div class="mb-4 flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border text-xs sm:text-sm {{ $bannerKleur }}">
+        <div class="mb-4 flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border text-sm {{ $bannerKleur }}">
             <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
