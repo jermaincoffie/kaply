@@ -8,7 +8,20 @@ class AbonnementBeheer extends Component
 {
     public function annuleer(): void
     {
-        auth()->user()->subscription('default')?->cancel();
+        $subscription = auth()->user()->subscription('default');
+
+        if (!$subscription) {
+            session()->flash('abonnement_fout', 'Geen abonnement gevonden.');
+            return;
+        }
+
+        try {
+            $subscription->cancelNow();
+            $this->redirect(route('kapper.abonnement'));
+        } catch (\Exception $e) {
+            report($e);
+            session()->flash('abonnement_fout', 'Opzeggen mislukt: ' . $e->getMessage());
+        }
     }
 
     public function render()
