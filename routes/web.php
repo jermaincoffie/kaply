@@ -60,8 +60,9 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
         Route::get('/stripe/refresh',  [StripeConnectController::class, 'refresh'])->name('stripe.refresh');
         Route::get('/stripe/dashboard',[StripeConnectController::class, 'dashboard'])->name('stripe.dashboard');
 
-        // Abonnement routes — geen abonnement-check (anders redirect loop)
+        // Abonnement routes + profiel — geen abonnement-check (anders redirect loop)
         Route::get('/abonnement', AbonnementBeheer::class)->name('abonnement');
+        Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
         Route::post('/abonnement/activeer', [SubscriptionController::class, 'subscribe'])->name('subscription.subscribe');
         Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
         Route::get('/abonnement/succes', AbonnementSucces::class)->name('subscription.succes');
@@ -78,7 +79,6 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
             Route::get('/diensten', DienstenBeheer::class)->name('diensten');
             Route::get('/beschikbaarheid', BeschikbaarheidBeheer::class)->name('beschikbaarheid');
             Route::get('/medewerkers', MedewerkersBeheer::class)->name('medewerkers');
-            Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
             Route::get('/galerij', GalerijBeheer::class)->name('galerij');
             Route::get('/reviews', KapperReviews::class)->name('reviews');
             Route::get('/kortingscodes', KortingscodesBeheer::class)->name('kortingscodes');
