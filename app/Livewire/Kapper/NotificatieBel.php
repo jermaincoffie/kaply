@@ -6,38 +6,37 @@ use Livewire\Component;
 
 class NotificatieBel extends Component
 {
-    public bool $open = false;
     public int $vorigeOngelezen = -1;
 
-    public function toggle(): void
+    public function markAlsGelezen(): void
     {
-        $this->open = !$this->open;
-
-        if ($this->open) {
-            auth()->user()->unreadNotifications->markAsRead();
-        }
+        auth()->user()->unreadNotifications->markAsRead();
     }
 
-    public function render()
+    public function pollen(): void
     {
-        $notificaties = auth()->user()
-            ->notifications()
-            ->latest()
-            ->limit(15)
-            ->get();
-
         $ongelezen = auth()->user()->unreadNotifications()->count();
 
         if ($this->vorigeOngelezen !== -1 && $ongelezen > $this->vorigeOngelezen) {
             $nieuwste = auth()->user()->unreadNotifications()->latest()->first();
             $this->dispatch('nieuwe-notificatie',
-                naam: $nieuwste?->data['klant_naam'] ?? 'Klant',
+                naam:   $nieuwste?->data['klant_naam']  ?? 'Klant',
                 dienst: $nieuwste?->data['dienst_naam'] ?? '',
-                tijd: $nieuwste?->data['start_tijd'] ?? '',
+                tijd:   $nieuwste?->data['start_tijd']  ?? '',
             );
         }
 
         $this->vorigeOngelezen = $ongelezen;
+    }
+
+    public function render()
+    {
+        $notificaties = auth()->user()->notifications()->latest()->limit(15)->get();
+        $ongelezen    = auth()->user()->unreadNotifications()->count();
+
+        if ($this->vorigeOngelezen === -1) {
+            $this->vorigeOngelezen = $ongelezen;
+        }
 
         return view('livewire.kapper.notificatie-bel', compact('notificaties', 'ongelezen'));
     }
