@@ -102,7 +102,7 @@
                     'trialing'   => ['Proefperiode', 'bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400'],
                     'gepauzeerd' => ['Gepauzeerd',   'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'],
                     'past_due'   => ['Betaling open','bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'],
-                    default      => ['Geen abonnement', 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400'],
+                    default      => ['Proefperiode',   'bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400'],
                 };
             @endphp
             <div class="px-4 py-3">
@@ -187,7 +187,7 @@
                                 'trialing'   => ['Proefperiode',  'bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400'],
                                 'gepauzeerd' => ['Gepauzeerd',    'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'],
                                 'past_due'   => ['Betaling open', 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'],
-                                default      => ['Geen abonnement', 'bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400'],
+                                default      => ['Proefperiode',   'bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400'],
                             };
                         @endphp
                         <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium {{ $aboCls }}">
