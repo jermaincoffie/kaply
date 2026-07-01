@@ -22,7 +22,8 @@ class EnsureAbonnementActief
 
         $subscription = $user->subscription('default');
 
-        if ($kapper->abonnement_status === 'actief' || ($subscription && $subscription->active())) {
+        // Stripe subscription actief of in trial → toegang verlenen
+        if ($subscription && $subscription->active()) {
             return $next($request);
         }
 
@@ -34,7 +35,6 @@ class EnsureAbonnementActief
             if (!$isIdeal && $kapper->abonnement_past_due_since) {
                 $dagenPastDue = now()->diffInDays($kapper->abonnement_past_due_since);
                 if ($dagenPastDue < 7) {
-                    // Nog binnen grace period — geef toegang maar banner wordt getoond
                     $request->session()->flash('abonnement_past_due', 7 - $dagenPastDue);
                     return $next($request);
                 }
@@ -43,7 +43,5 @@ class EnsureAbonnementActief
 
         return redirect()->route('kapper.abonnement')
             ->with('abonnement_vereist', true);
-
-        return $next($request);
     }
 }
