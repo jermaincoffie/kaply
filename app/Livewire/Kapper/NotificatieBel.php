@@ -7,6 +7,7 @@ use Livewire\Component;
 class NotificatieBel extends Component
 {
     public bool $open = false;
+    public int $vorigeOngelezen = -1;
 
     public function toggle(): void
     {
@@ -26,6 +27,17 @@ class NotificatieBel extends Component
             ->get();
 
         $ongelezen = auth()->user()->unreadNotifications()->count();
+
+        if ($this->vorigeOngelezen !== -1 && $ongelezen > $this->vorigeOngelezen) {
+            $nieuwste = auth()->user()->unreadNotifications()->latest()->first();
+            $this->dispatch('nieuwe-notificatie',
+                naam: $nieuwste?->data['klant_naam'] ?? 'Klant',
+                dienst: $nieuwste?->data['dienst_naam'] ?? '',
+                tijd: $nieuwste?->data['start_tijd'] ?? '',
+            );
+        }
+
+        $this->vorigeOngelezen = $ongelezen;
 
         return view('livewire.kapper.notificatie-bel', compact('notificaties', 'ongelezen'));
     }
