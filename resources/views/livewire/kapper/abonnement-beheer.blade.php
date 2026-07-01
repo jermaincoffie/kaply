@@ -58,15 +58,64 @@
                 </div>
             </div>
 
-            <div class="mt-5 pt-5 border-t border-gray-100 dark:border-neutral-700 flex items-center gap-3 flex-wrap">
-                <button wire:click="annuleer"
-                        wire:confirm="Weet je zeker dat je wilt opzeggen? Je proefperiode stopt direct en je verliest toegang tot je dashboard."
+            <div class="mt-5 pt-5 border-t border-gray-100 dark:border-neutral-700 flex items-center gap-3 flex-wrap"
+                 x-data="{ bevestig: false }">
+                <button @click="bevestig = true"
                         class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                     Proefperiode opzeggen
                 </button>
+
+                {{-- Bevestigingsmodal --}}
+                <div x-show="bevestig"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     style="display:none"
+                     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+                    <div x-show="bevestig"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         @click.outside="bevestig = false"
+                         class="w-full max-w-sm bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-neutral-700 p-6">
+
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100">Proefperiode opzeggen</p>
+                                <p class="text-xs text-gray-500 dark:text-neutral-400">Dit kan niet ongedaan worden</p>
+                            </div>
+                        </div>
+
+                        <p class="text-sm text-gray-600 dark:text-neutral-400 mb-6">
+                            Je proefperiode stopt direct en je verliest toegang tot je dashboard. Weet je het zeker?
+                        </p>
+
+                        <div class="flex gap-3">
+                            <button @click="bevestig = false"
+                                    class="flex-1 px-4 py-2 rounded-lg border border-gray-200 dark:border-neutral-600 text-sm font-medium text-gray-700 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
+                                Annuleren
+                            </button>
+                            <button wire:click="annuleer" @click="bevestig = false"
+                                    class="flex-1 px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors">
+                                Ja, opzeggen
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         @elseif($actief)
