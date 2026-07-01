@@ -17,6 +17,7 @@ use App\Livewire\Kapper\GalerijBeheer;
 use App\Livewire\Kapper\ProfielBeheer;
 use App\Livewire\Kapper\Registratie as KapperRegistratie;
 use App\Livewire\Kapper\AbonnementBeheer;
+use App\Livewire\Kapper\AccountBeheer as KapperAccount;
 use App\Livewire\Kapper\StatistiekenOverzicht;
 use App\Livewire\Kapper\AbonnementSucces;
 use App\Livewire\Kapper\AbonnementCancel;
@@ -60,9 +61,10 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
         Route::get('/stripe/refresh',  [StripeConnectController::class, 'refresh'])->name('stripe.refresh');
         Route::get('/stripe/dashboard',[StripeConnectController::class, 'dashboard'])->name('stripe.dashboard');
 
-        // Abonnement routes + profiel — geen abonnement-check (anders redirect loop)
+        // Abonnement routes + profiel + account — geen abonnement-check (anders redirect loop)
         Route::get('/abonnement', AbonnementBeheer::class)->name('abonnement');
         Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
+        Route::get('/account', KapperAccount::class)->name('account');
         Route::post('/abonnement/activeer', [SubscriptionController::class, 'subscribe'])->name('subscription.subscribe');
         Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
         Route::get('/abonnement/succes', AbonnementSucces::class)->name('subscription.succes');
