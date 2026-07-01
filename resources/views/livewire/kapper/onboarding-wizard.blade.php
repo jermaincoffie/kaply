@@ -385,7 +385,7 @@
                     <p class="text-xs text-gray-400 dark:text-neutral-500">Beheer via Stripe zelf</p>
                 </div>
                 <div class="text-center px-3 py-3 bg-gray-50 dark:bg-neutral-700/50 rounded-xl">
-                    <p class="text-xs font-semibold text-gray-700 dark:text-neutral-300 mb-0.5">Geen verplicht</p>
+                    <p class="text-xs font-semibold text-gray-700 dark:text-neutral-300 mb-0.5">Niet verplicht</p>
                     <p class="text-xs text-gray-400 dark:text-neutral-500">Klanten kunnen ook ter plaatse betalen</p>
                 </div>
             </div>
