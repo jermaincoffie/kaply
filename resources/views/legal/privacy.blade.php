@@ -27,6 +27,7 @@
                 <li>Coffie Digital (handelsnaam: Kaply)</li>
                 <li>Iepenrode 19, 2317BJ Leiden</li>
                 <li>KVK-nummer: 42089812</li>
+                <li>BTW-nummer: NL220924260B02</li>
                 <li>E-mail: <a href="mailto:info@kaply.nl" class="text-blue-600 hover:underline">info@kaply.nl</a></li>
             </ul>
         </section>
