@@ -54,21 +54,19 @@
                             Nog <span class="font-semibold text-blue-600 dark:text-blue-400">{{ $trialDagenOver }} dagen</span> gratis proberen.
                         @endif
                     </p>
-                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">Na de proefperiode: €25/maand excl. BTW · geen automatische afschrijving zonder betaling</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">Na de proefperiode automatisch €25/maand excl. BTW · op elk moment opzegbaar</p>
                 </div>
             </div>
 
-            <div class="mt-5 pt-5 border-t border-gray-100 dark:border-neutral-700">
-                <form method="POST" action="{{ route('kapper.subscription.subscribe') }}">
-                    @csrf
-                    <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
-                        </svg>
-                        Activeer abonnement · €25/maand excl. BTW
-                    </button>
-                </form>
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2">Betaling via creditcard of iDEAL · automatisch verlengd · op elk moment opzegbaar</p>
+            <div class="mt-5 pt-5 border-t border-gray-100 dark:border-neutral-700 flex items-center gap-3 flex-wrap">
+                <button wire:click="annuleer"
+                        wire:confirm="Weet je zeker dat je wilt opzeggen? Je proefperiode stopt direct en je verliest toegang tot je dashboard."
+                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Proefperiode opzeggen
+                </button>
             </div>
 
         @elseif($actief)
