@@ -115,7 +115,7 @@
                     <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">Annuleringskosten</p>
                     <x-tooltip position="below-right">Bedrag dat de klant betaalt bij te-late annulering. De klant ziet een betaalverzoek en moet betalen vóór de afspraak geannuleerd wordt. Heeft de klant een opgeslagen betaalmethode, dan wordt dit automatisch afgeschreven. Anders krijgt hij een Stripe betaalpagina. Laat leeg om te-late annulering volledig te blokkeren.</x-tooltip>
                 </div>
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant betaalt dit bedrag bij laat annuleren (leeg = blokkeren)</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant betaalt dit bedrag bij annuleren binnen de termijn (leeg = gratis)</p>
             </div>
             <div class="relative w-full sm:w-auto">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 dark:text-neutral-500 pointer-events-none">€</span>

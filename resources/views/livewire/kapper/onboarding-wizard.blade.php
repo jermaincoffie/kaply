@@ -327,7 +327,7 @@
         <div class="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
             <div class="min-w-0">
                 <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">Annuleringskosten</p>
-                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant betaalt dit bedrag bij laat annuleren (leeg = blokkeren)</p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-0.5">Klant betaalt dit bedrag bij annuleren binnen de termijn (leeg = gratis)</p>
             </div>
             <div class="relative w-full sm:w-auto">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 dark:text-neutral-500 pointer-events-none">€</span>

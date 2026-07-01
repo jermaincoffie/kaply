@@ -51,17 +51,9 @@ class MijnAfspraken extends Component
             $deadline = \Carbon\Carbon::parse($afspraak->datum->format('Y-m-d') . ' ' . $afspraak->start_tijd)
                 ->subHours($afspraak->kapper->annulering_uren);
 
-            if (now()->isAfter($deadline)) {
-                if ($afspraak->kapper->annulering_kosten > 0) {
-                    $this->annuleringFeeAfspraakId = $afspraak->id;
-                    $this->annuleringFeeKosten = $afspraak->kapper->annulering_kosten;
-                    return;
-                }
-
-                $uren = $afspraak->kapper->annulering_uren;
-                $this->annuleerFout = $uren >= 24
-                    ? 'Annuleren is niet meer mogelijk. Dit salon hanteert een annuleringstermijn van ' . ($uren / 24) . ($uren / 24 > 1 ? ' dagen' : ' dag') . '.'
-                    : 'Annuleren is niet meer mogelijk. Dit salon hanteert een annuleringstermijn van ' . $uren . ' uur.';
+            if (now()->isAfter($deadline) && $afspraak->kapper->annulering_kosten > 0) {
+                $this->annuleringFeeAfspraakId = $afspraak->id;
+                $this->annuleringFeeKosten = $afspraak->kapper->annulering_kosten;
                 return;
             }
         }
