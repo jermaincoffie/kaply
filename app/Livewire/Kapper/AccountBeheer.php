@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 
 class AccountBeheer extends Component
 {
@@ -47,6 +48,32 @@ class AccountBeheer extends Component
 
         $this->reset(['huidigWachtwoord', 'nieuwWachtwoord', 'nieuwWachtwoordBevestiging']);
         $this->dispatch('wachtwoord-opgeslagen');
+    }
+
+    public function verwijderAccount(): void
+    {
+        $user = Auth::user();
+
+        // Abonnement direct opzeggen bij Stripe
+        try {
+            $user->subscription('default')?->cancelNow();
+        } catch (\Exception $e) {
+            report($e);
+        }
+
+        Auth::logout();
+
+        DB::transaction(function () use ($user) {
+            $user->kapper?->delete();
+            $user->notifications()->delete();
+            $user->subscriptions()->delete();
+            $user->delete();
+        });
+
+        session()->invalidate();
+        session()->regenerateToken();
+
+        $this->redirect(route('home'), navigate: false);
     }
 
     public function render()
