@@ -427,7 +427,7 @@
         <div class="max-w-4xl mx-auto flex flex-col items-center gap-5">
 
             {{-- Logo --}}
-            <img src="{{ asset('images/ChatGPT Image 13 jun 2026, 16_07_21.png') }}" alt="Kaply" class="h-7 dark:hidden">
+            <img src="{{ asset('images/kaply-logo.png') }}" alt="Kaply" class="h-7 dark:hidden">
             <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" alt="Kaply" class="h-7 hidden dark:block">
 
             {{-- Contact links --}}
