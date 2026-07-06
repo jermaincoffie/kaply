@@ -1,6 +1,8 @@
 const CACHE = 'kaply-v4';
 
 self.addEventListener('push', function (event) {
+    fetch('/sw-push-ping', { method: 'POST' }).catch(() => {});
+
     let title = 'Kaply';
     let body = 'Nieuwe melding';
     let icon = '/images/PWA-icon-192.png';

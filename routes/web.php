@@ -38,6 +38,12 @@ use App\Livewire\Klant\KapperZoeken;
 use App\Livewire\Klant\MijnAfspraken;
 use Illuminate\Support\Facades\Route;
 
+// SW push debug ping (tijdelijk)
+Route::post('/sw-push-ping', function () {
+    \Illuminate\Support\Facades\Log::info('SW push event vuurde op apparaat UA: ' . request()->userAgent());
+    return response('ok');
+})->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
 // Publiek
 Route::get('/', KapperZoeken::class)->name('home');
 Route::get('/kappers/{stad}', KappersPerStad::class)->name('stad.kappers');
