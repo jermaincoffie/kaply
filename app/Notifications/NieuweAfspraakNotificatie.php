@@ -25,7 +25,7 @@ class NieuweAfspraakNotificatie extends Notification
         $dienst = $this->afspraak->dienst?->naam ?? '';
         $tijd   = $this->afspraak->start_tijd;
 
-        return WebPushMessage::create()
+        return (new WebPushMessage)
             ->title('Nieuwe afspraak! 📅')
             ->body("{$klant} · {$dienst} om {$tijd}")
             ->icon('/images/PWA-icon-192.png')
