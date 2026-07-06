@@ -103,8 +103,9 @@
          tijd = $event.detail.tijd;
          toon = true;
          setTimeout(() => toon = false, 5000);
-     "
-     x-show="toon"
+     ">
+<template x-teleport="body">
+<div x-show="toon"
      x-transition:enter="transition ease-out duration-300"
      x-transition:enter-start="opacity-0 translate-y-2"
      x-transition:enter-end="opacity-100 translate-y-0"
@@ -112,7 +113,7 @@
      x-transition:leave-start="opacity-100"
      x-transition:leave-end="opacity-0"
      style="display:none"
-     class="fixed bottom-5 right-5 z-[100] w-72 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl shadow-xl p-4 flex items-start gap-3">
+     class="fixed bottom-5 right-5 z-[9999] w-72 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl shadow-xl p-4 flex items-start gap-3">
     <div class="w-9 h-9 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
         <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -128,4 +129,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
         </svg>
     </button>
+</div>
+</template>
 </div>
