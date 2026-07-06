@@ -16,11 +16,19 @@ class AccountBeheer extends Component
 
     public string $email = '';
     public string $naam = '';
+    public bool $notificatieEmail = true;
 
     public function mount(): void
     {
         $this->email = Auth::user()->email;
         $this->naam  = Auth::user()->name;
+        $this->notificatieEmail = (bool) Auth::user()->kapper?->notificatie_email ?? true;
+    }
+
+    public function slaNotificatieEmailOp(): void
+    {
+        Auth::user()->kapper?->update(['notificatie_email' => $this->notificatieEmail]);
+        session()->flash('notificatie_opgeslagen', true);
     }
 
     public function wijzigWachtwoord(): void

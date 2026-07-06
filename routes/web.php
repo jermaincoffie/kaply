@@ -38,11 +38,11 @@ use App\Livewire\Klant\KapperZoeken;
 use App\Livewire\Klant\MijnAfspraken;
 use Illuminate\Support\Facades\Route;
 
-// SW push debug ping (tijdelijk)
-Route::post('/sw-push-ping', function () {
-    \Illuminate\Support\Facades\Log::info('SW push event vuurde op apparaat UA: ' . request()->userAgent());
-    return response('ok');
-})->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+// Notificatie uitschrijven (signed URL, geen auth nodig)
+Route::get('/notificaties/uitschrijven/{user}', function (\App\Models\User $user) {
+    $user->kapper?->update(['notificatie_email' => false]);
+    return view('emails.uitschrijven-bevestiging');
+})->name('notificaties.uitschrijven')->middleware('signed');
 
 // Publiek
 Route::get('/', KapperZoeken::class)->name('home');

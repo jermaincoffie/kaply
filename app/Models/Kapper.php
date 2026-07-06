@@ -15,7 +15,7 @@ class Kapper extends Model
         'telefoon', 'bio', 'foto', 'stripe_customer_id',
         'stripe_connect_id', 'stripe_connect_onboarded', 'stripe_subscription_id',
         'abonnement_status', 'actief', 'buffer_minuten', 'vooruitboeken_maanden', 'annulering_uren', 'annulering_kosten', 'onboarding_voltooid', 'ical_token',
-        'trial_dag3_verstuurd', 'trial_dag10_verstuurd',
+        'trial_dag3_verstuurd', 'trial_dag10_verstuurd', 'notificatie_email',
     ];
 
     protected $casts = [
@@ -24,6 +24,7 @@ class Kapper extends Model
         'stripe_connect_onboarded' => 'boolean',
         'trial_dag3_verstuurd'    => 'boolean',
         'trial_dag10_verstuurd'   => 'boolean',
+        'notificatie_email'       => 'boolean',
     ];
 
     public function user() { return $this->belongsTo(User::class); }

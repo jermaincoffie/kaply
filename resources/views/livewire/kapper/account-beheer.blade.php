@@ -106,6 +106,22 @@
         <p class="text-xs text-gray-400 dark:text-neutral-500 mt-4">Naam of e-mailadres wijzigen? Neem contact op via <a href="mailto:info@kaply.nl" class="underline">info@kaply.nl</a>.</p>
     </div>
 
+    {{-- Email notificaties --}}
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-6">
+        <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-1">Email notificaties</p>
+        <p class="text-xs text-gray-400 dark:text-neutral-500 mb-4">Ontvang een email bij elke nieuwe afspraak.</p>
+
+        <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" wire:model.live="notificatieEmail" wire:change="slaNotificatieEmailOp"
+                   class="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500 cursor-pointer">
+            <span class="text-sm text-gray-700 dark:text-neutral-300">Email sturen bij nieuwe afspraak</span>
+        </label>
+
+        @if(session('notificatie_opgeslagen'))
+            <p class="mt-2 text-xs text-green-600 dark:text-green-400">Opgeslagen.</p>
+        @endif
+    </div>
+
     {{-- Account verwijderen --}}
     <div x-data="{ bevestig: false }"
          class="bg-white dark:bg-neutral-800 border border-red-100 dark:border-red-900/30 rounded-xl p-6">
