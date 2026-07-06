@@ -1,4 +1,31 @@
-const CACHE = 'kaply-v2';
+const CACHE = 'kaply-v3';
+
+self.addEventListener('push', function (event) {
+    if (!event.data) return;
+    const data = event.data.json();
+    event.waitUntil(
+        self.registration.showNotification(data.title || 'Kaply', {
+            body:    data.body  || '',
+            icon:    data.icon  || '/images/PWA-icon-192.png',
+            badge:   data.badge || '/images/PWA-icon-192.png',
+            data:    data.data  || {},
+            vibrate: [200, 100, 200],
+        })
+    );
+});
+
+self.addEventListener('notificationclick', function (event) {
+    event.notification.close();
+    const url = (event.notification.data?.url || '/agenda');
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
+            for (const client of list) {
+                if ('focus' in client) return client.focus();
+            }
+            if (clients.openWindow) return clients.openWindow(url);
+        })
+    );
+});
 const STATIC = [
     '/offline.html',
 ];

@@ -458,6 +458,54 @@
     }
 </script>
 
+<script>
+// ===== WEB PUSH =====
+const VAPID_PUBLIC = '{{ config('webpush.vapid.public_key') }}';
+
+async function registerPush() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+
+    try {
+        const reg = await navigator.serviceWorker.ready;
+        let sub = await reg.pushManager.getSubscription();
+
+        if (!sub) {
+            const perm = await Notification.requestPermission();
+            if (perm !== 'granted') return;
+
+            sub = await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC),
+            });
+        }
+
+        await fetch('{{ route('kapper.push.subscribe') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify(sub.toJSON()),
+        });
+    } catch (e) {
+        console.warn('Push registratie mislukt:', e);
+    }
+}
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = atob(base64);
+    return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(() => {
+        registerPush();
+    });
+}
+</script>
+
 </body>
 </html>
 

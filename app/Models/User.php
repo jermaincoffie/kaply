@@ -11,11 +11,13 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 
 class User extends Authenticatable
 {
     use HasApiTokens;
     use Billable;
+    use HasPushSubscriptions;
 
     /** @use HasFactory<UserFactory> */
     use HasFactory;

@@ -5,6 +5,8 @@ namespace App\Notifications;
 use App\Models\Afspraak;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\WebPush\WebPushChannel;
+use NotificationChannels\WebPush\WebPushMessage;
 
 class NieuweAfspraakNotificatie extends Notification
 {
@@ -14,7 +16,21 @@ class NieuweAfspraakNotificatie extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', WebPushChannel::class];
+    }
+
+    public function toWebPush(object $notifiable, $notification): WebPushMessage
+    {
+        $klant  = $this->afspraak->klant?->name ?? $this->afspraak->walk_in_naam ?? 'Klant';
+        $dienst = $this->afspraak->dienst?->naam ?? '';
+        $tijd   = $this->afspraak->start_tijd;
+
+        return WebPushMessage::create()
+            ->title('Nieuwe afspraak! 📅')
+            ->body("{$klant} · {$dienst} om {$tijd}")
+            ->icon('/images/PWA-icon-192.png')
+            ->badge('/images/PWA-icon-192.png')
+            ->data(['url' => '/agenda']);
     }
 
     public function toDatabase(object $notifiable): array

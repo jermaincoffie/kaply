@@ -65,6 +65,7 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
         Route::get('/abonnement', AbonnementBeheer::class)->name('abonnement');
         Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
         Route::get('/account', KapperAccount::class)->name('account');
+        Route::post('/push/subscribe', [\App\Http\Controllers\PushSubscriptionController::class, 'store'])->name('push.subscribe');
         Route::post('/abonnement/activeer', [SubscriptionController::class, 'subscribe'])->name('subscription.subscribe');
         Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
         Route::get('/abonnement/succes', AbonnementSucces::class)->name('subscription.succes');
