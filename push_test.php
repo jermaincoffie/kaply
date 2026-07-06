@@ -26,7 +26,7 @@ foreach ($subs as $sub) {
         'endpoint' => $sub->endpoint,
         'keys'     => ['p256dh' => $sub->public_key, 'auth' => $sub->auth_token],
     ]);
-    $push->queueNotification($subscription, null);
+    $push->queueNotification($subscription, json_encode(['title' => 'Test', 'body' => 'Push test']));
 }
 
 $reports = $push->flush();
