@@ -1,15 +1,33 @@
-const CACHE = 'kaply-v3';
+const CACHE = 'kaply-v4';
 
 self.addEventListener('push', function (event) {
-    if (!event.data) return;
-    const data = event.data.json();
+    let title = 'Kaply';
+    let body = 'Nieuwe melding';
+    let icon = '/images/PWA-icon-192.png';
+    let badge = '/images/PWA-icon-192.png';
+    let data = {};
+
+    if (event.data) {
+        try {
+            const parsed = event.data.json();
+            title  = parsed.title  || title;
+            body   = parsed.body   || body;
+            icon   = parsed.icon   || icon;
+            badge  = parsed.badge  || badge;
+            data   = parsed.data   || data;
+        } catch (e) {
+            body = event.data.text() || body;
+        }
+    }
+
     event.waitUntil(
-        self.registration.showNotification(data.title || 'Kaply', {
-            body:    data.body  || '',
-            icon:    data.icon  || '/images/PWA-icon-192.png',
-            badge:   data.badge || '/images/PWA-icon-192.png',
-            data:    data.data  || {},
+        self.registration.showNotification(title, {
+            body:    body,
+            icon:    icon,
+            badge:   badge,
+            data:    data,
             vibrate: [200, 100, 200],
+            requireInteraction: false,
         })
     );
 });
