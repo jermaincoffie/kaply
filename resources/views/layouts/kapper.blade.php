@@ -500,10 +500,41 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(() => {
-        registerPush();
-    });
+    navigator.serviceWorker.register('/sw.js');
+
+    // Auto-register alleen als al toestemming gegeven (niet op iOS zonder klik)
+    if (Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(() => registerPush());
+    }
 }
+
+window.activeerPushMeldingen = async function() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        alert('Push meldingen worden niet ondersteund op dit apparaat.');
+        return;
+    }
+    try {
+        const reg = await navigator.serviceWorker.ready;
+        const perm = await Notification.requestPermission();
+        if (perm !== 'granted') return;
+        let sub = await reg.pushManager.getSubscription();
+        if (!sub) {
+            sub = await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC),
+            });
+        }
+        await fetch('{{ route('kapper.push.subscribe') }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+            body: JSON.stringify(sub.toJSON()),
+        });
+        alert('Push meldingen ingeschakeld!');
+    } catch (e) {
+        console.warn('Push registratie mislukt:', e);
+        alert('Inschakelen mislukt: ' + e.message);
+    }
+};
 </script>
 
 </body>

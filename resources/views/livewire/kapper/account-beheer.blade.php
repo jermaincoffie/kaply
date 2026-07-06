@@ -106,20 +106,33 @@
         <p class="text-xs text-gray-400 dark:text-neutral-500 mt-4">Naam of e-mailadres wijzigen? Neem contact op via <a href="mailto:info@kaply.nl" class="underline">info@kaply.nl</a>.</p>
     </div>
 
-    {{-- Email notificaties --}}
-    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-6">
-        <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-1">Email notificaties</p>
-        <p class="text-xs text-gray-400 dark:text-neutral-500 mb-4">Ontvang een email bij elke nieuwe afspraak.</p>
+    {{-- Notificaties --}}
+    <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl p-6 space-y-4">
+        <div>
+            <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 mb-1">Notificaties</p>
+            <p class="text-xs text-gray-400 dark:text-neutral-500">Stel in hoe je op de hoogte blijft van nieuwe afspraken.</p>
+        </div>
 
         <label class="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" wire:model.live="notificatieEmail" wire:change="slaNotificatieEmailOp"
                    class="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500 cursor-pointer">
-            <span class="text-sm text-gray-700 dark:text-neutral-300">Email sturen bij nieuwe afspraak</span>
+            <span class="text-sm text-gray-700 dark:text-neutral-300">Email bij nieuwe afspraak</span>
         </label>
 
         @if(session('notificatie_opgeslagen'))
-            <p class="mt-2 text-xs text-green-600 dark:text-green-400">Opgeslagen.</p>
+            <p class="text-xs text-green-600 dark:text-green-400">Opgeslagen.</p>
         @endif
+
+        <div class="pt-2 border-t border-gray-100 dark:border-neutral-700">
+            <p class="text-xs text-gray-400 dark:text-neutral-500 mb-2">Push melding op dit apparaat (ook als app gesloten is)</p>
+            <button onclick="activeerPushMeldingen()"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-neutral-700 text-gray-700 dark:text-neutral-200 hover:bg-gray-200 dark:hover:bg-neutral-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
+                </svg>
+                Push meldingen inschakelen
+            </button>
+        </div>
     </div>
 
     {{-- Account verwijderen --}}
