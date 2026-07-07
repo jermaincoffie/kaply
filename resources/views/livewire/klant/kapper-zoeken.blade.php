@@ -428,7 +428,7 @@
 
             {{-- Logo --}}
             <img src="{{ asset('images/kaply-logo.png') }}" alt="Kaply" class="h-7 dark:hidden">
-            <img src="{{ asset('images/dark modus kaply.png') }}" alt="Kaply" class="h-7 hidden dark:block" style="mix-blend-mode: screen;">
+            <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" alt="Kaply" class="h-7 hidden dark:block" >
 
             {{-- Contact links --}}
             <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-neutral-400">

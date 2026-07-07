@@ -3,7 +3,7 @@
     {{-- Logo --}}
     <a href="{{ route('home') }}" class="mb-8 hover:opacity-80 transition-opacity">
         <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-16 w-auto" alt="Kaply">
-        <img src="{{ asset('images/dark modus kaply.png') }}" class="hidden dark:block h-16 w-auto" alt="Kaply" style="mix-blend-mode: screen;">
+        <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="hidden dark:block h-16 w-auto" alt="Kaply" >
     </a>
 
     {{-- Card --}}
