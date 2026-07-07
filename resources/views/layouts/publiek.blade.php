@@ -42,7 +42,7 @@
         <div class="h-14 flex items-center px-4 sm:px-6 gap-4">
             <a href="{{ route('home') }}" class="hover:opacity-80 transition-opacity flex-shrink-0">
                 <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-20 w-auto" alt="Kaply">
-                <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="hidden dark:block h-20 w-auto" alt="Kaply">
+                <img src="{{ asset('images/dark modus kaply.png') }}" class="hidden dark:block h-20 w-auto" style="mix-blend-mode: screen;" alt="Kaply">
             </a>
 
             {{-- Desktop nav --}}

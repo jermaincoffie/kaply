@@ -1,9 +1,9 @@
-<div class="min-h-screen bg-gray-50 dark:bg-neutral-900 flex flex-col items-center justify-center px-4 py-12">
+﻿<div class="min-h-screen bg-gray-50 dark:bg-neutral-900 flex flex-col items-center justify-center px-4 py-12">
 
     {{-- Logo --}}
     <a href="{{ route('home') }}" class="mb-8 hover:opacity-80 transition-opacity">
         <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-16 w-auto" alt="Kaply">
-        <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="hidden dark:block h-16 w-auto" alt="Kaply">
+        <img src="{{ asset('images/dark modus kaply.png') }}" class="hidden dark:block h-16 w-auto" alt="Kaply" style="mix-blend-mode: screen;">
     </a>
 
     {{-- Card --}}

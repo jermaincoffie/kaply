@@ -1,10 +1,10 @@
-<div class="min-h-screen flex items-center justify-center px-4 py-12">
+﻿<div class="min-h-screen flex items-center justify-center px-4 py-12">
     <div class="w-full max-w-sm">
 
         {{-- Logo --}}
         <div class="text-center mb-8">
             <img src="{{ asset('images/kaply-logo-light.png') }}" class="h-16 w-auto mx-auto dark:hidden" alt="Kaply">
-            <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="h-16 w-auto mx-auto hidden dark:block" alt="Kaply">
+            <img src="{{ asset('images/dark modus kaply.png') }}" class="h-16 w-auto mx-auto hidden dark:block" alt="Kaply" style="mix-blend-mode: screen;">
         </div>
 
         <div class="bg-white dark:bg-neutral-800 rounded-2xl border border-gray-200 dark:border-neutral-700 shadow-sm p-8">

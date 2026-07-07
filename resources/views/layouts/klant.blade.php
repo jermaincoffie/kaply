@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
@@ -39,7 +39,7 @@
     <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-neutral-700 flex-shrink-0">
         <a href="{{ route('home') }}" class="hover:opacity-80 transition-opacity">
             <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-10 w-auto" alt="Kaply">
-            <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="hidden dark:block h-10 w-auto" alt="Kaply">
+            <img src="{{ asset('images/dark modus kaply.png') }}" class="hidden dark:block h-10 w-auto" alt="Kaply" style="mix-blend-mode: screen;">
         </a>
         <button onclick="closeSidebar()" class="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -121,7 +121,7 @@
 
     <a href="{{ route('home') }}" class="hover:opacity-80 transition-opacity flex-shrink-0">
         <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-12 w-auto" alt="Kaply">
-        <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="hidden dark:block h-12 w-auto" alt="Kaply">
+        <img src="{{ asset('images/dark modus kaply.png') }}" class="hidden dark:block h-12 w-auto" alt="Kaply" style="mix-blend-mode: screen;">
     </a>
 
     <div class="flex-1"></div>

@@ -1,4 +1,4 @@
-@extends('layouts.publiek')
+﻿@extends('layouts.publiek')
 
 @section('content')
 
@@ -233,7 +233,7 @@
 {{-- FOOTER --}}
 <footer class="bg-gray-950 border-t border-gray-800 py-8 px-4 sm:px-6">
     <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <img src="{{ asset('images/dark modus kaply bg removed.PNG') }}" class="h-16 w-auto opacity-70" alt="Kaply">
+        <img src="{{ asset('images/dark modus kaply.png') }}" class="h-16 w-auto opacity-70" alt="Kaply" style="mix-blend-mode: screen;">
         <div class="flex items-center gap-6 text-xs text-gray-500">
             <a href="{{ route('home') }}" class="hover:text-gray-300 transition-colors">Kappers zoeken</a>
             <a href="{{ route('privacy') }}" class="hover:text-gray-300 transition-colors">Privacy</a>
