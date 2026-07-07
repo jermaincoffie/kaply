@@ -38,7 +38,7 @@
 <body class="font-sans antialiased bg-gray-100 dark:bg-neutral-900 text-gray-800 dark:text-neutral-200 min-h-screen">
 
     {{-- Header --}}
-    <header x-data="{ mobileOpen: false }" class="sticky top-0 z-30 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700">
+    <header x-data="{ mobileOpen: false }" class="sticky top-0 z-30 bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800">
         <div class="h-14 flex items-center px-4 sm:px-6 gap-4">
             <a href="{{ route('home') }}" class="hover:opacity-80 transition-opacity flex-shrink-0">
                 <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-11 w-auto" alt="Kaply">

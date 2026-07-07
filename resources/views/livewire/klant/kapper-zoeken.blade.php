@@ -71,7 +71,7 @@
     </div>
 
     {{-- Hero --}}
-    <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-10 pb-4 sm:pt-28 sm:pb-8 px-4">
+    <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-4 pb-4 sm:pt-28 sm:pb-8 px-4">
         {{-- Aurora: alleen in hero --}}
         <div class="absolute inset-0 pointer-events-none overflow-hidden">
             <div class="absolute inset-0"
@@ -88,7 +88,7 @@
 
         {{-- Pill zoekbalk --}}
         <div class="hero-anim hero-anim-4 max-w-5xl mx-auto w-full">
-            <div class="flex items-center overflow-hidden bg-white/70 dark:bg-neutral-900 backdrop-blur-sm border border-gray-200 dark:border-neutral-600 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
+            <div class="flex items-center overflow-hidden bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 @if($steden->count() > 0)
                 @php $stadOpties = collect([''=>'Alle steden'])->merge($steden->mapWithKeys(fn($s)=>[$s=>$s]))->toArray(); @endphp
                 <div x-data="{
