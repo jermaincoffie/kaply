@@ -35,7 +35,7 @@
         }
     </script>
 </head>
-<body class="font-sans antialiased bg-gray-100 dark:bg-neutral-900 text-gray-800 dark:text-neutral-200 min-h-screen">
+<body class="font-sans antialiased bg-white dark:bg-neutral-900 text-gray-800 dark:text-neutral-200 min-h-screen">
 
     {{-- Header --}}
     <header x-data="{ mobileOpen: false }" class="sticky top-0 z-30 bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800">
