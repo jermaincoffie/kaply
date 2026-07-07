@@ -8,7 +8,7 @@
          x-transition:leave="transition ease-in duration-100"
          x-transition:leave-start="translate-y-0 opacity-100"
          x-transition:leave-end="-translate-y-full opacity-0"
-         class="fixed top-14 left-0 right-0 z-20 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-neutral-700 shadow-sm px-4 py-2.5">
+         class="fixed top-14 left-0 right-0 z-20 bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 shadow-sm px-4 py-2.5">
         <div class="max-w-2xl mx-auto flex items-center bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
             @if($steden->count() > 0)
             @php $stadOpties = collect([''=>'Alle steden'])->merge($steden->mapWithKeys(fn($s)=>[$s=>$s]))->toArray(); @endphp
@@ -71,11 +71,11 @@
     </div>
 
     {{-- Hero --}}
-    <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-4 pb-4 sm:pt-28 sm:pb-8 px-4">
-        {{-- Aurora: alleen in dark mode zichtbaar --}}
+    <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-10 pb-4 sm:pt-28 sm:pb-8 px-4">
+        {{-- Aurora: alleen in hero --}}
         <div class="absolute inset-0 pointer-events-none overflow-hidden">
-            <div class="absolute inset-0 opacity-0 dark:opacity-[0.38]"
-                 style="background: radial-gradient(ellipse 120% 80% at 5% 10%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 90% 0%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%);"></div>
+            <div class="absolute inset-0"
+                 style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.38;"></div>
         </div>
         {{-- Fade onderaan hero naar wit --}}
         <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900"></div>
