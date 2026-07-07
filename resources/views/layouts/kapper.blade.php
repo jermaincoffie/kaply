@@ -517,13 +517,16 @@ window.activeerPushMeldingen = async function() {
         const reg = await navigator.serviceWorker.ready;
         const perm = await Notification.requestPermission();
         if (perm !== 'granted') return;
-        let sub = await reg.pushManager.getSubscription();
-        if (!sub) {
-            sub = await reg.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC),
-            });
-        }
+
+        // Verwijder bestaande subscription zodat browser een nieuw FCM token aanmaakt
+        const existing = await reg.pushManager.getSubscription();
+        if (existing) await existing.unsubscribe();
+
+        const sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC),
+        });
+
         await fetch('{{ route('kapper.push.subscribe') }}', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
