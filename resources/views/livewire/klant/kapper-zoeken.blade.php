@@ -80,7 +80,7 @@
         {{-- Fade onderaan hero naar wit --}}
         <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900"></div>
         <div class="text-center mb-6 sm:mb-14">
-            <p class="hero-anim hero-anim-1 text-sm font-medium text-gray-400 dark:text-neutral-500 mb-3 tracking-widest uppercase">Welkom bij</p>
+            <p class="hero-anim hero-anim-1 text-sm font-medium text-gray-400 dark:text-neutral-300 mb-3 tracking-widest uppercase">Welkom bij</p>
             <h1 class="hero-anim hero-anim-2 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-0">
                 {{ config('app.name') }}
             </h1>
@@ -88,7 +88,7 @@
 
         {{-- Pill zoekbalk --}}
         <div class="hero-anim hero-anim-4 max-w-5xl mx-auto w-full">
-            <div class="flex items-center bg-white/70 dark:bg-neutral-800 backdrop-blur-sm border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
+            <div class="flex items-center bg-white/70 dark:bg-neutral-900 backdrop-blur-sm border border-gray-200 dark:border-neutral-600 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 @if($steden->count() > 0)
                 @php $stadOpties = collect([''=>'Alle steden'])->merge($steden->mapWithKeys(fn($s)=>[$s=>$s]))->toArray(); @endphp
                 <div x-data="{
