@@ -160,6 +160,10 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
         Route::get('/profiel', ProfielBeheer::class)->name('profiel-beheer');
         Route::get('/account', KapperAccount::class)->name('account');
         Route::post('/push/subscribe', [\App\Http\Controllers\PushSubscriptionController::class, 'store'])->name('push.subscribe');
+        Route::get('/push/test', function () {
+            auth()->user()->notify(new \App\Notifications\TestPushNotificatie());
+            return back()->with('success', 'Test push verstuurd — check je telefoon binnen 10 seconden.');
+        })->name('push.test');
         Route::post('/abonnement/activeer', [SubscriptionController::class, 'subscribe'])->name('subscription.subscribe');
         Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
         Route::get('/abonnement/succes', AbonnementSucces::class)->name('subscription.succes');

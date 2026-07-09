@@ -125,13 +125,23 @@
 
         <div class="pt-2 border-t border-gray-100 dark:border-neutral-700">
             <p class="text-xs text-gray-400 dark:text-neutral-500 mb-2">Push melding op dit apparaat (ook als app gesloten is)</p>
-            <button onclick="activeerPushMeldingen()"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-neutral-700 text-gray-700 dark:text-neutral-200 hover:bg-gray-200 dark:hover:bg-neutral-600 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
-                </svg>
-                Push meldingen inschakelen
-            </button>
+            @if(session('success'))
+            <p class="text-xs text-green-600 dark:text-green-400 mb-2">{{ session('success') }}</p>
+            @endif
+            <div class="flex flex-wrap gap-2">
+                <button onclick="activeerPushMeldingen()"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-neutral-700 text-gray-700 dark:text-neutral-200 hover:bg-gray-200 dark:hover:bg-neutral-600 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
+                    </svg>
+                    Push meldingen inschakelen
+                </button>
+                <a href="{{ route('kapper.push.test') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
+                    Test melding sturen
+                </a>
+            </div>
+            <p class="text-xs text-gray-400 dark:text-neutral-500 mt-2">Klik "Test melding sturen" om te controleren of push werkt op dit apparaat.</p>
         </div>
     </div>
 
