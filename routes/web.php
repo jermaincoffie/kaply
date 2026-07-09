@@ -91,6 +91,55 @@ Route::post('/inloggen/profiel', function (Request $request) {
 
     return redirect()->route('klant.inloggen', ['stap' => 'code']);
 })->name('klant.inloggen.profiel')->middleware('guest');
+
+Route::post('/inloggen/code', function (Request $request) {
+    $email = session('klant_inloggen_email');
+    if (!$email) return redirect()->route('klant.inloggen');
+
+    $request->validate(['code' => 'required|digits:6']);
+
+    $sleutel = 'otp-verify:' . $request->ip();
+    if (RateLimiter::tooManyAttempts($sleutel, 10)) {
+        return back()->with('fout', 'Te veel pogingen. Probeer later opnieuw.');
+    }
+    RateLimiter::hit($sleutel, 60);
+
+    $otp = OtpCode::where('email', $email)
+        ->where('code', $request->input('code'))
+        ->first();
+
+    if (!$otp || !$otp->isGeldig()) {
+        return back()->with('fout', 'Ongeldige of verlopen code. Probeer opnieuw.');
+    }
+
+    $otp->update(['used_at' => now()]);
+
+    $profiel         = session('klant_profiel', []);
+    $isNieuwGebruiker = !empty($profiel);
+
+    $user = \App\Models\User::firstOrCreate(
+        ['email' => $email],
+        $isNieuwGebruiker ? [
+            'name'       => trim(($profiel['voornaam'] ?? '') . ' ' . ($profiel['achternaam'] ?? '')),
+            'voornaam'   => $profiel['voornaam']   ?? '',
+            'achternaam' => $profiel['achternaam'] ?? '',
+            'telefoon'   => $profiel['telefoon']   ?? '',
+            'password'   => bcrypt(str()->random(32)),
+            'role'       => 'klant',
+        ] : [
+            'name'     => explode('@', $email)[0],
+            'password' => bcrypt(str()->random(32)),
+            'role'     => 'klant',
+        ]
+    );
+
+    \Illuminate\Support\Facades\Auth::login($user, true);
+
+    session()->forget(['klant_inloggen_email', 'klant_profiel']);
+
+    return redirect()->intended(route('klant.afspraken'));
+})->name('klant.inloggen.code')->middleware('guest');
+
 Route::get('/kapper/registreer', KapperRegistratie::class)->name('kapper.registreer');
 
 // Kapper dashboard (MOET vóór /kapper/{slug} staan — anders vangt slug 'dashboard' af)
