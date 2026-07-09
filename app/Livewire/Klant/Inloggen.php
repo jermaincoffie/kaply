@@ -6,6 +6,7 @@ use App\Mail\OtpCodeMail;
 use App\Models\OtpCode;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Validate;
@@ -39,6 +40,7 @@ class Inloggen extends Component
 
     public function vulProfielIn(): void
     {
+        Log::info('OTP: vulProfielIn aangeroepen', ['email' => $this->email, 'voornaam' => $this->voornaam]);
         $this->validate([
             'voornaam'   => 'required|string|min:2',
             'achternaam' => 'required|string|min:2',
@@ -50,9 +52,12 @@ class Inloggen extends Component
 
     private function verzendOtp(): void
     {
+        Log::info('OTP: verzendOtp gestart', ['email' => $this->email]);
+
         $sleutel = 'otp-verstuur:' . request()->ip();
         if (RateLimiter::tooManyAttempts($sleutel, 5)) {
             $this->fout = 'Te veel pogingen. Probeer over een minuut opnieuw.';
+            Log::warning('OTP: rate limiter geblokkeerd', ['email' => $this->email]);
             return;
         }
         RateLimiter::hit($sleutel, 60);
@@ -67,7 +72,16 @@ class Inloggen extends Component
             'expires_at' => now()->addMinutes(5),
         ]);
 
-        Mail::to($this->email)->send(new OtpCodeMail($code));
+        Log::info('OTP: code aangemaakt, mail versturen...', ['email' => $this->email]);
+
+        try {
+            Mail::to($this->email)->send(new OtpCodeMail($code));
+            Log::info('OTP: mail verzonden', ['email' => $this->email]);
+        } catch (\Throwable $e) {
+            Log::error('OTP: mail mislukt', ['email' => $this->email, 'error' => $e->getMessage()]);
+            $this->fout = 'Kon geen e-mail versturen. Probeer het later opnieuw.';
+            return;
+        }
 
         $this->stap = 'code';
         $this->dispatch('otp-fokus');
