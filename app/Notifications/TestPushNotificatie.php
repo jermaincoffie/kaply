@@ -19,7 +19,7 @@ class TestPushNotificatie extends Notification
             ->title('Push werkt! ✅')
             ->body('Test melding van Kaply — ' . now()->format('H:i:s'))
             ->icon('/images/PWA-icon-192.png')
-            ->badge('/images/PWA-icon-192.png')
+            ->ttl(3600)
             ->data(['url' => '/kapper/account']);
     }
 }
