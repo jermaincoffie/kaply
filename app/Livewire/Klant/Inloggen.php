@@ -38,8 +38,12 @@ class Inloggen extends Component
         $this->verzendOtp();
     }
 
-    public function vulProfielIn(): void
+    public function vulProfielIn(string $voornaam = '', string $achternaam = '', string $telefoon = ''): void
     {
+        if ($voornaam !== '') $this->voornaam = $voornaam;
+        if ($achternaam !== '') $this->achternaam = $achternaam;
+        if ($telefoon !== '') $this->telefoon = $telefoon;
+
         Log::info('OTP: vulProfielIn aangeroepen', ['email' => $this->email, 'voornaam' => $this->voornaam]);
         $this->validate([
             'voornaam'   => 'required|string|min:2',
