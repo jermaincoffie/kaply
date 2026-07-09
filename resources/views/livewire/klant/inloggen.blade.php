@@ -198,9 +198,8 @@ window.kaplyProfielVerzend = function(e) {
     var a = form.querySelector('[name=achternaam]').value;
     var t = form.querySelector('[name=telefoon]').value;
     var btn = document.getElementById('kaply-profiel-btn');
-    if (btn) btn.disabled = true;
-    var root = form.closest('[wire\\:id]') || document.querySelector('[wire\\:id]');
-    if (root) Livewire.find(root.getAttribute('wire:id')).call('vulProfielIn', v, a, t);
+    if (btn) { btn.disabled = true; btn.textContent = 'Versturen...'; }
+    $wire.call('vulProfielIn', v, a, t);
 };
 
 window.kaplyOtpVerzend = function(e) {
