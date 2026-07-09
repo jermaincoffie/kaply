@@ -199,7 +199,7 @@ window.kaplyProfielVerzend = function(e) {
     var t = form.querySelector('[name=telefoon]').value;
     var btn = document.getElementById('kaply-profiel-btn');
     if (btn) { btn.disabled = true; btn.textContent = 'Versturen...'; }
-    $wire.call('vulProfielIn', v, a, t);
+    $wire.vulProfielIn(v, a, t);
 };
 
 window.kaplyOtpVerzend = function(e) {
