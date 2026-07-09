@@ -1,37 +1,37 @@
-const CACHE = 'kaply-v4';
+const CACHE = 'kaply-v5';
 
 self.addEventListener('push', function (event) {
-    fetch('/sw-push-ping', { method: 'POST' }).catch(() => {});
-
-    let title = 'Kaply';
-    let body = 'Nieuwe melding';
-    let icon = '/images/PWA-icon-192.png';
-    let badge = '/images/PWA-icon-192.png';
-    let data = {};
-
-    if (event.data) {
+    event.waitUntil((async () => {
         try {
-            const parsed = event.data.json();
-            title  = parsed.title  || title;
-            body   = parsed.body   || body;
-            icon   = parsed.icon   || icon;
-            badge  = parsed.badge  || badge;
-            data   = parsed.data   || data;
-        } catch (e) {
-            body = event.data.text() || body;
-        }
-    }
+            let title = 'Kaply';
+            let body  = 'Nieuwe melding';
+            let icon  = '/images/PWA-icon-192.png';
+            let data  = {};
 
-    event.waitUntil(
-        self.registration.showNotification(title, {
-            body:    body,
-            icon:    icon,
-            badge:   badge,
-            data:    data,
-            vibrate: [200, 100, 200],
-            requireInteraction: false,
-        })
-    );
+            if (event.data) {
+                try {
+                    const parsed = event.data.json();
+                    title = parsed.title || title;
+                    body  = parsed.body  || body;
+                    icon  = parsed.icon  || icon;
+                    data  = parsed.data  || data;
+                } catch (e) {
+                    body = event.data.text() || body;
+                }
+            }
+
+            await self.registration.showNotification(title, {
+                body: body,
+                icon: icon,
+                data: data,
+            });
+        } catch (err) {
+            await self.registration.showNotification('Kaply debug', {
+                body: 'SW fout: ' + (err && err.message ? err.message : String(err)),
+                icon: '/images/PWA-icon-192.png',
+            });
+        }
+    })());
 });
 
 self.addEventListener('notificationclick', function (event) {
