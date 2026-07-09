@@ -45,8 +45,10 @@ class Inloggen extends Component
         $this->validate(['email' => 'required|email']);
         $this->fout = '';
 
-        if (!User::where('email', strtolower($this->email))->exists()) {
-            session(['klant_inloggen_email' => strtolower($this->email)]);
+        $email = strtolower($this->email);
+        session(['klant_inloggen_email' => $email]);
+
+        if (!User::where('email', $email)->exists()) {
             $this->isNieuwGebruiker = true;
             $this->stap = 'profiel';
             return;
@@ -105,8 +107,7 @@ class Inloggen extends Component
             return;
         }
 
-        $this->stap = 'code';
-        $this->dispatch('otp-fokus');
+        $this->redirect(route('klant.inloggen', ['stap' => 'code']), navigate: false);
     }
 
     public function verifieerCode(string $otpCode = ''): void
