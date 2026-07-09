@@ -90,7 +90,7 @@
                        class="px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 dark:border-neutral-600 text-gray-700 dark:text-neutral-300 hover:border-gray-400 dark:hover:border-neutral-400 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
                         Kapperszaak registreren
                     </a>
-                    <a href="{{ route('login') }}"
+                    <a href="{{ route('klant.inloggen') }}"
                        class="px-3 py-2 text-sm font-medium text-gray-600 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 transition-colors inline-flex items-center gap-1">
                         Inloggen
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,7 +160,7 @@
                        class="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors">
                         Kapperszaak registreren
                     </a>
-                    <a href="{{ route('login') }}" @click="mobileOpen = false"
+                    <a href="{{ route('klant.inloggen') }}" @click="mobileOpen = false"
                        class="block px-3 py-2.5 rounded-lg text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
                         Inloggen
                     </a>
