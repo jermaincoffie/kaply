@@ -61,30 +61,33 @@
                 </div>
                 @endif
 
-                <form id="kaply-profiel-form" onsubmit="kaplyProfielVerzend(event)" class="space-y-4">
+                <form method="POST" action="{{ route('klant.inloggen.profiel') }}" class="space-y-4">
+                    @csrf
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Voornaam</label>
-                            <input name="voornaam" type="text" autocomplete="given-name" autofocus placeholder="Jan"
+                            <input name="voornaam" type="text" autocomplete="given-name" autofocus required minlength="2" placeholder="Jan"
+                                   value="{{ old('voornaam') }}"
                                    class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             @error('voornaam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Achternaam</label>
-                            <input name="achternaam" type="text" autocomplete="family-name" placeholder="Jansen"
+                            <input name="achternaam" type="text" autocomplete="family-name" required minlength="2" placeholder="Jansen"
+                                   value="{{ old('achternaam') }}"
                                    class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             @error('achternaam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-neutral-300 mb-1.5">Telefoonnummer</label>
-                        <input name="telefoon" type="tel" autocomplete="tel" placeholder="06 12345678"
+                        <input name="telefoon" type="tel" autocomplete="tel" required minlength="8" placeholder="06 12345678"
+                               value="{{ old('telefoon') }}"
                                class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         @error('telefoon') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
                     <button type="submit"
-                            id="kaply-profiel-btn"
-                            class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg text-sm transition-colors">
                         Verstuur inlogcode
                     </button>
                 </form>
@@ -191,16 +194,6 @@ window.kaplyOtpPlak = function(e, el) {
     }
 };
 
-window.kaplyProfielVerzend = function(e) {
-    e.preventDefault();
-    var form = e.target;
-    var v = form.querySelector('[name=voornaam]').value;
-    var a = form.querySelector('[name=achternaam]').value;
-    var t = form.querySelector('[name=telefoon]').value;
-    var btn = document.getElementById('kaply-profiel-btn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Versturen...'; }
-    $wire.vulProfielIn(v, a, t);
-};
 
 window.kaplyOtpVerzend = function(e) {
     e.preventDefault();

@@ -23,12 +23,30 @@ class Inloggen extends Component
     public string $telefoon = '';
     public bool $isNieuwGebruiker = false;
 
+    public function mount(): void
+    {
+        if (request()->get('stap') === 'code' && session('klant_inloggen_email')) {
+            $this->email           = session('klant_inloggen_email');
+            $this->isNieuwGebruiker = true;
+            $profiel               = session('klant_profiel', []);
+            $this->voornaam        = $profiel['voornaam']  ?? '';
+            $this->achternaam      = $profiel['achternaam'] ?? '';
+            $this->telefoon        = $profiel['telefoon']  ?? '';
+            $this->stap            = 'code';
+        }
+
+        if (session('fout')) {
+            $this->fout = session('fout');
+        }
+    }
+
     public function verstuurCode(): void
     {
         $this->validate(['email' => 'required|email']);
         $this->fout = '';
 
         if (!User::where('email', strtolower($this->email))->exists()) {
+            session(['klant_inloggen_email' => strtolower($this->email)]);
             $this->isNieuwGebruiker = true;
             $this->stap = 'profiel';
             return;

@@ -36,6 +36,12 @@ use App\Livewire\Klant\KapperProfiel;
 use App\Livewire\Klant\KappersPerStad;
 use App\Livewire\Klant\KapperZoeken;
 use App\Livewire\Klant\MijnAfspraken;
+use App\Mail\OtpCodeMail;
+use App\Models\OtpCode;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
 // Notificatie uitschrijven (signed URL, geen auth nodig)
@@ -52,6 +58,39 @@ Route::get('/prijzen', fn() => view('prijzen'))->name('prijzen');
 Route::get('/privacy', fn() => view('legal.privacy'))->name('privacy');
 Route::get('/algemene-voorwaarden', fn() => view('legal.voorwaarden'))->name('voorwaarden');
 Route::get('/inloggen', Inloggen::class)->name('klant.inloggen')->middleware('guest');
+
+Route::post('/inloggen/profiel', function (Request $request) {
+    $email = session('klant_inloggen_email');
+    if (!$email) return redirect()->route('klant.inloggen');
+
+    $request->validate([
+        'voornaam'   => 'required|string|min:2',
+        'achternaam' => 'required|string|min:2',
+        'telefoon'   => 'required|string|min:8|max:20',
+    ]);
+
+    session(['klant_profiel' => $request->only('voornaam', 'achternaam', 'telefoon')]);
+
+    $sleutel = 'otp-verstuur:' . $request->ip();
+    if (RateLimiter::tooManyAttempts($sleutel, 5)) {
+        return back()->with('fout', 'Te veel pogingen. Probeer over een minuut opnieuw.');
+    }
+    RateLimiter::hit($sleutel, 60);
+
+    OtpCode::where('email', $email)->delete();
+    $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+    OtpCode::create(['email' => $email, 'code' => $code, 'expires_at' => now()->addMinutes(5)]);
+
+    try {
+        Mail::to($email)->send(new OtpCodeMail($code));
+        Log::info('OTP: mail verzonden via profiel POST', ['email' => $email]);
+    } catch (\Throwable $e) {
+        Log::error('OTP: mail mislukt via profiel POST', ['error' => $e->getMessage()]);
+        return back()->with('fout', 'Kon geen e-mail versturen. Probeer later opnieuw.');
+    }
+
+    return redirect()->route('klant.inloggen', ['stap' => 'code']);
+})->name('klant.inloggen.profiel')->middleware('guest');
 Route::get('/kapper/registreer', KapperRegistratie::class)->name('kapper.registreer');
 
 // Kapper dashboard (MOET vóór /kapper/{slug} staan — anders vangt slug 'dashboard' af)
