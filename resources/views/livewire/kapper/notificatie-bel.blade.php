@@ -25,7 +25,7 @@
          x-transition:leave-start="opacity-100 scale-100"
          x-transition:leave-end="opacity-0 scale-95"
          style="display:none"
-         class="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-sm bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-xl z-50 overflow-hidden">
+         class="fixed top-14 left-4 right-4 sm:absolute sm:top-auto sm:left-auto sm:right-0 sm:mt-2 sm:w-80 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-xl shadow-xl z-50 overflow-hidden">
 
         <div class="px-4 py-3 border-b border-gray-100 dark:border-neutral-800 flex items-center justify-between">
             <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">Notificaties</h3>
