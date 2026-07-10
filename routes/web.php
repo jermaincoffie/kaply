@@ -164,6 +164,10 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
             auth()->user()->notify(new \App\Notifications\TestPushNotificatie());
             return back()->with('success', 'Test push verstuurd — check je telefoon binnen 10 seconden.');
         })->name('push.test');
+        Route::get('/push/debug', function () {
+            $subs = auth()->user()->pushSubscriptions()->get(['endpoint', 'content_encoding', 'updated_at']);
+            return response()->json($subs);
+        })->name('push.debug');
         Route::post('/abonnement/activeer', [SubscriptionController::class, 'subscribe'])->name('subscription.subscribe');
         Route::get('/abonnement/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
         Route::get('/abonnement/succes', AbonnementSucces::class)->name('subscription.succes');
