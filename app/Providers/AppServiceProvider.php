@@ -38,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
             Log::info('WEBPUSH SENT OK', [
                 'endpoint' => substr($e->report->getEndpoint(), -30),
                 'response' => $e->report->getResponse()?->getStatusCode(),
+                'body'     => (string) $e->report->getResponse()?->getBody(),
             ]);
         });
         Event::listen(WebPushFailed::class, function ($e) {
