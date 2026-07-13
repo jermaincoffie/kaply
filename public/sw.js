@@ -1,6 +1,7 @@
-const CACHE = 'kaply-v5';
+const CACHE = 'kaply-v6';
 
 self.addEventListener('push', function (event) {
+    console.log('[SW] push event ontvangen');
     event.waitUntil((async () => {
         try {
             let title = 'Kaply';
