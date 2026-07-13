@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Mail\KapperAfgewezenMail;
+use App\Mail\KapperGoedgekeurdMail;
 use App\Models\AdminLog;
 use App\Models\Kapper;
 use Illuminate\Support\Facades\Mail;
@@ -16,9 +17,13 @@ class KappersOverzicht extends Component
 
     public function goedkeuren(int $id): void
     {
-        $kapper = Kapper::findOrFail($id);
+        $kapper = Kapper::with('user')->findOrFail($id);
         $kapper->update(['actief' => true]);
         AdminLog::schrijf('goedgekeurd', $kapper);
+
+        if ($kapper->user) {
+            Mail::to($kapper->user->email)->send(new KapperGoedgekeurdMail($kapper->user, $kapper->salon_naam));
+        }
     }
 
     public function afwijzen(int $id): void
