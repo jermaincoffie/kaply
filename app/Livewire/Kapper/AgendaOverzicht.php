@@ -5,11 +5,9 @@ namespace App\Livewire\Kapper;
 use App\Models\Activiteit;
 use App\Models\Afspraak;
 use App\Models\Blokkering;
-use App\Models\Dienst;
 use App\Models\User;
 use App\Models\Wachtlijst;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 
 class AgendaOverzicht extends Component
@@ -181,59 +179,33 @@ class AgendaOverzicht extends Component
     public function afspraakOpslaan(): void
     {
         $this->validate([
-            'nieuwDatum'        => 'required|date',
-            'nieuwTijd'         => 'required',
-            'nieuwDienstId'     => 'required|integer',
+            'nieuwDatum'         => 'required|date',
+            'nieuwTijd'          => 'required',
+            'nieuwDienstId'      => 'required|integer',
             'nieuwBetaalmethode' => 'required|in:in_zaak,online',
         ]);
 
-        $klantId = null;
-        $walkInNaam = null;
-
         if ($this->isWalkIn) {
             $this->validate(['walkInNaam' => 'required|string|min:2']);
-            $walkInNaam = trim($this->walkInNaam);
-        } elseif ($this->geselecteerdeKlantId) {
-            $klantId = $this->geselecteerdeKlantId;
-        } else {
-            $naam = trim($this->klantZoekterm);
+        } elseif (!$this->geselecteerdeKlantId) {
             $this->validate(['klantZoekterm' => 'required|string|min:2']);
-            $klant = User::firstOrCreate(
-                ['email' => 'walkin-' . now()->timestamp . '@kapperplatform.nl'],
-                ['name' => $naam, 'password' => Hash::make(str()->random(16)), 'role' => 'klant']
-            );
-            $klantId = $klant->id;
         }
 
-        $dienst = Dienst::findOrFail($this->nieuwDienstId);
-        $eind = Carbon::parse($this->nieuwDatum . ' ' . $this->nieuwTijd)
-            ->addMinutes($dienst->duur_minuten)
-            ->format('H:i');
+        $kapper = auth()->user()->kapper;
 
-        $afspraak = Afspraak::create([
-            'klant_id'      => $klantId,
-            'walk_in_naam'  => $walkInNaam,
-            'kapper_id'     => auth()->user()->kapper->id,
-            'dienst_id'     => $dienst->id,
-            'medewerker_id' => $this->nieuwMedewerkerId ?: null,
-            'datum'         => $this->nieuwDatum,
-            'start_tijd'    => $this->nieuwTijd,
-            'eind_tijd'     => $eind,
-            'status'        => 'gepland',
-            'betaalmethode' => $this->nieuwBetaalmethode,
-        ]);
-
-        $kapperNaam = auth()->user()->name;
-        $klantNaam  = $walkInNaam ?? (User::find($klantId)?->name ?? 'Onbekend');
-        Activiteit::create([
-            'kapper_id'   => auth()->user()->kapper->id,
-            'afspraak_id' => $afspraak->id,
-            'datum'       => $this->nieuwDatum,
-            'type'        => $walkInNaam ? 'walk_in' : 'geboekt',
-            'tekst'       => $walkInNaam
-                ? "{$kapperNaam} heeft {$klantNaam} ingeboekt als walk-in voor {$dienst->naam} om {$this->nieuwTijd}"
-                : "{$kapperNaam} heeft een afspraak voor {$klantNaam} gemaakt voor {$dienst->naam} om {$this->nieuwTijd}",
-        ]);
+        (new \App\Actions\AfspraakKapperAanmaken)->uitvoeren(
+            kapperId:       $kapper->id,
+            datum:          $this->nieuwDatum,
+            tijd:           $this->nieuwTijd,
+            dienstId:       $this->nieuwDienstId,
+            betaalmethode:  $this->nieuwBetaalmethode,
+            medewerkerId:   $this->nieuwMedewerkerId,
+            isWalkIn:       $this->isWalkIn,
+            walkInNaam:     $this->walkInNaam ?? '',
+            klantId:        $this->geselecteerdeKlantId,
+            klantZoekterm:  $this->klantZoekterm,
+            kapperNaam:     auth()->user()->name,
+        );
 
         $this->toonNieuwFormulier = false;
     }
@@ -611,16 +583,16 @@ class AgendaOverzicht extends Component
             : null;
 
         // Drukste uur deze maand
-        $druksteUur = Afspraak::where('kapper_id', $kapper_id)
+        $druksteUurRow = \Illuminate\Support\Facades\DB::table('afspraken')
+            ->selectRaw('HOUR(start_tijd) as uur, COUNT(*) as n')
+            ->where('kapper_id', $kapper_id)
             ->whereMonth('datum', now()->month)
             ->whereYear('datum', now()->year)
             ->whereIn('status', ['gepland', 'voltooid'])
-            ->get()
-            ->groupBy(fn($a) => (int) substr($a->start_tijd, 0, 2))
-            ->map->count()
-            ->sortDesc()
-            ->keys()
+            ->groupBy('uur')
+            ->orderByDesc('n')
             ->first();
+        $druksteUur = $druksteUurRow?->uur;
         $druksteUurLabel = $druksteUur !== null
             ? str_pad($druksteUur, 2, '0', STR_PAD_LEFT) . ':00 – ' . str_pad($druksteUur + 1, 2, '0', STR_PAD_LEFT) . ':00'
             : null;

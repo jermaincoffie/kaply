@@ -62,13 +62,13 @@
         @if($kappers->count() > 0)
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($kappers as $kapper)
-            <a href="{{ route('kapper.profiel', $kapper->slug) }}"
+            <a wire:key="kapper-{{ $kapper->id }}" href="{{ route('kapper.profiel', $kapper->slug) }}"
                class="group flex flex-col bg-gradient-to-b from-indigo-50 to-white dark:from-neutral-700 dark:to-neutral-800 border border-indigo-100 dark:border-neutral-700 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-200 dark:hover:border-neutral-500 transition-all duration-150">
 
                 {{-- Foto --}}
                 <div class="h-36 flex items-center justify-center overflow-hidden">
                     @if($kapper->foto)
-                    <img src="{{ asset('public/storage/' . $kapper->foto) }}"
+                    <img src="{{ asset('storage/' . $kapper->foto) }}"
                          alt="{{ $kapper->salon_naam }}"
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     @else
@@ -112,7 +112,7 @@
                     @php $zichtbareDiensten = $kapper->diensten->take(3); $extra = $kapper->diensten->count() - 3; @endphp
                     <div class="flex flex-wrap gap-1 mt-2">
                         @foreach($zichtbareDiensten as $dienst)
-                        <span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300">{{ $dienst->naam }}</span>
+                        <span wire:key="dienst-{{ $kapper->id }}-{{ $dienst->id }}" class="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300">{{ $dienst->naam }}</span>
                         @endforeach
                         @if($extra > 0)
                         <span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-neutral-700 text-gray-500 dark:text-neutral-400">+{{ $extra }}</span>

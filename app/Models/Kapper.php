@@ -14,7 +14,8 @@ class Kapper extends Model
         'user_id', 'salon_naam', 'slug', 'adres', 'stad',
         'telefoon', 'bio', 'foto', 'stripe_customer_id',
         'stripe_connect_id', 'stripe_connect_onboarded', 'stripe_subscription_id',
-        'abonnement_status', 'actief', 'buffer_minuten', 'vooruitboeken_maanden', 'annulering_uren', 'annulering_kosten', 'onboarding_voltooid', 'ical_token',
+        'abonnement_status', 'abonnement_betaalmethode', 'abonnement_past_due_since',
+        'actief', 'buffer_minuten', 'vooruitboeken_maanden', 'annulering_uren', 'annulering_kosten', 'onboarding_voltooid', 'ical_token',
         'trial_dag3_verstuurd', 'trial_dag10_verstuurd', 'notificatie_email',
     ];
 

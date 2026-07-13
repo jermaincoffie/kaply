@@ -73,7 +73,7 @@
         <p class="text-sm font-medium text-gray-700 dark:text-neutral-200 mb-4">Jouw foto's</p>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             @foreach($fotos as $foto)
-            <div class="relative group aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-neutral-700">
+            <div wire:key="foto-{{ $foto->id }}" class="relative group aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-neutral-700">
                 <img src="{{ str_starts_with($foto->pad, 'http') ? $foto->pad : asset('storage/' . $foto->pad) }}" alt="Galerij foto" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <button wire:click="verwijderen({{ $foto->id }})"

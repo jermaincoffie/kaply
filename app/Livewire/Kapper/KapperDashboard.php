@@ -4,10 +4,8 @@ namespace App\Livewire\Kapper;
 
 use App\Models\Afspraak;
 use App\Models\Blokkering;
-use App\Models\Dienst;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 
 class KapperDashboard extends Component
@@ -78,41 +76,27 @@ class KapperDashboard extends Component
             'nieuwBetaalmethode' => 'required|in:in_zaak,online',
         ]);
 
-        $klantId = null;
-        $walkInNaam = null;
-
         if ($this->isWalkIn) {
             $this->validate(['walkInNaam' => 'required|string|min:2']);
-            $walkInNaam = trim($this->walkInNaam);
-        } elseif ($this->geselecteerdeKlantId) {
-            $klantId = $this->geselecteerdeKlantId;
-        } else {
-            $naam = trim($this->klantZoekterm);
+        } elseif (!$this->geselecteerdeKlantId) {
             $this->validate(['klantZoekterm' => 'required|string|min:2']);
-            $klant = User::firstOrCreate(
-                ['email' => 'walkin-' . now()->timestamp . '@kapperplatform.nl'],
-                ['name' => $naam, 'password' => Hash::make(str()->random(16)), 'role' => 'klant']
-            );
-            $klantId = $klant->id;
         }
 
-        $dienst = Dienst::findOrFail($this->nieuwDienstId);
-        $eind = Carbon::parse($this->nieuwDatum . ' ' . $this->nieuwTijd)
-            ->addMinutes($dienst->duur_minuten)
-            ->format('H:i');
+        $kapper = auth()->user()->kapper;
 
-        Afspraak::create([
-            'klant_id'      => $klantId,
-            'walk_in_naam'  => $walkInNaam,
-            'kapper_id'     => auth()->user()->kapper->id,
-            'dienst_id'     => $dienst->id,
-            'medewerker_id' => $this->nieuwMedewerkerId,
-            'datum'         => $this->nieuwDatum,
-            'start_tijd'    => $this->nieuwTijd,
-            'eind_tijd'     => $eind,
-            'status'        => 'gepland',
-            'betaalmethode' => $this->nieuwBetaalmethode,
-        ]);
+        (new \App\Actions\AfspraakKapperAanmaken)->uitvoeren(
+            kapperId:       $kapper->id,
+            datum:          $this->nieuwDatum,
+            tijd:           $this->nieuwTijd,
+            dienstId:       $this->nieuwDienstId,
+            betaalmethode:  $this->nieuwBetaalmethode,
+            medewerkerId:   $this->nieuwMedewerkerId,
+            isWalkIn:       $this->isWalkIn,
+            walkInNaam:     $this->walkInNaam ?? '',
+            klantId:        $this->geselecteerdeKlantId,
+            klantZoekterm:  $this->klantZoekterm,
+            kapperNaam:     auth()->user()->name,
+        );
 
         $this->toonNieuwFormulier = false;
     }

@@ -204,10 +204,6 @@ class KapperProfiel extends Component
                     'type'        => 'geboekt',
                     'tekst'       => auth()->user()->name . " heeft een afspraak gemaakt voor {$dienst->naam} om {$this->geselecteerdeTijd}",
                 ]);
-                $this->kapper->user->notify(new NieuweAfspraakNotificatie($afspraak));
-                if ($this->kapper->notificatie_email) {
-                    Mail::to($this->kapper->user->email)->send(new NieuweAfspraakMail($afspraak, $this->kapper->user));
-                }
                 $redirectUrl = route('afspraak.betaling.checkout', ['afspraak_id' => $afspraak->id]);
                 return;
             }
@@ -233,6 +229,10 @@ class KapperProfiel extends Component
         }
 
         if ($redirectUrl) {
+            $this->kapper->user->notify(new NieuweAfspraakNotificatie($afspraak));
+            if ($this->kapper->notificatie_email) {
+                Mail::to($this->kapper->user->email)->send(new NieuweAfspraakMail($afspraak, $this->kapper->user));
+            }
             $this->redirect($redirectUrl);
             return;
         }
@@ -321,7 +321,7 @@ class KapperProfiel extends Component
             return;
         }
 
-        $dienst = Dienst::find($this->geselecteerdeDienstId);
+        $dienst = $this->kapper->diensten->firstWhere('id', $this->geselecteerdeDienstId);
         if (!$dienst) { $this->tijdsloten = []; return; }
 
         $service = new BeschikbaarheidsService();
@@ -387,7 +387,7 @@ class KapperProfiel extends Component
               . ($dienstenNamen ? '. Diensten: ' . $dienstenNamen . '.' : '.');
 
         $seoImage = $this->kapper->foto
-            ? asset('public/storage/' . $this->kapper->foto)
+            ? asset('storage/' . $this->kapper->foto)
             : null;
 
         $seoCanonical = route('kapper.profiel', $this->kapper->slug);

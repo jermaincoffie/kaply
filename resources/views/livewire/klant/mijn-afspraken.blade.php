@@ -19,10 +19,10 @@
         <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Favoriete kappers</p>
         <div class="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
             @foreach($favorieteKappers as $favKapper)
-            <a href="{{ route('kapper.profiel', $favKapper->slug) }}"
+            <a wire:key="fav-{{ $favKapper->id }}" href="{{ route('kapper.profiel', $favKapper->slug) }}"
                class="flex-shrink-0 flex flex-col items-center gap-1.5 w-20 group">
                 @if($favKapper->foto)
-                <img src="{{ asset('public/storage/' . $favKapper->foto) }}" alt="{{ $favKapper->salon_naam }}"
+                <img src="{{ asset('storage/' . $favKapper->foto) }}" alt="{{ $favKapper->salon_naam }}"
                      class="w-14 h-14 rounded-xl object-cover border-2 border-transparent group-hover:border-blue-500 transition-colors">
                 @else
                 @php
@@ -46,7 +46,7 @@
         <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Op de wachtlijst</p>
         <div class="space-y-2">
             @foreach($wachtlijst as $w)
-            <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+            <div wire:key="wacht-{{ $w->id }}" class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
                 <div class="min-w-0">
                     <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100">{{ $w->kapper->salon_naam }}</p>
                     <p class="text-xs text-gray-500 dark:text-neutral-400 mt-0.5">
@@ -160,7 +160,7 @@
                 };
                 $isFav = $favorietKapperIds->contains($afspraak->kapper_id);
             @endphp
-            <div class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl px-4 py-3">
+            <div wire:key="afspr-mob-{{ $afspraak->id }}" class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl px-4 py-3">
                 <div class="flex items-start justify-between gap-2 mb-1.5">
                     <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 leading-tight">{{ $afspraak->kapper->salon_naam }}</p>
                     <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 {{ $badge }}">{{ $statusLabel }}</span>
@@ -227,7 +227,7 @@
                         };
                         $isFav = $favorietKapperIds->contains($afspraak->kapper_id);
                     @endphp
-                    <tr class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
+                    <tr wire:key="afspr-desk-{{ $afspraak->id }}" class="hover:bg-gray-50/50 dark:hover:bg-neutral-700/20">
                         <td class="px-5 py-3 text-gray-700 dark:text-neutral-300 whitespace-nowrap">
                             {{ $afspraak->datum->format('d-m-Y') }}
                             <span class="text-xs text-gray-400 dark:text-neutral-500 ml-1">{{ $afspraak->start_tijd }}</span>
@@ -327,7 +327,7 @@
                     @if(count($verzetTijdsloten) > 0)
                     <div class="grid grid-cols-3 gap-1.5 max-h-40 overflow-y-auto">
                         @foreach($verzetTijdsloten as $slot)
-                        <button wire:click="$set('verzetTijd', '{{ $slot }}')" type="button"
+                        <button wire:key="slot-{{ $slot }}" wire:click="$set('verzetTijd', '{{ $slot }}')" type="button"
                                 class="py-2 rounded-lg border text-xs font-medium transition-colors
                                     {{ $verzetTijd === $slot
                                         ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'

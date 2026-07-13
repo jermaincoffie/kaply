@@ -48,7 +48,7 @@
                 $isVerzet = $type === 'afspraak_verzet';
                 $isGean   = $type === 'afspraak_geannuleerd';
             @endphp
-            <div class="px-4 py-3 flex items-start gap-3 {{ $notificatie->read_at ? 'opacity-60' : '' }}">
+            <div wire:key="notif-{{ $notificatie->id }}" class="px-4 py-3 flex items-start gap-3 {{ $notificatie->read_at ? 'opacity-60' : '' }}">
                 <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5
                     {{ $isNieuw ? 'bg-green-100 dark:bg-green-900/30' : ($isVerzet ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-red-100 dark:bg-red-900/30') }}">
                     @if($isNieuw)

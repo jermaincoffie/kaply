@@ -219,13 +219,13 @@
                 @if($kappers->isNotEmpty())
                 <div class="flex gap-4 px-4 sm:px-8 pb-2 w-max mx-auto">
                 @foreach($kappers as $kapper)
-                <a href="{{ route('kapper.profiel', $kapper->slug) }}"
+                <a wire:key="kapper-{{ $kapper->id }}" href="{{ route('kapper.profiel', $kapper->slug) }}"
                    class="group flex-shrink-0 w-[260px] sm:w-[280px] flex flex-col bg-gradient-to-b from-indigo-50 to-white dark:from-neutral-700 dark:to-neutral-800 border border-indigo-100 dark:border-neutral-700 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-200 dark:hover:border-neutral-500 transition-all duration-150">
 
                     {{-- Logo / foto --}}
                     <div class="h-36 flex items-center justify-center overflow-hidden @if($kapper->foto) bg-transparent @endif">
                         @if($kapper->foto)
-                        <img src="{{ asset('public/storage/' . $kapper->foto) }}"
+                        <img src="{{ asset('storage/' . $kapper->foto) }}"
                              alt="{{ $kapper->salon_naam }}"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         @else
@@ -267,7 +267,7 @@
                         @php $zichtbareDiensten = $kapper->diensten->take(3); $extra = $kapper->diensten->count() - 3; @endphp
                         <div class="flex flex-wrap gap-1 mt-2">
                             @foreach($zichtbareDiensten as $dienst)
-                            <span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300">{{ $dienst->naam }}</span>
+                            <span wire:key="dienst-{{ $kapper->id }}-{{ $dienst->id }}" class="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300">{{ $dienst->naam }}</span>
                             @endforeach
                             @if($extra > 0)
                             <span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-neutral-700 text-gray-500 dark:text-neutral-400">+{{ $extra }}</span>
@@ -296,7 +296,7 @@
                 <p class="text-xs text-gray-400 dark:text-neutral-500 mb-2">Probeer een van deze steden:</p>
                 <div class="flex flex-wrap justify-center gap-2">
                     @foreach($steden as $stad)
-                    <button wire:click="filterStad('{{ addslashes($stad) }}')"
+                    <button wire:key="filter-{{ Str::slug($stad) }}" wire:click="filterStad('{{ addslashes($stad) }}')"
                             class="px-3 py-1 rounded-full text-xs font-medium border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 bg-white dark:bg-neutral-800 hover:border-blue-300 hover:text-blue-600 dark:hover:border-blue-600 dark:hover:text-blue-400 transition-colors">
                         {{ $stad }}
                     </button>
@@ -332,7 +332,7 @@
             <h2 class="text-sm font-semibold text-gray-500 dark:text-neutral-400 uppercase tracking-widest mb-4">Kappers per stad</h2>
             <div class="flex flex-wrap gap-2">
                 @foreach($steden as $stad)
-                <a href="{{ route('stad.kappers', Str::slug($stad)) }}"
+                <a wire:key="stad-{{ Str::slug($stad) }}" href="{{ route('stad.kappers', Str::slug($stad)) }}"
                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border border-gray-200 dark:border-neutral-700 text-gray-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 hover:border-blue-300 hover:text-blue-600 dark:hover:border-blue-600 dark:hover:text-blue-400 transition-colors">
                     <svg class="w-3.5 h-3.5 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>

@@ -84,7 +84,7 @@
                         @endif
                     </td>
                     <td class="px-6 py-3.5 text-xs text-gray-400 dark:text-neutral-500 hidden md:table-cell">
-                        {{ $klant->afspraken->first()?->datum?->format('d-m-Y') ?? '—' }}
+                        {{ $klant->laatste_afspraak_datum ? \Carbon\Carbon::parse($klant->laatste_afspraak_datum)->format('d-m-Y') : '—' }}
                     </td>
                     <td class="px-6 py-3.5 text-xs text-gray-400 dark:text-neutral-500 hidden md:table-cell">
                         {{ $klant->created_at->format('d-m-Y') }}
@@ -183,7 +183,7 @@
                                 default       => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
                             };
                         @endphp
-                        <div class="flex items-center justify-between gap-2 py-1.5">
+                        <div wire:key="ap-{{ $ap->id }}" class="flex items-center justify-between gap-2 py-1.5">
                             <div class="min-w-0">
                                 <p class="text-xs font-medium text-gray-700 dark:text-neutral-300">{{ $ap->dienst->naam }}</p>
                                 <p class="text-xs text-gray-400 dark:text-neutral-500">{{ $ap->datum->format('d-m-Y') }} · {{ $ap->start_tijd }}</p>

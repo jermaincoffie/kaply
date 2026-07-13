@@ -69,6 +69,7 @@ class AfspraakBetaalController extends Controller
 
     public function succes(Request $request)
     {
+        $request->validate(['session_id' => 'required|string|starts_with:cs_']);
         Stripe::setApiKey(config('cashier.secret'));
 
         $session = StripeSession::retrieve($request->session_id);
@@ -95,7 +96,9 @@ class AfspraakBetaalController extends Controller
                 'stripe_payment_intent_id' => $session->payment_intent,
             ]);
 
-            Mail::to($afspraak->klant->email)->send(new AfspraakBevestigingMail($afspraak));
+            if ($afspraak->klant) {
+                Mail::to($afspraak->klant->email)->send(new AfspraakBevestigingMail($afspraak));
+            }
         }
 
         return view('afspraak.betaling-succes', compact('afspraak'));
@@ -186,6 +189,7 @@ class AfspraakBetaalController extends Controller
 
     public function annuleringSucces(Request $request)
     {
+        $request->validate(['session_id' => 'required|string|starts_with:cs_']);
         Stripe::setApiKey(config('cashier.secret'));
 
         $session = StripeSession::retrieve($request->session_id, [
@@ -236,7 +240,9 @@ class AfspraakBetaalController extends Controller
 
         if (!$geannuleerd) return;
 
-        Mail::to($afspraak->klant->email)->send(new AfspraakGeannuleerdMail($afspraak));
+        if ($afspraak->klant) {
+            Mail::to($afspraak->klant->email)->send(new AfspraakGeannuleerdMail($afspraak));
+        }
         $afspraak->kapper->user->notify(new AfspraakGeannuleerdNotificatie($afspraak));
 
         if ($afspraak->datum->isAfter(today())) {

@@ -29,7 +29,7 @@
                 <img src="{{ $foto->temporaryUrl() }}"
                      class="w-32 h-32 rounded-xl object-cover border-2 border-blue-400">
                 @elseif(auth()->user()->kapper->foto)
-                <img src="{{ asset('public/storage/' . auth()->user()->kapper->foto) }}"
+                <img src="{{ asset('storage/' . auth()->user()->kapper->foto) }}"
                      alt="Salon foto"
                      class="w-32 h-32 rounded-xl object-cover border border-gray-200 dark:border-neutral-700">
                 @else

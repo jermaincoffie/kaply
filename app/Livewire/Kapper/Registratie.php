@@ -99,7 +99,7 @@ class Registratie extends Component
         Auth::login($user);
 
         Mail::to($user->email)->send(new WelkomstKapperMail($user, $this->salon_naam));
-        Mail::to(env('ADMIN_EMAIL', 'info@kaply.nl'))->send(new NieuweKapperAdminMail($user->name, $this->salon_naam, $this->stad, $user->email));
+        Mail::to(config('mail.admin_address', 'info@kaply.nl'))->send(new NieuweKapperAdminMail($user->name, $this->salon_naam, $this->stad, $user->email));
 
         $this->stap = 3;
     }

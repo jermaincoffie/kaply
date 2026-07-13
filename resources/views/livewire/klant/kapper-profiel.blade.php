@@ -20,7 +20,7 @@
                 <div class="flex items-start gap-5">
                     {{-- Avatar --}}
                     @if($kapper->foto)
-                    <img src="{{ asset('public/storage/' . $kapper->foto) }}" alt="{{ $kapper->salon_naam }}"
+                    <img src="{{ asset('storage/' . $kapper->foto) }}" alt="{{ $kapper->salon_naam }}"
                          class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover flex-shrink-0 border border-gray-100 dark:border-neutral-700">
                     @else
                     @php
@@ -98,7 +98,7 @@
                 @else
                 <div class="space-y-2">
                     @foreach($kapper->diensten as $dienst)
-                    <button wire:click="selecteerDienst({{ $dienst->id }})" type="button"
+                    <button wire:key="dienst-{{ $dienst->id }}" wire:click="selecteerDienst({{ $dienst->id }})" type="button"
                             class="w-full flex items-center justify-between px-3.5 py-3 rounded-xl border text-sm transition-colors text-left
                                 {{ $geselecteerdeDienstId === $dienst->id
                                     ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
@@ -129,13 +129,13 @@
                         Geen voorkeur
                     </button>
                     @foreach($medewerkers as $mw)
-                    <button wire:click="selecteerMedewerker({{ $mw->id }})" type="button"
+                    <button wire:key="mw-{{ $mw->id }}" wire:click="selecteerMedewerker({{ $mw->id }})" type="button"
                             class="flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors
                                 {{ $geselecteerdeMedewerkerId === $mw->id
                                     ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
                                     : 'border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:border-gray-300 dark:hover:border-neutral-600' }}">
                         @if($mw->foto)
-                        <img src="{{ asset('public/storage/' . $mw->foto) }}" class="w-5 h-5 rounded-full object-cover flex-shrink-0">
+                        <img src="{{ asset('storage/' . $mw->foto) }}" class="w-5 h-5 rounded-full object-cover flex-shrink-0">
                         @else
                         <div class="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
                             <span class="text-[10px] font-bold text-blue-700 dark:text-blue-400">{{ mb_strtoupper(mb_substr($mw->naam, 0, 1)) }}</span>
@@ -184,7 +184,7 @@
                 @if(count($tijdsloten) > 0)
                 <div class="grid grid-cols-3 gap-2">
                     @foreach($tijdsloten as $slot)
-                    <button wire:click="openBoekModal('{{ $slot }}')" type="button"
+                    <button wire:key="slot-{{ $slot }}" wire:click="openBoekModal('{{ $slot }}')" type="button"
                             class="py-2 rounded-lg border border-gray-200 dark:border-neutral-700 text-sm font-medium text-gray-700 dark:text-neutral-300 hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-400 transition-colors text-center">
                         {{ $slot }}
                     </button>
@@ -280,7 +280,7 @@
 
         {{-- ===== GALERIJ — mobiel: 3e, desktop: kolom 1-2 rij 2 ===== --}}
         @if($kapper->galerij->isNotEmpty())
-        @php $fotoUrls = $kapper->galerij->pluck('pad')->map(fn($p) => str_starts_with($p, 'http') ? $p : asset('public/storage/' . $p))->values(); @endphp
+        @php $fotoUrls = $kapper->galerij->pluck('pad')->map(fn($p) => str_starts_with($p, 'http') ? $p : asset('storage/' . $p))->values(); @endphp
         <div class="order-3 lg:col-span-2 lg:row-start-2"
              x-data="{
                 fotos: {{ $fotoUrls->toJson() }},
@@ -303,9 +303,9 @@
 
                 <div x-ref="gallerij" class="flex gap-2 overflow-x-auto scrollbar-hide pb-1 snap-x snap-mandatory px-1">
                     @foreach($kapper->galerij as $i => $foto)
-                    <button @click="open({{ $i }})" type="button"
+                    <button wire:key="gallerij-{{ $foto->id }}" @click="open({{ $i }})" type="button"
                             class="flex-shrink-0 w-48 h-48 rounded-xl overflow-hidden group snap-start">
-                        <img src="{{ str_starts_with($foto->pad, 'http') ? $foto->pad : asset('public/storage/' . $foto->pad) }}" alt="Galerij"
+                        <img src="{{ str_starts_with($foto->pad, 'http') ? $foto->pad : asset('storage/' . $foto->pad) }}" alt="Galerij"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     </button>
                     @endforeach
@@ -354,7 +354,7 @@
                 <p class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wide mb-3">Openingstijden</p>
                 <div class="grid grid-cols-2 gap-x-6 gap-y-1.5">
                     @foreach($openingstijden as $ot)
-                    <div class="flex justify-between text-sm">
+                    <div wire:key="ot-{{ $ot['dag'] }}" class="flex justify-between text-sm">
                         <span class="text-gray-500 dark:text-neutral-400 uppercase text-xs font-medium">{{ $ot['dag'] }}</span>
                         <span class="text-gray-700 dark:text-neutral-300">{{ $ot['start'] }} – {{ $ot['eind'] }}</span>
                     </div>
@@ -394,7 +394,7 @@
 
                     <div class="flex-1 space-y-2">
                         @foreach($breakdown as $row)
-                        <div class="flex items-center gap-2">
+                        <div wire:key="breakdown-{{ $row['stars'] }}" class="flex items-center gap-2">
                             <span class="text-xs text-gray-500 dark:text-neutral-400 w-3 text-right flex-shrink-0">{{ $row['stars'] }}</span>
                             <svg class="w-3 h-3 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                             <div class="flex-1 h-1.5 bg-gray-100 dark:bg-neutral-700 rounded-full overflow-hidden">
@@ -408,7 +408,7 @@
 
                 <div class="space-y-4">
                     @foreach($reviews as $review)
-                    <div class="{{ !$loop->last ? 'pb-4 border-b border-gray-50 dark:border-neutral-700' : '' }}">
+                    <div wire:key="review-{{ $review->id }}" class="{{ !$loop->last ? 'pb-4 border-b border-gray-50 dark:border-neutral-700' : '' }}">
                         <div class="flex items-center justify-between gap-3 mb-2">
                             <div class="flex items-center gap-2">
                                 <div class="w-7 h-7 rounded-full bg-gray-100 dark:bg-neutral-700 flex items-center justify-center flex-shrink-0">

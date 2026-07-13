@@ -30,7 +30,7 @@
     @else
     <div class="space-y-3">
         @foreach($reviews as $review)
-        <div class="bg-white dark:bg-neutral-800 border {{ $review->zichtbaar ? 'border-gray-200 dark:border-neutral-700' : 'border-gray-100 dark:border-neutral-800 opacity-50' }} rounded-xl p-4">
+        <div wire:key="review-{{ $review->id }}" class="bg-white dark:bg-neutral-800 border {{ $review->zichtbaar ? 'border-gray-200 dark:border-neutral-700' : 'border-gray-100 dark:border-neutral-800 opacity-50' }} rounded-xl p-4">
 
             {{-- Review tekst --}}
             <div class="flex items-start justify-between gap-3">

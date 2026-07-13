@@ -12,11 +12,11 @@
             <h2 class="text-sm font-semibold text-gray-700 dark:text-neutral-200 mb-4">Favoriete kappers</h2>
             <div class="space-y-2">
                 @foreach($favorieteKappers as $favKapper)
-                <div class="flex items-center justify-between gap-3 py-2 border-b border-gray-50 dark:border-neutral-700 last:border-0">
+                <div wire:key="fav-{{ $favKapper->id }}" class="flex items-center justify-between gap-3 py-2 border-b border-gray-50 dark:border-neutral-700 last:border-0">
                     <a href="{{ route('kapper.profiel', $favKapper->slug) }}"
                        class="flex items-center gap-3 group">
                         @if($favKapper->foto)
-                        <img src="{{ asset('public/storage/' . $favKapper->foto) }}" alt="{{ $favKapper->salon_naam }}"
+                        <img src="{{ asset('storage/' . $favKapper->foto) }}" alt="{{ $favKapper->salon_naam }}"
                              class="w-9 h-9 rounded-lg object-cover flex-shrink-0">
                         @else
                         @php

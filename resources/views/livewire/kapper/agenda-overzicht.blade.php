@@ -21,7 +21,7 @@
         <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" class="px-4 pb-4">
             <div class="space-y-2">
                 @foreach($wachtlijst as $wachtende)
-                <div class="bg-white dark:bg-neutral-800 rounded-xl px-4 py-3">
+                <div wire:key="wacht-top-{{ $wachtende->id }}" class="bg-white dark:bg-neutral-800 rounded-xl px-4 py-3">
                     <div class="flex items-start justify-between gap-2 mb-1">
                         <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 leading-tight">{{ $wachtende->naam }}</p>
                         <button type="button"
@@ -218,7 +218,7 @@
                     default       => ($isActive ? 'bg-blue-500 animate-pulse' : ($isPast ? 'bg-gray-400' : 'bg-blue-400')),
                 };
             @endphp
-            <button wire:click="selecteerAfspraak({{ $va->id }})"
+            <button wire:key="va-{{ $va->id }}" wire:click="selecteerAfspraak({{ $va->id }})"
                     class="flex-shrink-0 flex items-center gap-2.5 px-3 py-2 rounded-xl border text-left transition-colors hover:shadow-sm {{ $chipKleur }}">
                 <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $dotKleur }}"></span>
                 <div>
@@ -283,7 +283,7 @@
                     Alle
                 </button>
                 @foreach($medewerkers as $mw)
-                <button wire:click="filterMedewerker({{ $mw->id }})"
+                <button wire:key="mw-filter-{{ $mw->id }}" wire:click="filterMedewerker({{ $mw->id }})"
                         class="flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium capitalize transition-colors
                             {{ $gefilterdeMedewerkerId === $mw->id ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300' }}">
                     {{ $mw->naam }}
@@ -312,7 +312,7 @@
              class="mb-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl overflow-hidden">
             <div class="px-4 pt-3 pb-1 space-y-2">
                 @foreach($wachtlijst as $wachtende)
-                <div class="bg-white dark:bg-neutral-800 rounded-xl px-4 py-3">
+                <div wire:key="wacht-mid-{{ $wachtende->id }}" class="bg-white dark:bg-neutral-800 rounded-xl px-4 py-3">
                     <div class="flex items-start justify-between gap-2 mb-1">
                         <p class="text-sm font-semibold text-gray-800 dark:text-neutral-100 leading-tight">{{ $wachtende->naam }}</p>
                         <button type="button"
@@ -850,6 +850,7 @@
                 {{-- Afspraken --}}
                 @foreach($afsprakenPerDag[$dagKey] ?? [] as $afspraak)
                 @php
+                    $__afspraakKey = "afspr-{$dagKey}-{$afspraak->id}";
                     [$sh, $sm] = explode(':', $afspraak->start_tijd);
                     $startMinFromTop = ((int)$sh - $dagStart) * 60 + (int)$sm;
                     $top    = ($startMinFromTop / 60) * $pxPerUur;
@@ -873,7 +874,7 @@
                     $colWidthPct = 100 / $colCount;
                     $colLeftPct  = $colIndex * $colWidthPct;
                 @endphp
-                <div
+                <div wire:key="{{ $__afspraakKey }}"
                     x-data="{
                         show: false,
                         timer: null,

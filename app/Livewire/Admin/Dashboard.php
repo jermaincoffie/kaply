@@ -87,7 +87,7 @@ class Dashboard extends Component
                     ->where('updated_at', '>=', now()->subDays(60))
                 )
             )
-            ->orderByRaw("FIELD(abonnement_status, 'past_due', 'inactief')")
+            ->orderByRaw("CASE abonnement_status WHEN 'past_due' THEN 0 WHEN 'inactief' THEN 1 ELSE 2 END")
             ->orderByDesc('updated_at')
             ->get();
         $churn_count = $churn_kappers->count();

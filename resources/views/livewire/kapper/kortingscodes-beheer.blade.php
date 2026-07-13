@@ -116,7 +116,7 @@
         @else
         <div class="divide-y divide-gray-50 dark:divide-neutral-700">
             @foreach($codes as $code)
-            <div class="flex items-center justify-between px-6 py-4 gap-4">
+            <div wire:key="code-{{ $code->id }}" class="flex items-center justify-between px-6 py-4 gap-4">
                 <div class="flex items-center gap-4 min-w-0">
                     <span class="font-mono text-sm font-semibold tracking-wide text-gray-800 dark:text-neutral-100 bg-gray-100 dark:bg-neutral-700 px-2.5 py-1 rounded-lg flex-shrink-0">
                         {{ $code->code }}

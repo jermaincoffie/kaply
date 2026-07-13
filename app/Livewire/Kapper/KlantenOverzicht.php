@@ -55,7 +55,7 @@ class KlantenOverzicht extends Component
             }))
             ->withCount(['afspraken as totaal_afspraken' => fn($q) => $q->where('kapper_id', $kapperId)])
             ->withCount(['afspraken as voltooide_afspraken' => fn($q) => $q->where('kapper_id', $kapperId)->where('status', 'voltooid')])
-            ->with(['afspraken' => fn($q) => $q->where('kapper_id', $kapperId)->orderByDesc('datum')->limit(1)])
+            ->withMax(['afspraken as laatste_afspraak_datum' => fn($q) => $q->where('kapper_id', $kapperId)], 'datum')
             ->with(['klantNotitie' => fn($q) => $q->where('kapper_id', $kapperId)])
             ->orderByDesc('totaal_afspraken');
 
