@@ -29,7 +29,7 @@ class NieuweAfspraakNotificatie extends Notification
             ->title('Nieuwe afspraak! 📅')
             ->body("{$klant} · {$dienst} om {$tijd}")
             ->icon('/images/PWA-icon-192.png')
-            ->options(['TTL' => 3600])
+            ->options(['TTL' => 3600, 'urgency' => 'high'])
             ->data(['url' => '/agenda']);
     }
 
