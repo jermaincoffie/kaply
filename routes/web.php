@@ -161,8 +161,12 @@ Route::middleware(['auth', 'role:kapper'])->prefix('kapper')->name('kapper.')->g
         Route::get('/account', KapperAccount::class)->name('account');
         Route::post('/push/subscribe', [\App\Http\Controllers\PushSubscriptionController::class, 'store'])->name('push.subscribe');
         Route::get('/push/test', function () {
+            $count = auth()->user()->pushSubscriptions()->count();
+            if ($count === 0) {
+                return back()->with('success', 'GEEN subscriptions gevonden voor dit account. Klik eerst op "Push meldingen inschakelen".');
+            }
             auth()->user()->notify(new \App\Notifications\TestPushNotificatie());
-            return back()->with('success', 'Test push verstuurd — check je telefoon binnen 10 seconden.');
+            return back()->with('success', "Push verstuurd naar {$count} apparaat/apparaten — check je telefoon.");
         })->name('push.test');
         Route::get('/push/debug', function () {
             $subs = auth()->user()->pushSubscriptions()->get(['endpoint', 'content_encoding', 'updated_at']);
