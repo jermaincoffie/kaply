@@ -2,6 +2,12 @@ const CACHE = 'kaply-v5';
 
 self.addEventListener('push', function (event) {
     event.waitUntil((async () => {
+        // DEBUG: toon altijd direct bij ontvangst push event
+        await self.registration.showNotification('Kaply debug', {
+            body: 'Push event ontvangen: ' + new Date().toLocaleTimeString(),
+            icon: '/images/PWA-icon-192.png',
+        });
+
         try {
             let title = 'Kaply';
             let body  = 'Nieuwe melding';
