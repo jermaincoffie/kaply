@@ -1,11 +1,12 @@
 ﻿<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220" class="relative bg-white dark:bg-neutral-900 overflow-x-hidden">
 
-    {{-- Aurora achtergrond: absolute over volledige viewport hoogte --}}
-    <div class="absolute top-0 left-0 right-0 h-[700px] pointer-events-none overflow-hidden">
+    {{-- Aurora achtergrond --}}
+    <div class="absolute pointer-events-none overflow-hidden" style="top:0;left:0;right:0;height:700px;">
         <div class="absolute inset-0"
-             style="background: radial-gradient(ellipse 120% 80% at 10% 20%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 5%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 70%, #93c5fd 0%, transparent 65%); opacity: 0.55;"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900"></div>
+             style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.38;"></div>
     </div>
+    {{-- Fade overlay (buiten aurora wrapper, zelfde als voor-kappers) --}}
+    <div class="absolute pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900" style="top:0;left:0;right:0;height:700px;"></div>
 
     {{-- Sticky zoekbalk --}}
     <div x-cloak x-show="sticky" style="display:none"
