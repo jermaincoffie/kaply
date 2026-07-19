@@ -1,4 +1,5 @@
-﻿<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220" class="relative">
+﻿<div class="relative">
+<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220">
 
     {{-- Sticky zoekbalk --}}
     <div x-cloak x-show="sticky" style="display:none"
@@ -71,6 +72,7 @@
             @endif
         </div>
     </div>
+</div>{{-- einde sticky x-data wrapper --}}
 
     {{-- Hero --}}
     <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-10 pb-4 sm:pt-28 sm:pb-8 px-4">
