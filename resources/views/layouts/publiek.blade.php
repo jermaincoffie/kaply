@@ -171,12 +171,8 @@
 
     {{-- Main content --}}
     <main class="relative">
-        @if(request()->routeIs('home'))
-        <div class="absolute inset-x-0 top-0 pointer-events-none overflow-hidden" style="height:700px;z-index:0;">
-            <div class="absolute inset-0"
-                 style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.38;"></div>
-            <div class="absolute inset-x-0 top-0 bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900" style="height:700px;"></div>
-        </div>
+        @if(request()->is('/'))
+        <div style="position:absolute;top:0;left:0;right:0;height:400px;background:linear-gradient(135deg,#bfdbfe 0%,#c4b5fd 50%,#93c5fd 100%);opacity:0.6;pointer-events:none;z-index:0;"></div>
         @endif
         @hasSection('content')
             @yield('content')
