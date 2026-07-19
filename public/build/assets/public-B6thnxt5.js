@@ -1,0 +1,1 @@
+import"./bootstrap-BZ8pmeXz.js";`serviceWorker`in navigator&&window.addEventListener(`load`,()=>{navigator.serviceWorker.register(`/sw.js`)});
