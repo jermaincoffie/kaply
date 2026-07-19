@@ -38,9 +38,7 @@
 <body class="font-sans antialiased bg-white dark:bg-neutral-900 text-gray-800 dark:text-neutral-200 min-h-screen">
 
     {{-- Header --}}
-    <header x-data="{ mobileOpen: false, scrolled: false }" @scroll.window="scrolled = window.scrollY > 10"
-            class="sticky top-0 z-30 border-b border-gray-200 dark:border-neutral-800 transition-colors duration-200"
-            :class="scrolled ? 'bg-white dark:bg-neutral-900' : 'bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm'">
+    <header x-data="{ mobileOpen: false }" class="sticky top-0 z-30 bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800">
         <div class="h-14 flex items-center px-4 sm:px-6 gap-4">
             <a href="{{ route('home') }}" class="hover:opacity-80 transition-opacity flex-shrink-0">
                 <img src="{{ asset('images/kaply-logo-light.png') }}" class="block dark:hidden h-11 w-auto" alt="Kaply">
