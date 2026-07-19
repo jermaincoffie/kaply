@@ -1,12 +1,9 @@
 ﻿<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220" class="relative bg-white dark:bg-neutral-900">
 
-    {{-- DIAGNOSE: rode lijn op top:0 van aurora container --}}
-    <div class="absolute pointer-events-none" style="top:0;left:0;right:0;height:4px;background:red;z-index:999;"></div>
-
     {{-- Aurora achtergrond --}}
     <div class="absolute pointer-events-none overflow-hidden" style="top:0;left:0;right:0;height:700px;">
         <div class="absolute inset-0"
-             style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.38;"></div>
+             style="background: radial-gradient(ellipse 120% 80% at 5% 10%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 90% 5%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 70%, #93c5fd 0%, transparent 65%); opacity: 0.55;"></div>
     </div>
     {{-- Fade overlay --}}
     <div class="absolute pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900" style="top:0;left:0;right:0;height:700px;"></div>
