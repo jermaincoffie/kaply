@@ -3,13 +3,13 @@
     {{-- Aurora achtergrond --}}
     <div class="absolute pointer-events-none overflow-hidden" style="top:0;left:0;right:0;height:700px;">
         <div class="absolute inset-0"
-             style="background: radial-gradient(ellipse 120% 80% at 5% 10%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 90% 5%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 70%, #93c5fd 0%, transparent 65%); opacity: 0.55;"></div>
+             style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.38;"></div>
     </div>
     {{-- Fade overlay --}}
     <div class="absolute pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900" style="top:0;left:0;right:0;height:700px;"></div>
 
-    {{-- Sticky zoekbalk TIJDELIJK UITGESCHAKELD VOOR DIAGNOSE --}}
-    {{-- <div x-cloak x-show="sticky" style="display:none"
+    {{-- Sticky zoekbalk --}}
+    <div x-cloak x-show="sticky" style="display:none"
          x-transition:enter="transition ease-out duration-150"
          x-transition:enter-start="-translate-y-full opacity-0"
          x-transition:enter-end="translate-y-0 opacity-100"
@@ -76,7 +76,7 @@
             </button>
             @endif
         </div>
-    </div> --}}
+    </div>
 
     {{-- Hero --}}
     <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-10 pb-4 sm:pt-28 sm:pb-8 px-4">
