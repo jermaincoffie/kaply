@@ -5,8 +5,7 @@
         <div class="absolute inset-0"
              style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.38;"></div>
     </div>
-    {{-- Fade overlay --}}
-    <div class="absolute pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900" style="top:0;left:0;right:0;height:700px;"></div>
+    {{-- Fade overlay TIJDELIJK UIT --}}
 
     {{-- Sticky zoekbalk --}}
     <div x-cloak x-show="sticky" style="display:none"
