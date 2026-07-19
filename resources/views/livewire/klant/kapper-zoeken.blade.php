@@ -59,30 +59,14 @@
                 <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
                 </svg>
-                <div wire:ignore class="flex-1 flex items-center">
-                    <input type="text"
-                        id="zoekterm-input"
-                        value="{{ $zoekterm }}"
-                        placeholder="Zoek op naam..."
-                        autocomplete="off"
-                        class="w-full bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 text-sm focus:ring-0"
-                        onkeydown="if(event.key==='Enter')event.preventDefault()"
-                        oninput="clearTimeout(window._ks);window._ks=setTimeout(function(){var inp=document.getElementById('zoekterm-input');var el=inp.parentElement;while(el&&!el.hasAttribute('wire:id')){el=el.parentElement;}if(el)Livewire.find(el.getAttribute('wire:id')).set('zoekterm',inp.value);},400)">
-                    <script>
-                    (function(){
-                        var inp = document.getElementById('zoekterm-input');
-                        if(!inp) return;
-                        inp.addEventListener('blur', function(){
-                            setTimeout(function(){
-                                var a = document.activeElement;
-                                if(!a || a === document.body || a.tagName === 'HTML'){
-                                    inp.focus();
-                                }
-                            }, 10);
-                        });
-                    })();
-                    </script>
-                </div>
+                <input wire:model.live.debounce.400ms="zoekterm"
+                    id="zoekterm-input"
+                    wire:key="zoekterm-input"
+                    type="text"
+                    @keydown.enter.prevent
+                    placeholder="Zoek op naam..."
+                    autocomplete="off"
+                    class="flex-1 bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 text-sm focus:ring-0">
                 @if($zoekterm)
                 <button wire:click="$set('zoekterm', '')" onclick="document.getElementById('zoekterm-input').value=''" class="ml-3 text-gray-400 hover:text-gray-600 flex-shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -406,4 +390,21 @@
             <p class="text-xs text-gray-300 dark:text-neutral-600">© {{ date('Y') }} Kaply · Coffie Digital</p>
         </div>
     </footer>
+
+    <script>
+    (function(){
+        var inp = document.getElementById('zoekterm-input');
+        if(!inp) return;
+        var block = false;
+        document.addEventListener('mousedown', function(e){
+            if(e.target !== inp){ block = true; setTimeout(function(){ block = false; }, 300); }
+        }, true);
+        document.addEventListener('keydown', function(e){
+            if(e.key === 'Tab' || e.key === 'Escape'){ block = true; setTimeout(function(){ block = false; }, 300); }
+        }, true);
+        inp.addEventListener('blur', function(){
+            if(!block) setTimeout(function(){ inp.focus(); }, 0);
+        });
+    })();
+    </script>
 </div>
