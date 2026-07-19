@@ -1,4 +1,4 @@
-﻿<div class="relative">
+﻿<div x-data class="relative">
 <div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220">
 
     {{-- Sticky zoekbalk --}}
