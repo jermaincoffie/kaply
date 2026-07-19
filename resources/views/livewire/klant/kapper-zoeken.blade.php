@@ -81,7 +81,7 @@
 
         {{-- Pill zoekbalk --}}
         <div class="hero-anim hero-anim-4 max-w-5xl mx-auto w-full">
-            <div class="flex items-center overflow-hidden bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
+            <div class="flex items-center bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 @if($steden->count() > 0)
                 @php $stadOpties = collect([''=>'Alle steden'])->merge($steden->mapWithKeys(fn($s)=>[$s=>$s]))->toArray(); @endphp
                 <div x-data="{
