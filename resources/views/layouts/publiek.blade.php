@@ -170,7 +170,7 @@
     </header>
 
     {{-- Main content --}}
-    <main>
+    <main style="background:red;padding:0;margin:0;">
         @hasSection('content')
             @yield('content')
         @else
