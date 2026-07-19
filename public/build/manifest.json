@@ -1,4 +1,8 @@
 {
+  "_bootstrap-BZ8pmeXz.js": {
+    "file": "assets/bootstrap-BZ8pmeXz.js",
+    "name": "bootstrap"
+  },
   "node_modules/preline/dist/index.mjs": {
     "file": "assets/dist-Dq45oXey.js",
     "name": "dist",
@@ -6,7 +10,7 @@
     "isDynamicEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-BLBUORKq.css",
+    "file": "assets/app-suLzdw4Y.css",
     "name": "app",
     "names": [
       "app.css"
@@ -15,12 +19,24 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-Rk55IYTv.js",
+    "file": "assets/app-OSHxRGvA.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
+    "imports": [
+      "_bootstrap-BZ8pmeXz.js"
+    ],
     "dynamicImports": [
       "node_modules/preline/dist/index.mjs"
+    ]
+  },
+  "resources/js/public.js": {
+    "file": "assets/public-B6thnxt5.js",
+    "name": "public",
+    "src": "resources/js/public.js",
+    "isEntry": true,
+    "imports": [
+      "_bootstrap-BZ8pmeXz.js"
     ]
   }
 }
