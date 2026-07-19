@@ -170,7 +170,8 @@
     </header>
 
     {{-- Main content --}}
-    <main style="background:red;padding:0;margin:0;">
+    <main class="relative">
+        @stack('aurora')
         @hasSection('content')
             @yield('content')
         @else
