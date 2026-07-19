@@ -172,7 +172,10 @@
     {{-- Main content --}}
     <main class="relative">
         @if(request()->is('/'))
-        <div style="position:absolute;top:0;left:0;right:0;height:400px;background:linear-gradient(135deg,#bfdbfe 0%,#c4b5fd 50%,#93c5fd 100%);opacity:0.6;pointer-events:none;z-index:0;"></div>
+        <div style="position:absolute;top:0;left:0;right:0;height:700px;pointer-events:none;z-index:0;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%);opacity:0.38;"></div>
+            <div style="position:absolute;top:0;left:0;right:0;height:700px;background:linear-gradient(to bottom, transparent 40%, white 100%);"></div>
+        </div>
         @endif
         @hasSection('content')
             @yield('content')
