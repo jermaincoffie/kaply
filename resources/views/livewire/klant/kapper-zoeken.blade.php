@@ -1,4 +1,4 @@
-﻿<div class="relative">
+﻿<div x-data class="relative">
 
     {{-- Hero --}}
     <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-10 pb-4 sm:pt-28 sm:pb-8 px-4">
@@ -219,7 +219,7 @@
                 <p class="text-xs text-gray-400 dark:text-neutral-500 mb-2">Probeer een van deze steden:</p>
                 <div class="flex flex-wrap justify-center gap-2">
                     @foreach($steden as $stad)
-                    <button wire:key="filter-{{ Str::slug($stad) }}" wire:click="filterStad('{{ addslashes($stad) }}')"
+                    <button wire:key="filter-{{ Str::slug($stad) }}" wire:click="$set('stadFilter', '{{ addslashes($stad) }}')"
                             class="px-3 py-1 rounded-full text-xs font-medium border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 bg-white dark:bg-neutral-800 hover:border-blue-300 hover:text-blue-600 dark:hover:border-blue-600 dark:hover:text-blue-400 transition-colors">
                         {{ $stad }}
                     </button>
