@@ -1,12 +1,4 @@
-﻿@push('aurora')
-<div class="absolute inset-x-0 top-0 pointer-events-none overflow-hidden" style="height:700px;">
-    <div class="absolute inset-0"
-         style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.38;"></div>
-    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900" style="height:700px;"></div>
-</div>
-@endpush
-
-<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220" class="relative">
+﻿<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220" class="relative">
 
     {{-- Sticky zoekbalk --}}
     <div x-cloak x-show="sticky" style="display:none"
