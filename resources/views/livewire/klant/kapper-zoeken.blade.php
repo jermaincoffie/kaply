@@ -1,6 +1,12 @@
-﻿<div x-data="{
+﻿@php
+$_kapperSearchData = json_encode(
+    $kappers->map(fn($k) => strtolower($k->salon_naam . ' ' . ($k->stad ?? '')))->values()->all(),
+    JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS
+);
+@endphp
+<div x-data="{
     zoek: '',
-    kapperData: @json($kappers->map(fn($k) => strtolower($k->salon_naam . ' ' . ($k->stad ?? '')))->values()),
+    kapperData: {!! $_kapperSearchData !!},
     get hasMatches() {
         if (!this.zoek) return true;
         const z = this.zoek.toLowerCase();
