@@ -75,7 +75,7 @@
         {{-- Aurora: alleen in hero --}}
         <div class="absolute inset-0 pointer-events-none overflow-hidden">
             <div class="absolute inset-0"
-                 style="background: radial-gradient(ellipse 120% 80% at 10% 15%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% -5%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 70%, #93c5fd 0%, transparent 65%); opacity: 0.5;"></div>
+                 style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.38;"></div>
         </div>
         {{-- Fade onderaan hero naar wit --}}
         <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900"></div>
