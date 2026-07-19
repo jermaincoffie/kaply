@@ -1,18 +1,4 @@
-﻿@php
-$_kapperSearchData = json_encode(
-    $kappers->map(fn($k) => strtolower($k->salon_naam . ' ' . ($k->stad ?? '')))->values()->all(),
-    JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS
-);
-@endphp
-<div x-data="{
-    zoek: '',
-    kapperData: {!! $_kapperSearchData !!},
-    get hasMatches() {
-        if (!this.zoek) return true;
-        const z = this.zoek.toLowerCase();
-        return this.kapperData.some(s => s.includes(z));
-    }
-}" class="relative">
+﻿<div x-data="{ zoek: '' }" class="relative">
 
     {{-- Hero --}}
     <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-10 pb-4 sm:pt-28 sm:pb-8 px-4">
@@ -222,15 +208,6 @@ $_kapperSearchData = json_encode(
                 </a>
                 @endforeach
                 </div>{{-- einde w-max --}}
-                <div x-show="zoek && !hasMatches" class="w-full py-16 text-center px-4" style="display:none">
-                    <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-6 h-6 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
-                        </svg>
-                    </div>
-                    <p class="text-sm font-semibold text-gray-700 dark:text-neutral-300">Geen kappers gevonden</p>
-                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">Geen resultaten voor "<span x-text="zoek"></span>"</p>
-                </div>
                 @else
                 <div class="w-full py-20 text-center px-4">
                 <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 flex items-center justify-center mx-auto mb-4">
