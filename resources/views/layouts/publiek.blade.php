@@ -30,9 +30,13 @@
     @livewireStyles
     @stack('head')
     <script>
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.documentElement.classList.add('dark');
-        }
+        @if(request()->is('/'))
+            document.documentElement.classList.remove('dark');
+        @else
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+        @endif
     </script>
 </head>
 <body class="font-sans antialiased bg-white dark:bg-neutral-900 text-gray-800 dark:text-neutral-200 min-h-screen">
