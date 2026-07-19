@@ -84,7 +84,7 @@
         </div>
 
         {{-- Pill zoekbalk --}}
-        <div class="hero-anim hero-anim-4 max-w-5xl mx-auto w-full">
+        <div class="hero-anim hero-anim-4 max-w-5xl mx-auto w-full" x-data="{}">
             <div class="flex items-center bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 @if($steden->count() > 0)
                 @php $stadOpties = collect([''=>'Alle steden'])->merge($steden->mapWithKeys(fn($s)=>[$s=>$s]))->toArray(); @endphp
@@ -133,9 +133,10 @@
                 <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
                 </svg>
-                <input wire:model.live="zoekterm"
+                <input type="text"
+                    :value="$wire.zoekterm"
+                    @input.debounce.300ms="$wire.set('zoekterm', $event.target.value)"
                     @keydown.enter.prevent="$wire.set('zoekterm', $event.target.value)"
-                    type="text"
                     placeholder="Zoek op naam..."
                     class="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 text-sm focus:ring-0">
                 @if($zoekterm)
