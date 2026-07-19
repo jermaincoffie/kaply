@@ -68,6 +68,26 @@
                         class="w-full bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 text-sm focus:ring-0"
                         onkeydown="if(event.key==='Enter')event.preventDefault()"
                         oninput="clearTimeout(window._ks);window._ks=setTimeout(function(){var el=document.querySelector('[wire\\:id]');if(el)Livewire.find(el.getAttribute('wire:id')).set('zoekterm',document.getElementById('zoekterm-input').value)},400)">
+                    <script>
+                    (function(){
+                        document.addEventListener('livewire:initialized', function(){
+                            Livewire.hook('commit', function({ succeed }){
+                                var inp = document.getElementById('zoekterm-input');
+                                var focused = inp && document.activeElement === inp;
+                                var cs = focused ? inp.selectionStart : 0;
+                                var ce = focused ? inp.selectionEnd : 0;
+                                succeed(function(){
+                                    if(focused){
+                                        queueMicrotask(function(){
+                                            var el = document.getElementById('zoekterm-input');
+                                            if(el){ el.focus(); try{el.setSelectionRange(cs,ce);}catch(e){} }
+                                        });
+                                    }
+                                });
+                            });
+                        });
+                    })();
+                    </script>
                 </div>
                 @if($zoekterm)
                 <button wire:click="$set('zoekterm', '')" onclick="document.getElementById('zoekterm-input').value=''" class="ml-3 text-gray-400 hover:text-gray-600 flex-shrink-0">
