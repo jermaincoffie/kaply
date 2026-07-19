@@ -70,21 +70,15 @@
                         oninput="clearTimeout(window._ks);window._ks=setTimeout(function(){var el=document.querySelector('[wire\\:id]');if(el)Livewire.find(el.getAttribute('wire:id')).set('zoekterm',document.getElementById('zoekterm-input').value)},400)">
                     <script>
                     (function(){
-                        document.addEventListener('livewire:initialized', function(){
-                            Livewire.hook('commit', function({ succeed }){
-                                var inp = document.getElementById('zoekterm-input');
-                                var focused = inp && document.activeElement === inp;
-                                var cs = focused ? inp.selectionStart : 0;
-                                var ce = focused ? inp.selectionEnd : 0;
-                                succeed(function(){
-                                    if(focused){
-                                        queueMicrotask(function(){
-                                            var el = document.getElementById('zoekterm-input');
-                                            if(el){ el.focus(); try{el.setSelectionRange(cs,ce);}catch(e){} }
-                                        });
-                                    }
-                                });
-                            });
+                        var inp = document.getElementById('zoekterm-input');
+                        if(!inp) return;
+                        inp.addEventListener('blur', function(){
+                            setTimeout(function(){
+                                var a = document.activeElement;
+                                if(!a || a === document.body || a.tagName === 'HTML'){
+                                    inp.focus();
+                                }
+                            }, 10);
                         });
                     })();
                     </script>
