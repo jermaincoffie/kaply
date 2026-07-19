@@ -1,5 +1,12 @@
 ﻿<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220" class="relative bg-white dark:bg-neutral-900 overflow-x-hidden">
 
+    {{-- Aurora achtergrond: absolute over volledige viewport hoogte --}}
+    <div class="absolute top-0 left-0 right-0 min-h-screen pointer-events-none overflow-hidden">
+        <div class="absolute inset-0"
+             style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.38;"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900"></div>
+    </div>
+
     {{-- Sticky zoekbalk --}}
     <div x-cloak x-show="sticky" style="display:none"
          x-transition:enter="transition ease-out duration-150"
@@ -72,13 +79,6 @@
 
     {{-- Hero --}}
     <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-10 pb-4 sm:pt-28 sm:pb-8 px-4">
-        {{-- Aurora: alleen in hero --}}
-        <div class="absolute inset-0 pointer-events-none overflow-hidden">
-            <div class="absolute inset-0"
-                 style="background: radial-gradient(ellipse 120% 80% at 10% 40%, #bfdbfe 0%, transparent 60%), radial-gradient(ellipse 90% 70% at 85% 20%, #c4b5fd 0%, transparent 55%), radial-gradient(ellipse 100% 90% at 50% 80%, #93c5fd 0%, transparent 65%); opacity: 0.38;"></div>
-        </div>
-        {{-- Fade onderaan hero naar wit --}}
-        <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent from-[40%] to-white dark:to-neutral-900"></div>
         <div class="text-center mb-6 sm:mb-14">
             <p class="hero-anim hero-anim-1 text-sm font-medium text-gray-500 dark:text-white mb-3 tracking-widest uppercase">Welkom bij</p>
             <h1 class="hero-anim hero-anim-2 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-neutral-100 mb-0">
