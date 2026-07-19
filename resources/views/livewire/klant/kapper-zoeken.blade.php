@@ -59,9 +59,11 @@
                 <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
                 </svg>
-                <input wire:model.live="zoekterm" type="text"
+                <input wire:model.live.debounce.400ms="zoekterm" type="text"
+                    id="zoekterm-input"
                     @keydown.enter.prevent
                     placeholder="Zoek op naam..."
+                    autocomplete="off"
                     class="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 text-sm focus:ring-0">
                 @if($zoekterm)
                 <button wire:click="$set('zoekterm', '')" class="ml-3 text-gray-400 hover:text-gray-600 dark:hover:text-neutral-300 flex-shrink-0">
