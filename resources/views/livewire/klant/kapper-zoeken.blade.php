@@ -59,10 +59,11 @@
                 <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
                 </svg>
-                <div wire:ignore class="flex-1 flex items-center">
+                <div wire:ignore x-data class="flex-1 flex items-center">
                     <input type="text"
                         id="zoekterm-input"
                         value="{{ $zoekterm }}"
+                        @input.debounce.300ms="$wire.set('zoekterm', $event.target.value)"
                         @keydown.enter.prevent
                         placeholder="Zoek op naam..."
                         autocomplete="off"
@@ -392,18 +393,3 @@
         </div>
     </footer>
 </div>
-
-<script>
-(function () {
-    const input = document.getElementById('zoekterm-input');
-    if (!input) return;
-    let timer;
-
-    input.addEventListener('input', function () {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            @this.set('zoekterm', input.value);
-        }, 300);
-    });
-})();
-</script>
