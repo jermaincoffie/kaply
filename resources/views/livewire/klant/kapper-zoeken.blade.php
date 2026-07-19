@@ -1,5 +1,4 @@
-﻿<div x-data class="relative">
-<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220">
+﻿<div x-data="{ sticky: false }" @scroll.window="sticky = window.scrollY > 220" class="relative">
 
     {{-- Sticky zoekbalk --}}
     <div x-cloak x-show="sticky" style="display:none"
@@ -58,9 +57,7 @@
             <svg class="w-4 h-4 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
             </svg>
-            <input wire:model.live="zoekterm"
-                @keydown.enter.prevent="$wire.set('zoekterm', $event.target.value)"
-                type="text"
+            <input wire:model.live="zoekterm" type="text"
                 placeholder="Zoek op naam..."
                 class="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 text-sm focus:ring-0">
             @if($zoekterm)
@@ -72,7 +69,6 @@
             @endif
         </div>
     </div>
-</div>{{-- einde sticky x-data wrapper --}}
 
     {{-- Hero --}}
     <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-10 pb-4 sm:pt-28 sm:pb-8 px-4">
@@ -84,7 +80,7 @@
         </div>
 
         {{-- Pill zoekbalk --}}
-        <div class="hero-anim hero-anim-4 max-w-5xl mx-auto w-full" x-data="{}">
+        <div class="hero-anim hero-anim-4 max-w-5xl mx-auto w-full">
             <div class="flex items-center bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 rounded-full px-6 py-4 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
                 @if($steden->count() > 0)
                 @php $stadOpties = collect([''=>'Alle steden'])->merge($steden->mapWithKeys(fn($s)=>[$s=>$s]))->toArray(); @endphp
@@ -133,10 +129,7 @@
                 <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
                 </svg>
-                <input type="text"
-                    :value="$wire.zoekterm"
-                    @input.debounce.300ms="$wire.set('zoekterm', $event.target.value)"
-                    @keydown.enter.prevent="$wire.set('zoekterm', $event.target.value)"
+                <input wire:model.live="zoekterm" type="text"
                     placeholder="Zoek op naam..."
                     class="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 text-sm focus:ring-0">
                 @if($zoekterm)
