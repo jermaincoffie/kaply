@@ -26,12 +26,6 @@ class KapperZoeken extends Component
 
         $kappers = Kapper::where('actief', true)
             ->where('abonnement_status', 'actief')
-            ->when($this->zoekterm, fn($q) =>
-                $q->where(fn($q2) =>
-                    $q2->where('salon_naam', 'like', "%{$this->zoekterm}%")
-                       ->orWhere('stad', 'like', "%{$this->zoekterm}%")
-                )
-            )
             ->when($this->stadFilter, fn($q) =>
                 $q->where('stad', $this->stadFilter)
             )

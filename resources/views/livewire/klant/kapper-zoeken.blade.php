@@ -1,4 +1,12 @@
-﻿<div x-data class="relative">
+﻿<div x-data="{
+    zoek: '',
+    kapperData: @json($kappers->map(fn($k) => strtolower($k->salon_naam . ' ' . ($k->stad ?? '')))->values()),
+    get hasMatches() {
+        if (!this.zoek) return true;
+        const z = this.zoek.toLowerCase();
+        return this.kapperData.some(s => s.includes(z));
+    }
+}" class="relative">
 
     {{-- Hero --}}
     <div class="relative z-30 min-h-[45vh] sm:min-h-0 flex flex-col justify-center pt-10 pb-4 sm:pt-28 sm:pb-8 px-4">
@@ -59,21 +67,18 @@
                 <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500 flex-shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
                 </svg>
-                <input wire:model.live.debounce.400ms="zoekterm"
+                <input x-model="zoek"
                     id="zoekterm-input"
-                    wire:key="zoekterm-input"
                     type="text"
                     @keydown.enter.prevent
                     placeholder="Zoek op naam..."
                     autocomplete="off"
                     class="flex-1 bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 text-sm focus:ring-0">
-                @if($zoekterm)
-                <button wire:click="$set('zoekterm', '')" onclick="document.getElementById('zoekterm-input').value=''" class="ml-3 text-gray-400 hover:text-gray-600 flex-shrink-0">
+                <button x-show="zoek.length > 0" @click="zoek = ''" style="display:none" class="ml-3 text-gray-400 hover:text-gray-600 flex-shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
-                @endif
             </div>
         </div>
     </div>
@@ -82,11 +87,9 @@
     <div class="relative z-20 max-w-5xl mx-auto px-4 pb-6">
 
         {{-- Zoekterm feedback --}}
-        @if($zoekterm)
-        <p class="text-sm text-gray-500 dark:text-neutral-400 mb-3">
-            Resultaten voor <span class="font-semibold text-gray-700 dark:text-neutral-300">"{{ $zoekterm }}"</span>
+        <p x-show="zoek.length > 0" class="text-sm text-gray-500 dark:text-neutral-400 mb-3" style="display:none">
+            Resultaten voor <span class="font-semibold text-gray-700 dark:text-neutral-300">"<span x-text="zoek"></span>"</span>
         </p>
-        @endif
 
         {{-- Filter rij --}}
         @if($diensteNamen->count() > 0)
@@ -147,7 +150,10 @@
                 @if($kappers->isNotEmpty())
                 <div class="flex gap-4 px-4 sm:px-8 pb-2 w-max mx-auto">
                 @foreach($kappers as $kapper)
-                <a wire:key="kapper-{{ $kapper->id }}" href="{{ route('kapper.profiel', $kapper->slug) }}"
+                <a wire:key="kapper-{{ $kapper->id }}"
+                   data-st="{{ strtolower($kapper->salon_naam . ' ' . ($kapper->stad ?? '')) }}"
+                   x-show="!zoek || $el.dataset.st.includes(zoek.toLowerCase())"
+                   href="{{ route('kapper.profiel', $kapper->slug) }}"
                    class="group flex-shrink-0 w-[260px] sm:w-[280px] flex flex-col bg-gradient-to-b from-indigo-50 to-white dark:from-neutral-700 dark:to-neutral-800 border border-indigo-100 dark:border-neutral-700 rounded-xl overflow-hidden hover:shadow-md hover:border-blue-200 dark:hover:border-neutral-500 transition-all duration-150">
 
                     {{-- Logo / foto --}}
@@ -210,6 +216,15 @@
                 </a>
                 @endforeach
                 </div>{{-- einde w-max --}}
+                <div x-show="zoek && !hasMatches" class="w-full py-16 text-center px-4" style="display:none">
+                    <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-semibold text-gray-700 dark:text-neutral-300">Geen kappers gevonden</p>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500 mt-1">Geen resultaten voor "<span x-text="zoek"></span>"</p>
+                </div>
                 @else
                 <div class="w-full py-20 text-center px-4">
                 <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 flex items-center justify-center mx-auto mb-4">
@@ -254,8 +269,8 @@
     </div>{{-- einde full-width carousel sectie --}}
 
     {{-- Populaire steden --}}
-    @if(!$zoekterm && $steden->count() > 1)
-    <div class="relative z-10 py-10 px-4 border-t border-gray-100 dark:border-neutral-800">
+    @if($steden->count() > 1)
+    <div x-show="!zoek" class="relative z-10 py-10 px-4 border-t border-gray-100 dark:border-neutral-800">
         <div class="max-w-5xl mx-auto">
             <h2 class="text-sm font-semibold text-gray-500 dark:text-neutral-400 uppercase tracking-widest mb-4">Kappers per stad</h2>
             <div class="flex flex-wrap gap-2">
@@ -275,8 +290,7 @@
     @endif
 
     {{-- Hoe werkt het (alleen zonder zoekterm) --}}
-    @if(!$zoekterm)
-    <div id="hoe-werkt-het" class="relative z-10 py-14 px-4 border-t border-gray-100 dark:border-neutral-800">
+    <div x-show="!zoek" id="hoe-werkt-het" class="relative z-10 py-14 px-4 border-t border-gray-100 dark:border-neutral-800">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-10">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-neutral-100">Zo werkt het</h2>
@@ -328,7 +342,6 @@
 
         </div>
     </div>
-    @endif
 
     {{-- Kapper CTA --}}
     <div class="relative z-10 py-12 px-4 bg-gray-50 dark:bg-neutral-800/50 border-t border-gray-100 dark:border-neutral-800">
@@ -391,20 +404,4 @@
         </div>
     </footer>
 
-    <script>
-    (function(){
-        var inp = document.getElementById('zoekterm-input');
-        if(!inp) return;
-        var block = false;
-        document.addEventListener('mousedown', function(e){
-            if(e.target !== inp){ block = true; setTimeout(function(){ block = false; }, 300); }
-        }, true);
-        document.addEventListener('keydown', function(e){
-            if(e.key === 'Tab' || e.key === 'Escape'){ block = true; setTimeout(function(){ block = false; }, 300); }
-        }, true);
-        inp.addEventListener('blur', function(){
-            if(!block) setTimeout(function(){ inp.focus(); }, 0);
-        });
-    })();
-    </script>
 </div>
