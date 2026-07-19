@@ -67,7 +67,7 @@
                         autocomplete="off"
                         class="w-full bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 text-sm focus:ring-0"
                         onkeydown="if(event.key==='Enter')event.preventDefault()"
-                        oninput="clearTimeout(window._ks);window._ks=setTimeout(function(){var el=document.querySelector('[wire\\:id]');if(el)Livewire.find(el.getAttribute('wire:id')).set('zoekterm',document.getElementById('zoekterm-input').value)},400)">
+                        oninput="clearTimeout(window._ks);window._ks=setTimeout(function(){var inp=document.getElementById('zoekterm-input');var el=inp.parentElement;while(el&&!el.hasAttribute('wire:id')){el=el.parentElement;}if(el)Livewire.find(el.getAttribute('wire:id')).set('zoekterm',inp.value);},400)">
                     <script>
                     (function(){
                         var inp = document.getElementById('zoekterm-input');
