@@ -44,7 +44,7 @@ class Registratie extends Component
             'salon_naam' => 'required|string|max:255',
             'stad'       => 'required|string|max:255',
             'adres'      => 'required|string|max:255',
-            'telefoon'   => 'nullable|digits_between:1,10',
+            'telefoon'   => 'nullable|string|max:20',
         ];
     }
 
@@ -75,7 +75,7 @@ class Registratie extends Component
             'salon_naam.required' => 'Saloonnaam is verplicht.',
             'stad.required'       => 'Stad is verplicht.',
             'adres.required'      => 'Adres is verplicht.',
-            'telefoon.digits_between' => 'Telefoonnummer mag maximaal 10 cijfers bevatten.',
+            'telefoon.max' => 'Telefoonnummer mag maximaal 20 tekens zijn.',
         ]);
 
         $user = User::create([

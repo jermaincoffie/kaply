@@ -11,7 +11,10 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
-    const ABONNEMENT_PRIJS = 2500; // €25 in centen
+    private static function abonnementPrijs(): int
+    {
+        return (int) config('services.stripe.abonnement_centen', 2500);
+    }
     const TRIAL_DAGEN = 14;
 
     public function toggleReviewZichtbaar(int $id): void
@@ -33,8 +36,8 @@ class Dashboard extends Component
     {
         $abonnees_actief = Kapper::where('abonnement_status', 'actief')->count();
         $kappers_totaal  = Kapper::count();
-        $mrr             = $abonnees_actief * self::ABONNEMENT_PRIJS;
-        $prognose_mrr    = $kappers_totaal * self::ABONNEMENT_PRIJS;
+        $mrr             = $abonnees_actief * self::abonnementPrijs();
+        $prognose_mrr    = $kappers_totaal * self::abonnementPrijs();
 
         // MRR trend: nieuwe actieve abonnees deze maand vs vorige maand
         $nieuwe_actief_deze_maand = DB::table('subscriptions')
@@ -47,7 +50,7 @@ class Dashboard extends Component
             ->whereMonth('created_at', now()->subMonth()->month)
             ->whereYear('created_at', now()->subMonth()->year)
             ->count();
-        $mrr_verschil = ($nieuwe_actief_deze_maand - $nieuwe_actief_vorige_maand) * self::ABONNEMENT_PRIJS;
+        $mrr_verschil = ($nieuwe_actief_deze_maand - $nieuwe_actief_vorige_maand) * self::abonnementPrijs();
 
         // Trial kappers: Stripe subscription met stripe_status = 'trialing'
         $trial_kappers = Kapper::with('user')

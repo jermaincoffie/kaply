@@ -29,8 +29,9 @@ return [
     ],
 
     'stripe' => [
-        'price_monthly'    => env('STRIPE_PRICE_MONTHLY'),
-        'price_lookup_key' => env('STRIPE_PRICE_LOOKUP_KEY'),
+        'price_monthly'       => env('STRIPE_PRICE_MONTHLY'),
+        'price_lookup_key'    => env('STRIPE_PRICE_LOOKUP_KEY'),
+        'abonnement_centen'   => (int) env('ABONNEMENT_PRIJS_CENTEN', 2500),
     ],
 
     'slack' => [

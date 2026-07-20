@@ -103,7 +103,6 @@ class User extends Authenticatable
     }
 
     public function kapper() { return $this->hasOne(Kapper::class); }
-    public function klantprofiel() { return $this->hasOne(Klant::class); }
     public function afspraken() { return $this->hasMany(\App\Models\Afspraak::class, 'klant_id'); }
     public function klantNotities() { return $this->hasMany(\App\Models\KlantNotitie::class, 'klant_id'); }
     public function klantNotitie() { return $this->hasOne(\App\Models\KlantNotitie::class, 'klant_id'); }
