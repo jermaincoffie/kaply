@@ -411,7 +411,7 @@ class AgendaOverzicht extends Component
         $this->isWalkIn                = true;
         $this->walkInNaam              = $wachtende->naam;
 
-        $wachtende->update(['status' => 'ingepland']);
+        $wachtende->update(['status' => 'genotificeerd']);
     }
 
     public function voltooid(int $id): void

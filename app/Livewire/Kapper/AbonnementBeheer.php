@@ -16,7 +16,7 @@ class AbonnementBeheer extends Component
         }
 
         try {
-            $subscription->cancelNow();
+            $subscription->cancel();
             $this->redirect(route('kapper.abonnement'));
         } catch (\Exception $e) {
             report($e);

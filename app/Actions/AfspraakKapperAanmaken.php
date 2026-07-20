@@ -7,8 +7,6 @@ use App\Models\Activiteit;
 use App\Models\Dienst;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class AfspraakKapperAanmaken
 {
@@ -33,12 +31,7 @@ class AfspraakKapperAanmaken
         } elseif ($klantId) {
             $definitieveKlantId = $klantId;
         } else {
-            $naam = trim($klantZoekterm);
-            $klant = User::firstOrCreate(
-                ['email' => 'walkin-' . Str::uuid() . '@kapperplatform.nl'],
-                ['name' => $naam, 'password' => Hash::make(Str::random(16)), 'role' => 'klant']
-            );
-            $definitieveKlantId = $klant->id;
+            $definitieveWalkInNaam = trim($klantZoekterm) ?: 'Walk-in';
         }
 
         $dienst = Dienst::findOrFail($dienstId);

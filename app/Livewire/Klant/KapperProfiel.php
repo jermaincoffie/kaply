@@ -173,8 +173,7 @@ class KapperProfiel extends Component
                 ->where('eind_tijd', '>', $this->geselecteerdeTijd)
                 ->when(
                     $this->geselecteerdeMedewerkerId,
-                    fn($q) => $q->where('medewerker_id', $this->geselecteerdeMedewerkerId),
-                    fn($q) => $q->whereNull('medewerker_id')
+                    fn($q) => $q->where('medewerker_id', $this->geselecteerdeMedewerkerId)
                 )
                 ->lockForUpdate()
                 ->exists();
