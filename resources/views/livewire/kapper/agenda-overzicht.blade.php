@@ -279,7 +279,7 @@
                 @if($medewerkers->count() > 0)
                 <button wire:click="filterMedewerker(null)"
                         class="flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors
-                            {{ $gefilterdeMedewerkerId === null ? 'bg-gray-800 dark:bg-neutral-100 text-white dark:text-neutral-900' : 'bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300' }}">
+                            {{ $gefilterdeMedewerkerId === null ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300' }}">
                     Alle
                 </button>
                 @foreach($medewerkers as $mw)
@@ -697,7 +697,7 @@
             <button wire:click="filterMedewerker(null)"
                     class="flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors
                         {{ $gefilterdeMedewerkerId === null
-                            ? 'bg-gray-800 dark:bg-neutral-100 text-white dark:text-neutral-900'
+                            ? 'bg-blue-600 text-white'
                             : 'bg-gray-100 dark:bg-neutral-700 text-gray-600 dark:text-neutral-300 hover:bg-gray-200 dark:hover:bg-neutral-600' }}">
                 Alle
             </button>
